@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import html
 import hashlib
 import ipaddress
@@ -12,11 +13,15 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urljoin, urlparse
 from urllib.request import Request, urlopen
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from PIL import Image, UnidentifiedImageError
+from PIL import ExifTags, Image, UnidentifiedImageError
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from auth import create_access_token, email_delivery_configured, generate_otp, send_activity_email, send_otp_email
+from database import SessionLocal, User
 
 
 app = FastAPI(
@@ -114,12 +119,102 @@ class AnalyzeUrlRequest(BaseModel):
     url: str
 
 
+class AuthRequest(BaseModel):
+    email: str
+
+
+class VerifyRequest(BaseModel):
+    email: str
+    otp: str
+
+
+class PaymentRequest(BaseModel):
+    email: str
+    utr_number: str
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def has_active_subscription(user: User) -> bool:
+    return bool(user.subscription_end and user.subscription_end > datetime.datetime.utcnow())
+
+
+def extract_metadata(image: Image.Image) -> dict:
+    metadata = {
+        "is_original": "Likely a Copy/Stripped (Social Media)",
+        "creation_date": "Unknown",
+        "software_platform": "Unknown",
+        "camera_device": "Unknown",
+        "c2pa_signature": "No AI Signature Detected",
+    }
+
+    software_hits = []
+    camera_hits = []
+
+    try:
+        exif_data = image.getexif()
+        if exif_data:
+            metadata["is_original"] = "Original File (EXIF Intact)"
+            for tag_id, value in exif_data.items():
+                decoded = ExifTags.TAGS.get(tag_id, tag_id)
+                if decoded in {"DateTimeOriginal", "DateTime"}:
+                    metadata["creation_date"] = str(value)
+                elif decoded == "Software":
+                    software_hits.append(str(value))
+                elif decoded in {"Make", "Model"}:
+                    camera_hits.append(str(value))
+    except Exception:
+        pass
+
+    info_values = []
+    for key, value in image.info.items():
+        if isinstance(value, bytes):
+            try:
+                normalized = value.decode("utf-8", errors="ignore")
+            except Exception:
+                normalized = repr(value[:80])
+        else:
+            normalized = str(value)
+        info_values.append(f"{key}: {normalized}")
+
+    software_blob = " | ".join(software_hits + info_values)
+    lowered_blob = software_blob.lower()
+
+    if software_hits:
+        metadata["software_platform"] = " | ".join(dict.fromkeys(software_hits))
+
+    if camera_hits:
+        metadata["camera_device"] = " / ".join(dict.fromkeys(camera_hits))
+
+    ai_markers = [
+        "c2pa",
+        "midjourney",
+        "dall-e",
+        "adobe firefly",
+        "firefly",
+        "stable diffusion",
+        "openai",
+        "generative fill",
+    ]
+    if any(marker in lowered_blob for marker in ai_markers):
+        metadata["c2pa_signature"] = "Generative AI Platform or Provenance Marker Detected"
+
+    return metadata
+
+
 def score_image_bytes(image_bytes: bytes) -> dict:
     if not image_bytes:
         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
     try:
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        metadata = extract_metadata(image)
     except UnidentifiedImageError as exc:
         raise HTTPException(status_code=400, detail="Could not decode image.") from exc
 
@@ -137,6 +232,7 @@ def score_image_bytes(image_bytes: bytes) -> dict:
             if is_deepfake
             else "Media appears authentic."
         ),
+        "metadata": metadata,
     }
 
 
@@ -246,6 +342,108 @@ def health() -> dict:
         "engine": detector.mode,
         "model_loaded": detector.mode == "torch",
         "warning": startup_warning,
+        "email_delivery_configured": email_delivery_configured(),
+    }
+
+
+@app.post("/auth/request-otp")
+def request_otp(
+    req: AuthRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+) -> dict:
+    email = req.email.strip().lower()
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="Enter a valid email address.")
+
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        user = User(email=email)
+        db.add(user)
+
+    otp = generate_otp()
+    user.current_otp = otp
+    user.otp_expiry = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+    db.commit()
+
+    if email_delivery_configured():
+        background_tasks.add_task(send_otp_email, email, otp, "Login Attempt")
+        return {
+            "message": "OTP sent to your email.",
+            "delivery_mode": "email",
+        }
+
+    return {
+        "message": "SMTP is not configured. Using local demo OTP preview.",
+        "delivery_mode": "dev-preview",
+        "otp_preview": otp,
+    }
+
+
+@app.post("/auth/verify-otp")
+def verify_otp(req: VerifyRequest, db: Session = Depends(get_db)) -> dict:
+    email = req.email.strip().lower()
+    user = db.query(User).filter(User.email == email).first()
+    if (
+        not user
+        or not user.current_otp
+        or user.current_otp != req.otp.strip()
+        or not user.otp_expiry
+        or user.otp_expiry < datetime.datetime.utcnow()
+    ):
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP.")
+
+    user.is_verified = True
+    user.current_otp = None
+    user.otp_expiry = None
+    db.commit()
+
+    has_subscription = has_active_subscription(user)
+    token = create_access_token(email=user.email, has_subscription=has_subscription)
+    return {
+        "message": "Login successful",
+        "has_subscription": has_subscription,
+        "email": user.email,
+        "token": token,
+    }
+
+
+@app.post("/payment/verify-upi")
+def verify_upi(
+    req: PaymentRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+) -> dict:
+    email = req.email.strip().lower()
+    utr = req.utr_number.strip()
+    if not utr.isdigit() or len(utr) < 10:
+        raise HTTPException(status_code=400, detail="Invalid UTR number.")
+
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    user.subscription_end = datetime.datetime.utcnow() + datetime.timedelta(days=30)
+    user.last_payment_ref = utr
+    db.commit()
+
+    receipt_text = (
+        "Payment of INR 1 received for Synthetic Media Shield.\n"
+        "Premium access is active for the next 30 days.\n"
+        f"UPI reference: {utr}"
+    )
+    background_tasks.add_task(
+        send_activity_email,
+        email,
+        "Synthetic Media Shield Premium Activated",
+        receipt_text,
+    )
+
+    token = create_access_token(email=user.email, has_subscription=True)
+    return {
+        "message": "Subscription activated successfully!",
+        "subscription_end": user.subscription_end.isoformat(),
+        "token": token,
     }
 
 
@@ -525,22 +723,22 @@ def demo() -> str:
             <div class="card hero-copy">
                 <h1>Synthetic Media Shield</h1>
                 <p>This demo page supports both local files and online links, while keeping the analysis flow inside your local FastAPI backend.</p>
-                <p>Use a local video for the most reliable live demo. For public internet media, paste a direct MP4, WebM, or image URL into the link box below.</p>
+                <p>Use the extension popup to log in with OTP and activate premium, then scan playable media or analyze public links from the same local stack.</p>
                 <div class="status">Local demo route ready</div>
             </div>
             <aside class="card panel">
                 <div class="steps">
                     <div class="step">
                         <strong>Step 1</strong>
-                        Load a local video or paste a direct online media URL.
+                        Log in from the extension popup and activate premium access.
                     </div>
                     <div class="step">
                         <strong>Step 2</strong>
-                        For videos, play or scrub to the frame you want to inspect.
+                        Load a local video or paste a direct online media URL.
                     </div>
                     <div class="step">
                         <strong>Step 3</strong>
-                        Click the extension's SCAN MEDIA button or analyze a remote image URL directly.
+                        Scan a frame or inspect a public link with provenance metadata.
                     </div>
                 </div>
             </aside>

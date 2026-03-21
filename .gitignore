@@ -1,5 +1,6 @@
 .venv/
 deepfake-shield/.chromium-profile/
 deepfake-shield/backend/model.pt
+deepfake-shield/backend/shield_saas.db
 __pycache__/
 *.pyc

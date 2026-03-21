@@ -23,6 +23,21 @@ deepfake-shield/
 - If `backend/model.pt` exists and loads correctly, the API uses the PyTorch model.
 - If the model file is missing or fails to load, the API falls back to a deterministic mock engine so the UI still works.
 - `GET /health` returns engine status for a quick smoke test.
+- SQLite-backed OTP login and premium subscription state are stored in `backend/shield_saas.db`.
+
+## SaaS flow
+
+- Open the extension popup from the browser toolbar.
+- Request an OTP using your email.
+- If SMTP is configured through environment variables, the OTP is emailed. If not, the popup shows a local demo OTP preview so the hackathon flow still works.
+- After OTP verification, activate premium with a UTR/reference number to unlock scans.
+- Scan results now include forensic metadata such as EXIF presence, software tags, device hints, and AI provenance markers.
+
+## SMTP configuration
+
+- Set `SMS_SHIELD_SMTP_EMAIL` and `SMS_SHIELD_SMTP_PASSWORD` before starting the backend if you want real Gmail OTP delivery.
+- Optional variables: `SMS_SHIELD_SMTP_SERVER`, `SMS_SHIELD_SMTP_PORT`, and `SMS_SHIELD_JWT_SECRET`.
+- Without SMTP configuration, the app remains fully demoable through a local OTP preview in the popup.
 
 ## Local startup
 

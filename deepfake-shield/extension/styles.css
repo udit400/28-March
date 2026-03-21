@@ -91,6 +91,7 @@
   font-family: "Segoe UI", Tahoma, sans-serif;
   font-size: 12px;
   line-height: 1.4;
+  white-space: pre-line;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
 }
 

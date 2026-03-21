@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Synthetic Media Shield</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08101f;
+      --panel: rgba(13, 20, 40, 0.96);
+      --accent: #6ef5db;
+      --accent-2: #ff416c;
+      --text: #dce9ff;
+      --muted: #90a6ba;
+    }
+
+    body {
+      width: 340px;
+      margin: 0;
+      padding: 16px;
+      background: linear-gradient(180deg, #050a14, var(--bg));
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .shell {
+      background: var(--panel);
+      border: 1px solid rgba(110, 245, 219, 0.16);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.36);
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #b4fff6;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .view {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    input,
+    button {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 12px;
+      padding: 11px 12px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font: inherit;
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+
+    button {
+      cursor: pointer;
+      color: #031417;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6ef5db, #b4fff6);
+    }
+
+    .secondary {
+      background: transparent;
+      color: var(--text);
+    }
+
+    .danger {
+      background: transparent;
+      color: #ff9fb3;
+      border-color: rgba(255, 65, 108, 0.3);
+    }
+
+    .qr-container {
+      margin-top: 12px;
+      border-radius: 14px;
+      padding: 10px;
+      background: white;
+      text-align: center;
+    }
+
+    .qr-container img {
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
+    }
+
+    .badge {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+      background: rgba(110, 245, 219, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(110, 245, 219, 0.2);
+    }
+
+    .account-chip {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .helper-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .helper-row button {
+      flex: 1 1 auto;
+    }
+
+    #status {
+      margin-top: 12px;
+      min-height: 34px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #ffd59d;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <h2>Synthetic Media Shield</h2>
+    <p>Secure OTP login, metadata forensics, and a hackathon-grade premium flow.</p>
+
+    <div id="view-login" class="view active">
+      <div class="badge">Step 1: Gmail OTP login</div>
+      <input type="email" id="email-input" placeholder="Enter your Gmail address">
+      <button id="btn-get-otp">Send OTP</button>
+    </div>
+
+    <div id="view-otp" class="view">
+      <div class="badge">Step 2: Verify OTP</div>
+      <div id="otp-email-chip" class="account-chip"></div>
+      <input type="text" id="otp-input" placeholder="Enter 6-digit OTP">
+      <button id="btn-verify-otp">Verify and log in</button>
+      <button id="btn-back-login" class="secondary">Use another email</button>
+    </div>
+
+    <div id="view-pay" class="view">
+      <div class="badge">Step 3: Activate premium</div>
+      <div id="pay-email-chip" class="account-chip"></div>
+      <p>Scan the QR and pay INR 1 to your PhonePe account, then enter the UTR/reference number to unlock premium analysis.</p>
+      <div class="qr-container">
+        <img src="upi_qr.jpeg" alt="PhonePe QR for UDIT" onerror="this.onerror=null;this.src='upi_qr.svg';">
+      </div>
+      <p style="margin-top: 10px; text-align: center; color: #dce9ff; font-size: 12px;">Payment account: <strong>UDIT</strong> on PhonePe</p>
+      <input type="text" id="utr-input" placeholder="Enter UTR or reference number">
+      <button id="btn-verify-pay">Activate subscription</button>
+      <div class="helper-row">
+        <button id="btn-demo-utr" class="secondary">Use demo UTR</button>
+        <button id="btn-reset-pay" class="secondary">Change account</button>
+      </div>
+    </div>
+
+    <div id="view-dashboard" class="view">
+      <div class="badge">Premium active</div>
+      <div id="dashboard-email-chip" class="account-chip"></div>
+      <p id="dashboard-copy">Your shield is online. You can now scan media and show forensic metadata in the page overlay.</p>
+      <button id="btn-logout" class="danger">Logout</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
