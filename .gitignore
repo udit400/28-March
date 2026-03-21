@@ -1,0 +1,5 @@
+.venv/
+deepfake-shield/.chromium-profile/
+deepfake-shield/backend/model.pt
+__pycache__/
+*.pyc
