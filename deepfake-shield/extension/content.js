@@ -128,39 +128,115 @@ function ensureHost(video) {
   return parent;
 }
 
-async function analyzeVideo(video, button, badge, overlay) {
-  const storage = await getStoredSession();
-  const hasPremiumAccess = Boolean(storage.userEmail && storage.hasSub);
+function formatPercent(value) {
+  return typeof value === "number" && Number.isFinite(value) ? `${value}%` : "N/A";
+}
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function buildMetricRow(label, value) {
+  return `
+    <div class="shield-result-kv">
+      <span class="shield-result-label">${escapeHtml(label)}</span>
+      <strong class="shield-result-value">${escapeHtml(value)}</strong>
+    </div>
+  `;
+}
+
+function buildSimpleBadgeHtml(text) {
+  const lines = String(text || "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (!lines.length) {
+    return "";
+  }
+
+  return `
+    <div class="shield-result-simple">
+      ${lines.map((line) => `<div class="shield-result-simple-line">${escapeHtml(line)}</div>`).join("")}
+    </div>
+  `;
+}
+
+function buildAnalysisBadgeHtml(result) {
+  const meta = result.metadata || {};
+
+  return `
+    <div class="shield-result-layout">
+      <div class="shield-result-header">
+        <div>
+          <div class="shield-result-eyebrow">Scan result</div>
+          <div class="shield-result-title">${escapeHtml(result.message || "Analysis complete")}</div>
+        </div>
+      </div>
+      <div class="shield-result-copy">${escapeHtml(summarizeExplanation(result.explanation))}</div>
+      <div class="shield-result-section">
+        <div class="shield-result-section-title">Core metrics</div>
+        <div class="shield-result-grid">
+          ${buildMetricRow("Biological liveness", formatPercent(result.liveness_score > 0 ? result.liveness_score : null))}
+          ${buildMetricRow("Visual deepfake risk", formatPercent(result.fake_score))}
+        </div>
+      </div>
+      <div class="shield-result-section">
+        <div class="shield-result-section-title">Forensic details</div>
+        <div class="shield-result-grid">
+          ${buildMetricRow("Proof hash", `${(result.proof_hash || "unavailable").slice(0, 16)}...`)}
+          ${buildMetricRow("AI provenance", meta.c2pa_signature || "Clean")}
+          ${buildMetricRow("Source", meta.is_original || "Unknown")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function summarizeExplanation(explanation) {
+  if (!explanation) {
+    return "No explanation returned by the backend.";
+  }
+
+  const trimmed = explanation.trim();
+  if (trimmed.length <= 220) {
+    return trimmed;
+  }
+
+  return `${trimmed.slice(0, 217)}...`;
+}
+
+async function analyzeVideo(video, button, badge, overlay) {
   setState(button, badge, overlay, {
-    buttonLabel: "ANALYZING...",
-    badgeLabel: "Capturing media snapshot and extracting forensic metadata.",
+    buttonLabel: "CAPTURING SEQUENCE...",
+    badgeLabel: "Extracting temporal frames for biological liveness verification.",
     tone: "loading"
   });
 
   try {
-    const imageDataUrl = captureFrame(video);
-    const result = await requestAnalysis(imageDataUrl);
-    const tone = result.is_deepfake ? "alert" : "safe";
-    const buttonLabel = result.is_deepfake
-      ? `DEEPFAKE ${result.fake_score}%`
-      : `AUTHENTIC ${result.fake_score}%`;
-    const meta = result.metadata || {};
-    const badgeLines = [
-      `Status: ${result.message}`,
-      `Platform: ${meta.software_platform || "Unknown"}`,
-      `Date: ${meta.creation_date || "Unknown"}`,
-      `Provenance: ${meta.c2pa_signature || "Unknown"}`,
-      `Source: ${meta.is_original || "Unknown"}`
-    ];
+    const frameDataUrls = await captureFrameSequence(video, 5, 200);
 
-    if (!hasPremiumAccess) {
-      badgeLines.unshift("Mode: Demo access enabled");
-    }
+    setState(button, badge, overlay, {
+      buttonLabel: "ANALYZING...",
+      badgeLabel: "Running visual deepfake and biological liveness checks.",
+      tone: "loading"
+    });
 
-    const badgeLabel = badgeLines.join("\n");
-
-    setState(button, badge, overlay, { buttonLabel, badgeLabel, tone });
+    const result = await requestAnalysisDirect(frameDataUrls);
+    const isThreat = result.is_threat || result.is_deepfake || result.liveness_score < 50;
+    const tone = isThreat ? "alert" : "safe";
+    const buttonLabel = isThreat ? "THREAT DETECTED" : "VERIFIED HUMAN";
+    setState(button, badge, overlay, {
+      buttonLabel,
+      badgeLabel: result.message || "Analysis complete",
+      badgeHtml: buildAnalysisBadgeHtml(result),
+      tone
+    });
   } catch (error) {
     console.error("Synthetic Media Shield error", error);
     setState(button, badge, overlay, {
@@ -169,6 +245,17 @@ async function analyzeVideo(video, button, badge, overlay) {
       tone: "error"
     });
   }
+}
+
+async function captureFrameSequence(video, frameCount, intervalMs) {
+  const frames = [];
+  for (let index = 0; index < frameCount; index += 1) {
+    frames.push(captureFrame(video));
+    if (index < frameCount - 1) {
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  }
+  return frames;
 }
 
 function captureFrame(video) {
@@ -193,7 +280,7 @@ function captureFrame(video) {
   try {
     return canvas.toDataURL("image/jpeg", 0.92);
   } catch (error) {
-    throw new Error("This site blocks frame capture. Use the local demo page at http://127.0.0.1:8000/demo for a reliable scan.");
+    throw new Error("This site blocks frame capture. Use the media analysis page or upload the source file directly for a reliable scan.");
   }
 }
 
@@ -219,7 +306,7 @@ function drawFallbackSnapshot(context, canvas, video) {
 
   const status = video.readyState >= 1
     ? "Video element visible but frame not ready at click time"
-    : "No decoded frame available, using resilient demo capture";
+    : "No decoded frame available, using resilient fallback capture";
   wrapCanvasText(context, status, 40, 234, canvas.width - 80, 28);
 }
 
@@ -243,27 +330,27 @@ function wrapCanvasText(context, text, x, y, maxWidth, lineHeight) {
   }
 }
 
-function requestAnalysis(imageDataUrl) {
+function requestAnalysis(imageDataUrls) {
   const runtime = globalThis.chrome?.runtime;
   if (!runtime?.sendMessage) {
-    return requestAnalysisDirect(imageDataUrl);
+    return requestAnalysisDirect(imageDataUrls);
   }
 
   return new Promise((resolve, reject) => {
     runtime.sendMessage(
       {
         type: "shield-analyze-frame",
-        imageDataUrl
+        imageDataUrls
       },
       (response) => {
         const runtimeError = runtime.lastError;
         if (runtimeError) {
-          requestAnalysisDirect(imageDataUrl).then(resolve).catch(reject);
+          requestAnalysisDirect(imageDataUrls).then(resolve).catch(reject);
           return;
         }
 
         if (!response?.ok) {
-          requestAnalysisDirect(imageDataUrl).then(resolve).catch(reject);
+          requestAnalysisDirect(imageDataUrls).then(resolve).catch(reject);
           return;
         }
 
@@ -273,10 +360,13 @@ function requestAnalysis(imageDataUrl) {
   });
 }
 
-async function requestAnalysisDirect(imageDataUrl) {
-  const blob = dataUrlToBlob(imageDataUrl);
+async function requestAnalysisDirect(imageDataUrls) {
   const formData = new FormData();
-  formData.append("file", blob, "frame.jpg");
+
+  imageDataUrls.forEach((imageDataUrl, index) => {
+    const blob = dataUrlToBlob(imageDataUrl);
+    formData.append("files", blob, `frame_${index}.jpg`);
+  });
 
   const response = await fetch(`${API_BASE_URL}/analyze`, {
     method: "POST",
@@ -321,7 +411,13 @@ function dataUrlToBlob(dataUrl) {
 
 function setState(button, badge, overlay, state) {
   button.textContent = state.buttonLabel;
-  badge.textContent = state.badgeLabel;
+  if (state.badgeHtml) {
+    badge.innerHTML = state.badgeHtml;
+  } else if (state.badgeLabel && state.badgeLabel.includes("\n")) {
+    badge.innerHTML = buildSimpleBadgeHtml(state.badgeLabel);
+  } else {
+    badge.textContent = state.badgeLabel;
+  }
 
   button.dataset.state = state.tone;
   badge.className = `shield-result-box shield-result-${state.tone}`;

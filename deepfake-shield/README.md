@@ -20,24 +20,52 @@ deepfake-shield/
 
 ## Backend behavior
 
+- If `REALITY_DEFENDER_API_KEY` is configured, the API uses the Reality Defender SDK as the primary detection engine for higher-quality cloud-based media analysis.
+- Cloud results now use all returned detector model scores as a consensus instead of trusting only one top-level value.
 - If `backend/model.pt` exists and loads correctly, the API uses the PyTorch model.
 - If the model file is missing or fails to load, the API falls back to a deterministic mock engine so the UI still works.
+- `GET /` now serves the local product landing page.
+- `GET /api/status` returns the machine-readable runtime summary.
 - `GET /health` returns engine status for a quick smoke test.
 - SQLite-backed OTP login and premium subscription state are stored in `backend/shield_saas.db`.
 
 ## SaaS flow
 
 - Open the extension popup from the browser toolbar.
-- Request an OTP using your email.
-- If SMTP is configured through environment variables, the OTP is emailed. If not, the popup shows a local demo OTP preview so the hackathon flow still works.
+- Request an OTP using a Gmail address.
+- The backend now sends a real OTP through Gmail SMTP and requires valid Gmail SMTP credentials.
 - After OTP verification, activate premium with a UTR/reference number to unlock scans.
 - Scan results now include forensic metadata such as EXIF presence, software tags, device hints, and AI provenance markers.
+- Premium users also get a popup-based forensic sandbox for full video, full audio, and image uploads.
+
+## Full forensic sandbox
+
+- Use the extension popup after premium activation.
+- In the dashboard, select a full `.mp4`, `.mov`, `.avi`, `.mp3`, `.wav`, `.jpg`, `.jpeg`, or `.png` file.
+- The backend performs file-type aware analysis:
+	- Images: metadata plus visual deepfake scan
+	- Audio: full audio clone risk simulation
+	- Video: sampled temporal frame analysis, multi-frame score consensus, biological liveness estimation, and audio track extraction when available
+- The response includes an overall threat score and a forensic summary.
 
 ## SMTP configuration
 
-- Set `SMS_SHIELD_SMTP_EMAIL` and `SMS_SHIELD_SMTP_PASSWORD` before starting the backend if you want real Gmail OTP delivery.
-- Optional variables: `SMS_SHIELD_SMTP_SERVER`, `SMS_SHIELD_SMTP_PORT`, and `SMS_SHIELD_JWT_SECRET`.
-- Without SMTP configuration, the app remains fully demoable through a local OTP preview in the popup.
+- Set `SMS_SHIELD_SMTP_EMAIL` to your Gmail address before starting the backend.
+- Set `SMS_SHIELD_SMTP_PASSWORD` to a Gmail App Password. Do not use your normal Gmail password.
+- Default Gmail SMTP settings are already wired: `SMS_SHIELD_SMTP_SERVER=smtp.gmail.com` and `SMS_SHIELD_SMTP_PORT=587`.
+- Optional variables: `SMS_SHIELD_JWT_SECRET`, `SMS_SHIELD_OTP_SECRET`, `SMS_SHIELD_OTP_EXPIRY_MINUTES`, `SMS_SHIELD_OTP_RESEND_COOLDOWN_SECONDS`, and `SMS_SHIELD_OTP_MAX_ATTEMPTS`.
+- OTP login accepts only `@gmail.com` inboxes and no longer exposes a local preview code.
+
+## Reality Defender integration
+
+- Install dependencies with `pip install -r requirements.txt` to include the Reality Defender Python SDK.
+- Set `REALITY_DEFENDER_API_KEY` to enable the cloud detection engine.
+- Optional tuning variables:
+	- `REALITY_DEFENDER_MAX_ATTEMPTS`
+	- `REALITY_DEFENDER_POLLING_INTERVAL_MS`
+	- `REALITY_DEFENDER_SEQUENCE_FRAME_LIMIT`
+- When the API key is missing or the SDK cannot initialize, the backend falls back to the local PyTorch or mock detector automatically.
+- Supported social links can be routed directly through Reality Defender for better link analysis quality.
 
 ## Local startup
 

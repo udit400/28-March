@@ -5,3 +5,7 @@ Pillow
 sqlalchemy
 pyjwt
 passlib
+opencv-python-headless
+numpy
+moviepy
+realitydefender

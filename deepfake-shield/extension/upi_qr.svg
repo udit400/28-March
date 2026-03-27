@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
   <title id="title">UPI QR Placeholder</title>
-  <desc id="desc">Placeholder QR graphic for Synthetic Media Shield premium payment. Replace with your real PhonePe or UPI QR image for the final demo.</desc>
+  <desc id="desc">Placeholder QR graphic for Synthetic Media Shield premium payment. Replace with your real PhonePe or UPI QR image for production.</desc>
   <rect width="240" height="240" fill="#ffffff"/>
   <rect x="16" y="16" width="208" height="208" rx="12" fill="#ffffff" stroke="#0b162d" stroke-width="6"/>
   <rect x="28" y="28" width="42" height="42" fill="#0b162d"/>
@@ -50,5 +50,5 @@
     <rect x="128" y="192" width="10" height="10"/>
     <rect x="168" y="192" width="10" height="10"/>
   </g>
-  <text x="120" y="228" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#0b162d">Replace with your real UPI QR for the final demo</text>
+  <text x="120" y="228" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#0b162d">Replace with your real UPI QR for production</text>
 </svg>

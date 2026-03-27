@@ -7,185 +7,737 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #08101f;
-      --panel: rgba(13, 20, 40, 0.96);
-      --accent: #6ef5db;
-      --accent-2: #ff416c;
-      --text: #dce9ff;
-      --muted: #90a6ba;
+      --bg-1: #08101f;
+      --bg-2: #122447;
+      --panel: rgba(9, 16, 31, 0.9);
+      --panel-strong: rgba(11, 19, 38, 0.94);
+      --text: #ecf7ff;
+      --ink: #ecf7ff;
+      --muted: #9fb6c9;
+      --line: rgba(103, 243, 218, 0.18);
+      --accent: #67f3da;
+      --accent-strong: #28bcd7;
+      --accent-soft: rgba(103, 243, 218, 0.08);
+      --success: #67f3da;
+      --warn: #ff9f43;
+      --danger: #ff7f9f;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      width: 340px;
+      width: 430px;
       margin: 0;
-      padding: 16px;
-      background: linear-gradient(180deg, #050a14, var(--bg));
+      padding: 14px;
+      background:
+        radial-gradient(circle at top left, rgba(103, 243, 218, 0.12), transparent 30%),
+        radial-gradient(circle at right, rgba(40, 188, 215, 0.14), transparent 28%),
+        linear-gradient(160deg, #050a14, var(--bg-1));
       color: var(--text);
-      font-family: "Segoe UI", Tahoma, sans-serif;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
     }
 
     .shell {
-      background: var(--panel);
-      border: 1px solid rgba(110, 245, 219, 0.16);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.36);
-    }
-
-    h2 {
-      margin: 0 0 6px;
-      font-size: 1.2rem;
-      text-align: center;
-      color: #b4fff6;
-    }
-
-    p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
+      background: rgba(9, 16, 31, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
     }
 
     .view {
       display: none;
-      margin-top: 14px;
     }
 
     .view.active {
       display: block;
     }
 
-    input,
-    button {
-      width: 100%;
-      box-sizing: border-box;
-      border-radius: 12px;
-      padding: 11px 12px;
-      margin-top: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font: inherit;
+    .auth-stage {
+      display: grid;
+      gap: 0;
     }
 
-    input {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text);
+    .hero-panel {
+      position: relative;
+      min-height: 198px;
+      padding: 22px 22px 28px;
+      background:
+        linear-gradient(155deg, rgba(18, 62, 102, 0.92), rgba(10, 20, 42, 0.96)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+      overflow: hidden;
     }
 
-    button {
-      cursor: pointer;
-      color: #031417;
-      font-weight: 700;
-      background: linear-gradient(135deg, #6ef5db, #b4fff6);
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: auto -30px -60px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 70%);
     }
 
-    .secondary {
-      background: transparent;
-      color: var(--text);
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      left: -10px;
+      right: -10px;
+      bottom: -38px;
+      height: 120px;
+      background:
+        radial-gradient(circle at 15% 60%, rgba(7, 18, 42, 0.8) 0 40%, transparent 41%),
+        radial-gradient(circle at 34% 72%, rgba(7, 18, 42, 0.85) 0 38%, transparent 39%),
+        radial-gradient(circle at 58% 64%, rgba(7, 18, 42, 0.88) 0 42%, transparent 43%),
+        radial-gradient(circle at 82% 70%, rgba(7, 18, 42, 0.86) 0 40%, transparent 41%);
+      opacity: 0.9;
     }
 
-    .danger {
-      background: transparent;
-      color: #ff9fb3;
-      border-color: rgba(255, 65, 108, 0.3);
-    }
-
-    .qr-container {
-      margin-top: 12px;
-      border-radius: 14px;
-      padding: 10px;
-      background: white;
-      text-align: center;
-    }
-
-    .qr-container img {
-      width: 220px;
-      height: 220px;
-      object-fit: contain;
-    }
-
-    .badge {
-      margin-top: 10px;
-      padding: 8px 10px;
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
       border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
       font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #eaf7ff;
+    }
+
+    .hero-title {
+      margin: 18px 0 8px;
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 2.15rem;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: white;
+    }
+
+    .hero-copy {
+      max-width: 29ch;
+      color: rgba(236, 247, 255, 0.78);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .hero-badge {
+      margin-top: 18px;
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(103, 243, 218, 0.08);
+      border: 1px solid rgba(103, 243, 218, 0.18);
+      color: #f4fbff;
+      font-size: 11px;
+    }
+
+    .auth-card {
+      padding: 20px;
+      background: var(--panel-strong);
+      color: var(--ink);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 0.95;
+      color: var(--text);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .card-subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mode-toggle {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+    }
+
+    .mode-button {
+      margin: 0;
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      text-align: center;
-      background: rgba(110, 245, 219, 0.1);
-      color: var(--accent);
-      border: 1px solid rgba(110, 245, 219, 0.2);
+    }
+
+    .mode-button.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #04131a;
+      box-shadow: 0 12px 24px rgba(40, 188, 215, 0.22);
+    }
+
+    .form-panel {
+      margin-top: 18px;
+      display: none;
+      gap: 10px;
+    }
+
+    .form-panel.active {
+      display: grid;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .text-input {
+      width: 100%;
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    }
+
+    .text-input::placeholder {
+      color: rgba(159, 182, 201, 0.74);
+    }
+
+    .text-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(103, 243, 218, 0.14);
+    }
+
+    .primary-button,
+    .secondary-button,
+    .ghost-button,
+    .danger-button {
+      width: 100%;
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      border: 0;
+    }
+
+    .primary-button {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #04131a;
+      box-shadow: 0 14px 28px rgba(40, 188, 215, 0.2);
+    }
+
+    .secondary-button {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .ghost-button {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(159, 182, 201, 0.22);
+    }
+
+    .danger-button {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(255, 127, 159, 0.28);
+    }
+
+    .form-note {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .otp-panel {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
+      border: 1px solid var(--line);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    }
+
+    .otp-panel.active {
+      display: block;
+    }
+
+    .otp-title {
+      margin: 0 0 5px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .otp-copy {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
     }
 
     .account-chip {
       margin-top: 10px;
       padding: 10px 12px;
       border-radius: 12px;
-      font-size: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(103, 243, 218, 0.08);
+      border: 1px solid rgba(103, 243, 218, 0.16);
       color: var(--text);
+      font-size: 12px;
       word-break: break-word;
     }
 
-    .helper-row {
+    .button-row {
       display: flex;
       gap: 10px;
+      margin-top: 10px;
     }
 
-    .helper-row button {
+    .button-row button {
       flex: 1 1 auto;
+    }
+
+    .dashboard-stage {
+      padding: 18px;
+      background:
+        radial-gradient(circle at top right, rgba(103, 243, 218, 0.12), transparent 26%),
+        linear-gradient(180deg, rgba(8, 16, 31, 0.98), rgba(10, 20, 42, 0.98));
+    }
+
+    .dashboard-hero {
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(18, 62, 102, 0.9), rgba(9, 19, 38, 0.98));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.1);
+      color: #dff6ff;
+    }
+
+    .status-badge.premium {
+      background: rgba(110, 245, 219, 0.14);
+      color: var(--success);
+    }
+
+    .dashboard-title {
+      margin: 14px 0 6px;
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 2rem;
+      line-height: 0.95;
+      color: white;
+    }
+
+    .dashboard-copy {
+      color: rgba(232, 241, 255, 0.8);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .dashboard-card {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+    }
+
+    .dashboard-card.hidden,
+    .locked-note.hidden,
+    .premium-panel.hidden,
+    #forensic-results.hidden {
+      display: none;
+    }
+
+    .card-heading {
+      margin: 0 0 5px;
+      color: #eef7ff;
+      font-size: 14px;
+    }
+
+    .card-copy {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .qr-container {
+      margin-top: 12px;
+      border-radius: 16px;
+      padding: 10px;
+      background: white;
+      text-align: center;
+    }
+
+    .qr-container img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .upgrade-caption {
+      margin-top: 8px;
+      text-align: center;
+      color: rgba(236, 247, 255, 0.82);
+      font-size: 12px;
+    }
+
+    .upload-box {
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(103, 243, 218, 0.32);
+      background: rgba(255, 255, 255, 0.04);
+      text-align: center;
+    }
+
+    .small-note {
+      margin-top: 8px;
+      font-size: 10px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .locked-note {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255, 159, 67, 0.08);
+      border: 1px solid rgba(255, 159, 67, 0.16);
+      color: var(--warn);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    #forensic-results {
+      margin-top: 12px;
+    }
+
+    .forensic-report {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(2, 7, 18, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      color: #e9f2ff;
+    }
+
+    .forensic-report-head {
+      margin-bottom: 14px;
+    }
+
+    .forensic-report-kicker {
+      color: rgba(233, 242, 255, 0.68);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .forensic-report-layout {
+      display: grid;
+      gap: 16px;
+    }
+
+    .forensic-gauge-panel {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      padding: 8px 0 4px;
+      text-align: center;
+    }
+
+    .forensic-gauge-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f4f8ff;
+    }
+
+    .forensic-gauge {
+      --forensic-score: 0;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at center, rgba(13, 18, 28, 0.98) 0 55%, transparent 56%),
+        conic-gradient(var(--gauge-color) calc(var(--forensic-score) * 1%), rgba(255, 255, 255, 0.12) 0);
+    }
+
+    .forensic-gauge-inner {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #171b22;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .forensic-verdict {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #f4f8ff;
+    }
+
+    .forensic-section {
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .forensic-section-title {
+      margin: 0 0 6px;
+      color: #f4f8ff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .forensic-section-copy {
+      margin: 0 0 10px;
+      color: rgba(233, 242, 255, 0.62);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .forensic-breakdown-bar {
+      display: flex;
+      overflow: hidden;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .forensic-breakdown-segment {
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .forensic-breakdown-segment.original {
+      color: #f7f7f7;
+      background: #4a4a4a;
+    }
+
+    .forensic-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .forensic-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: rgba(233, 242, 255, 0.72);
+      font-size: 11px;
+    }
+
+    .forensic-legend-swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      flex: 0 0 auto;
+    }
+
+    .forensic-summary-copy {
+      color: #f3f7ff;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.65;
     }
 
     #status {
       margin-top: 12px;
       min-height: 34px;
+      padding: 0 4px;
+      color: var(--warn);
       font-size: 12px;
-      line-height: 1.4;
-      color: #ffd59d;
+      line-height: 1.45;
       white-space: pre-line;
+    }
+
+    @media (max-width: 440px) {
+      body {
+        width: 400px;
+        padding: 10px;
+      }
+
+      .field-grid,
+      .button-row,
+      .card-header {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <div class="shell">
-    <h2>Synthetic Media Shield</h2>
-    <p>Secure OTP login, metadata forensics, and a hackathon-grade premium flow.</p>
+    <div id="view-auth" class="view active">
+      <div class="auth-stage">
+        <section class="hero-panel">
+          <div class="brand-mark">Synthetic Media Shield</div>
+          <h1 class="hero-title">Welcome<br>aboard</h1>
+          <p class="hero-copy">Build your account, verify with Gmail OTP, and move straight into the media intelligence dashboard.</p>
+          <div class="hero-badge">Local browser shield + forensic dashboard</div>
+        </section>
 
-    <div id="view-login" class="view active">
-      <div class="badge">Step 1: Gmail OTP login</div>
-      <input type="email" id="email-input" placeholder="Enter your Gmail address">
-      <button id="btn-get-otp">Send OTP</button>
-    </div>
+        <section class="auth-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Access</h2>
+              <p class="card-subtitle">Login with Gmail OTP or create your account with the same visual theme.</p>
+            </div>
+            <div class="mode-toggle">
+              <button id="mode-login" class="mode-button active" type="button">Login</button>
+              <button id="mode-signup" class="mode-button" type="button">Create</button>
+            </div>
+          </div>
 
-    <div id="view-otp" class="view">
-      <div class="badge">Step 2: Verify OTP</div>
-      <div id="otp-email-chip" class="account-chip"></div>
-      <input type="text" id="otp-input" placeholder="Enter 6-digit OTP">
-      <button id="btn-verify-otp">Verify and log in</button>
-      <button id="btn-back-login" class="secondary">Use another email</button>
-    </div>
+          <div id="login-form" class="form-panel active">
+            <label>
+              <span class="field-label">Gmail address</span>
+              <input class="text-input" type="email" id="login-email-input" placeholder="you@gmail.com">
+            </label>
+            <p class="form-note">Existing users receive a one-time code in Gmail and land directly in the main page after verification.</p>
+            <button id="btn-login-otp" class="primary-button" type="button">Send login OTP</button>
+          </div>
 
-    <div id="view-pay" class="view">
-      <div class="badge">Step 3: Activate premium</div>
-      <div id="pay-email-chip" class="account-chip"></div>
-      <p>Scan the QR and pay INR 1 to your PhonePe account, then enter the UTR/reference number to unlock premium analysis.</p>
-      <div class="qr-container">
-        <img src="upi_qr.jpeg" alt="PhonePe QR for UDIT" onerror="this.onerror=null;this.src='upi_qr.svg';">
-      </div>
-      <p style="margin-top: 10px; text-align: center; color: #dce9ff; font-size: 12px;">Payment account: <strong>UDIT</strong> on PhonePe</p>
-      <input type="text" id="utr-input" placeholder="Enter UTR or reference number">
-      <button id="btn-verify-pay">Activate subscription</button>
-      <div class="helper-row">
-        <button id="btn-demo-utr" class="secondary">Use demo UTR</button>
-        <button id="btn-reset-pay" class="secondary">Change account</button>
+          <div id="signup-form" class="form-panel">
+            <div class="field-grid">
+              <label>
+                <span class="field-label">First name</span>
+                <input class="text-input" type="text" id="signup-first-name" placeholder="Aarav">
+              </label>
+              <label>
+                <span class="field-label">Last name</span>
+                <input class="text-input" type="text" id="signup-last-name" placeholder="Sharma">
+              </label>
+            </div>
+            <label>
+              <span class="field-label">Gmail address</span>
+              <input class="text-input" type="email" id="signup-email-input" placeholder="creator@gmail.com">
+            </label>
+            <p class="form-note">Create-account uses the same Gmail OTP path, then opens the dashboard immediately so the subscription upgrade can happen inside the main page.</p>
+            <button id="btn-signup-otp" class="primary-button" type="button">Create account</button>
+          </div>
+
+          <div id="otp-panel" class="otp-panel">
+            <h3 class="otp-title">Verify OTP</h3>
+            <p class="otp-copy">Enter the 6-digit code from Gmail to finish authentication.</p>
+            <div id="otp-email-chip" class="account-chip"></div>
+            <label style="display: block; margin-top: 10px;">
+              <span class="field-label">One-time code</span>
+              <input class="text-input" type="text" id="otp-input" placeholder="Enter 6-digit OTP">
+            </label>
+            <div class="button-row">
+              <button id="btn-verify-otp" class="primary-button" type="button">Verify and enter</button>
+              <button id="btn-back-login" class="ghost-button" type="button">Change account</button>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
 
     <div id="view-dashboard" class="view">
-      <div class="badge">Premium active</div>
-      <div id="dashboard-email-chip" class="account-chip"></div>
-      <p id="dashboard-copy">Your shield is online. You can now scan media and show forensic metadata in the page overlay.</p>
-      <button id="btn-logout" class="danger">Logout</button>
+      <section class="dashboard-stage">
+        <div class="dashboard-hero">
+          <div id="subscription-badge" class="status-badge">Subscription inactive</div>
+          <h2 id="dashboard-title" class="dashboard-title">Main page</h2>
+          <p id="dashboard-copy" class="dashboard-copy">Your dashboard is ready. Upgrade when you want premium forensic uploads.</p>
+          <div id="dashboard-email-chip" class="account-chip"></div>
+        </div>
+
+        <div id="upgrade-card" class="dashboard-card">
+          <h3 class="card-heading">Upgrade to premium</h3>
+          <p class="card-copy">You are logged in. Complete the INR 1 PhonePe payment here to unlock full forensic uploads without leaving the main page.</p>
+          <div id="pay-email-chip" class="account-chip"></div>
+          <div class="qr-container">
+            <img src="upi_qr.jpeg" alt="PhonePe QR for UDIT" onerror="this.onerror=null;this.src='upi_qr.svg';">
+          </div>
+          <p class="upgrade-caption">Payment account: <strong>UDIT</strong> on PhonePe</p>
+          <label style="display: block; margin-top: 10px;">
+            <span class="field-label" style="color: #8db0cf;">UTR or reference number</span>
+            <input class="text-input" type="text" id="utr-input" placeholder="Enter UTR or reference number">
+          </label>
+          <div class="button-row" style="margin-top: 12px;">
+            <button id="btn-verify-pay" class="primary-button" type="button">Activate premium</button>
+          </div>
+        </div>
+
+        <div id="locked-note" class="locked-note">Premium is not active yet. The deep forensic upload panel will unlock as soon as payment verification succeeds.</div>
+
+        <div id="premium-panel" class="dashboard-card hidden">
+          <h3 class="card-heading">Deep forensic scan</h3>
+          <p class="card-copy">Upload full video, raw audio, or high-resolution images into the forensic sandbox from the main page.</p>
+          <div class="upload-box">
+            <input type="file" id="full-file-upload" accept="video/mp4,video/quicktime,video/x-msvideo,audio/mpeg,audio/wav,image/jpeg,image/png" style="display: none;">
+            <button id="btn-select-file" class="secondary-button" type="button">Select media file</button>
+            <p id="file-scan-status" class="small-note"></p>
+          </div>
+          <div id="forensic-results" class="hidden"></div>
+        </div>
+
+        <div class="button-row" style="margin-top: 14px;">
+          <button id="btn-switch-account" class="ghost-button" type="button">Switch account</button>
+          <button id="btn-logout" class="danger-button" type="button">Logout</button>
+        </div>
+      </section>
     </div>
 
     <div id="status"></div>
