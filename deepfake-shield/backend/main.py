@@ -1552,9 +1552,12 @@ def root() -> str:
         <header class="nav">
             <div class="brand">Synthetic Media Shield</div>
             <nav class="nav-links">
-                <button id="nav-home" class="nav-link-btn" type="button">Home</button>
-                <button id="nav-subscription" class="nav-link-btn nav-auth" type="button">Subscription</button>
-                <button id="nav-logout" class="nav-link-btn" type="button">Logout</button>
+                <a href="/" class="nav-link-btn" style="color:var(--accent);border-color:rgba(15,118,110,0.22)">Home</a>
+                <a href="/detect/image" class="nav-link-btn">Detect Image</a>
+                <a href="/detect/video" class="nav-link-btn">Detect Video</a>
+                <a href="/detect/voice" class="nav-link-btn">Detect Voice</a>
+                <a href="/demo" class="nav-link-btn">Demo</a>
+                <a href="/about" class="nav-link-btn">About</a>
             </nav>
         </header>
 
@@ -1849,28 +1852,6 @@ def root() -> str:
             localStorage.removeItem(websiteStorageKey);
         }}
 
-        function websiteGoHome() {{
-            window.location.href = '/';
-        }}
-
-        function websiteGoSubscription() {{
-            const session = websiteGetSession();
-            if (session.userEmail && session.authStage === 'verified' && session.hasSub) {{
-                window.location.href = '/demo';
-                return;
-            }}
-
-            const accessSection = document.getElementById('access');
-            if (accessSection) {{
-                accessSection.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-            }}
-        }}
-
-        function websiteLogout() {{
-            websiteClearSession();
-            window.location.href = '/';
-        }}
-
         function websiteSetStatus(message, targetId = 'website-status') {{
             const element = document.getElementById(targetId);
             if (element) {{
@@ -2146,9 +2127,6 @@ def root() -> str:
             websiteSetStatus('Demo UTR inserted. Click Activate Premium.', 'website-dashboard-status');
         }});
         document.getElementById('web-activate-premium').addEventListener('click', websiteActivatePremium);
-        document.getElementById('nav-home').addEventListener('click', websiteGoHome);
-        document.getElementById('nav-subscription').addEventListener('click', websiteGoSubscription);
-        document.getElementById('nav-logout').addEventListener('click', websiteLogout);
 
         websiteRenderView(websiteGetSession());
     </script>
@@ -2793,9 +2771,12 @@ def demo() -> str:
         <header class="page-nav">
             <div class="page-brand">Synthetic Media Shield</div>
             <nav class="page-nav-links">
-                <button id="demo-nav-home" class="page-nav-btn" type="button">Home</button>
-                <button id="demo-nav-subscription" class="page-nav-btn primary" type="button">Subscription</button>
-                <button id="demo-nav-logout" class="page-nav-btn" type="button">Logout</button>
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn primary">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
             </nav>
         </header>
 
@@ -2884,6 +2865,37 @@ def demo() -> str:
                         <strong>Source Clues</strong>
                         <span id="result-source-integrity">N/A</span>
                     </div>
+                </div>
+            </div>
+        </section>
+        <section class="card video-shell" style="margin-top:24px">
+            <div class="video-shell-header">
+                <div class="video-shell-title">
+                    <strong>Full Media Upload</strong>
+                    <span>Upload any image, video, or audio file for comprehensive forensic analysis.</span>
+                </div>
+            </div>
+            <div class="controls" style="margin-bottom:16px">
+                <label class="upload" style="cursor:pointer">
+                    <span>Choose file</span>
+                    <input id="full-media-input" type="file" accept="image/jpeg,image/png,video/mp4,video/quicktime,video/x-msvideo,audio/mpeg,audio/wav">
+                </label>
+                <div id="upload-file-name" style="color:var(--muted);font-size:0.9rem;margin-top:8px"></div>
+                <button id="upload-analyze-btn" class="action-btn primary" type="button" style="margin-top:10px" disabled>Analyze uploaded file</button>
+                <div class="note">Supported: JPG, PNG, MP4, MOV, AVI, MP3, WAV. Files are processed locally and not stored.</div>
+            </div>
+            <div id="upload-status" class="link-status" data-tone="idle">Select a file to begin analysis.</div>
+            <div id="upload-result" class="result-card" data-tone="idle">
+                <h3 id="upload-result-title">Upload Analysis Result</h3>
+                <div id="upload-result-summary" class="result-summary"></div>
+                <div id="upload-result-explanation" class="result-explanation"></div>
+                <div class="result-grid">
+                    <div class="result-pill"><strong>Threat Score</strong><span id="upload-threat-score">N/A</span></div>
+                    <div class="result-pill"><strong>Visual Score</strong><span id="upload-visual-score">N/A</span></div>
+                    <div class="result-pill"><strong>Audio Score</strong><span id="upload-audio-score">N/A</span></div>
+                    <div class="result-pill"><strong>Liveness</strong><span id="upload-liveness">N/A</span></div>
+                    <div class="result-pill"><strong>Frames</strong><span id="upload-frames">N/A</span></div>
+                    <div class="result-pill"><strong>Proof Code</strong><span id="upload-proof">N/A</span></div>
                 </div>
             </div>
         </section>
@@ -3251,13 +3263,1117 @@ def demo() -> str:
             setStatus('Sample webpage URL loaded. Click Analyze link to score its preview image through the backend.', 'success');
         });
 
-        document.getElementById('demo-nav-home').addEventListener('click', demoGoHome);
-        document.getElementById('demo-nav-subscription').addEventListener('click', demoGoSubscription);
-        document.getElementById('demo-nav-logout').addEventListener('click', demoLogout);
+        const fullMediaInput = document.getElementById('full-media-input');
+        const uploadAnalyzeBtn = document.getElementById('upload-analyze-btn');
+        const uploadFileName = document.getElementById('upload-file-name');
+        const uploadStatus = document.getElementById('upload-status');
+        const uploadResultCard = document.getElementById('upload-result');
+
+        fullMediaInput.addEventListener('change', () => {
+            if (fullMediaInput.files.length > 0) {
+                uploadFileName.textContent = fullMediaInput.files[0].name;
+                uploadAnalyzeBtn.disabled = false;
+                uploadStatus.textContent = `Ready to analyze ${fullMediaInput.files[0].name}`;
+                uploadStatus.dataset.tone = 'success';
+            }
+        });
+
+        uploadAnalyzeBtn.addEventListener('click', async () => {
+            if (!fullMediaInput.files.length) return;
+            const selectedFile = fullMediaInput.files[0];
+            uploadStatus.textContent = `Uploading and analyzing ${selectedFile.name}...`;
+            uploadStatus.dataset.tone = 'loading';
+            uploadAnalyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', selectedFile);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Upload analysis failed.');
+
+                uploadResultCard.dataset.tone = data.overall_threat_score > 65 ? 'alert' : 'safe';
+                uploadResultCard.classList.add('visible');
+                document.getElementById('upload-result-title').textContent = `${data.media_type || 'Media'} Analysis`;
+                document.getElementById('upload-result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('upload-result-explanation').textContent = data.explanation || '';
+                document.getElementById('upload-threat-score').textContent = formatPercent(data.overall_threat_score);
+                document.getElementById('upload-visual-score').textContent = formatPercent(data.visual_deepfake_score);
+                document.getElementById('upload-audio-score').textContent = formatPercent(data.audio_clone_score);
+                document.getElementById('upload-liveness').textContent = formatPercent(data.biological_liveness);
+                document.getElementById('upload-frames').textContent = data.frames_analyzed ?? 0;
+                document.getElementById('upload-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 24) + '...' : 'N/A';
+                uploadStatus.textContent = data.analysis_summary || 'Analysis complete.';
+                uploadStatus.dataset.tone = data.overall_threat_score > 65 ? 'error' : 'success';
+            } catch (err) {
+                uploadStatus.textContent = err.message || 'Analysis failed.';
+                uploadStatus.dataset.tone = 'error';
+            } finally {
+                uploadAnalyzeBtn.disabled = false;
+            }
+        });
+
     </script>
 </body>
 </html>
     """
+
+
+@app.get("/detect/image", response_class=HTMLResponse)
+def detect_image() -> str:
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image Detection – Synthetic Media Shield</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08101f;
+            --panel: rgba(11, 19, 38, 0.9);
+            --line: rgba(105, 229, 255, 0.28);
+            --text: #ecf7ff;
+            --muted: #9fb6c9;
+            --accent: #67f3da;
+            --accent-2: #ff9f43;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(103, 243, 218, 0.12), transparent 30%),
+                radial-gradient(circle at right, rgba(255, 159, 67, 0.14), transparent 28%),
+                linear-gradient(160deg, #050a14, var(--bg));
+            min-height: 100vh;
+        }
+        a { color: inherit; text-decoration: none; }
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 56px; }
+        .page-nav {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            margin-bottom: 24px; padding: 14px 18px;
+            border: 1px solid rgba(103, 243, 218, 0.18); border-radius: 999px;
+            background: rgba(9, 16, 31, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(14px);
+        }
+        .page-brand { font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--text); }
+        .page-nav-links { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .page-nav-btn {
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(103, 243, 218, 0.16); background: rgba(255, 255, 255, 0.04);
+            color: var(--text); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .page-nav-btn:hover { transform: translateY(-1px); border-color: rgba(103, 243, 218, 0.34); background: rgba(103, 243, 218, 0.08); }
+        .page-nav-btn.active { background: rgba(103, 243, 218, 0.12); color: var(--accent); }
+        .card {
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35); backdrop-filter: blur(14px);
+        }
+        .hero-section { text-align: center; padding: 48px 24px 32px; }
+        .hero-section h1 { margin: 0 0 12px; font-size: clamp(2rem, 3.5vw, 3.6rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; }
+        .hero-section p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1.05rem; max-width: 640px; margin-inline: auto; }
+        .upload-section { margin-top: 24px; padding: 32px; }
+        .drop-zone {
+            border: 2px dashed rgba(103, 243, 218, 0.3); border-radius: 16px; padding: 48px 24px;
+            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+        }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(103, 243, 218, 0.06); }
+        .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+        .drop-zone-text { font-size: 1.1rem; font-weight: 700; }
+        .drop-zone-hint { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+        .file-input-hidden { display: none; }
+        .analyze-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-top: 18px; padding: 12px 32px; border-radius: 999px;
+            background: rgba(103, 243, 218, 0.14); border: 1px solid rgba(103, 243, 218, 0.3);
+            color: var(--accent); font: inherit; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: background 0.18s, transform 0.18s;
+        }
+        .analyze-btn:hover { background: rgba(103, 243, 218, 0.22); transform: translateY(-1px); }
+        .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .status-bar { margin-top: 16px; padding: 10px 16px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; }
+        .status-bar[data-tone="idle"] { color: var(--muted); }
+        .status-bar[data-tone="loading"] { color: var(--accent-2); }
+        .status-bar[data-tone="success"] { color: var(--accent); }
+        .status-bar[data-tone="error"] { color: #ff6b6b; }
+        .results-section { margin-top: 24px; padding: 32px; display: none; }
+        .results-section.visible { display: block; }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .gauge-svg { width: 180px; height: 100px; }
+        .gauge-label { font-size: 2rem; font-weight: 800; margin-top: 8px; }
+        .gauge-verdict { font-size: 1.1rem; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .breakdown-bar { height: 10px; border-radius: 5px; background: #1a2540; margin: 16px 0; overflow: hidden; display: flex; }
+        .breakdown-bar .seg-safe { background: #67f3da; }
+        .breakdown-bar .seg-warn { background: #ff9f43; }
+        .breakdown-bar .seg-danger { background: #ff6b6b; }
+        .legend { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.12);
+            border-radius: 14px; padding: 16px; text-align: center;
+        }
+        .metric-card strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+        .metric-card span { font-size: 1.3rem; font-weight: 800; }
+        .how-section { margin-top: 32px; padding: 32px; }
+        .how-section h2 { margin: 0 0 20px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .how-step {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.1);
+            border-radius: 14px; padding: 20px;
+        }
+        .how-step strong { color: var(--accent); display: block; margin-bottom: 6px; }
+        .how-step p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+        .privacy-note { text-align: center; margin-top: 24px; color: var(--muted); font-size: 0.85rem; padding: 12px; border: 1px solid rgba(103, 243, 218, 0.1); border-radius: 12px; }
+        @media (max-width: 700px) {
+            .page-nav { border-radius: 24px; flex-direction: column; align-items: flex-start; }
+            .page-nav-links { width: 100%; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="page-nav">
+            <div class="page-brand">Synthetic Media Shield</div>
+            <nav class="page-nav-links">
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn active">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <h1>Image Deepfake Detection</h1>
+            <p>Upload a photograph for forensic analysis. Our engine inspects pixel-level artifacts, GAN fingerprints, metadata integrity, and compression anomalies to determine authenticity.</p>
+        </section>
+
+        <section class="card upload-section">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-icon">🖼️</div>
+                <div class="drop-zone-text">Drag & drop an image here, or click to browse</div>
+                <div class="drop-zone-hint">Accepts JPG, JPEG, PNG — max 20 MB</div>
+                <input id="file-input" class="file-input-hidden" type="file" accept=".jpg,.jpeg,.png">
+            </div>
+            <div style="text-align:center">
+                <button id="analyze-btn" class="analyze-btn" disabled>Analyze Image</button>
+            </div>
+            <div id="status-bar" class="status-bar" data-tone="idle">Select an image to begin.</div>
+        </section>
+
+        <section id="results-section" class="card results-section">
+            <div class="gauge-wrap">
+                <svg class="gauge-svg" viewBox="0 0 180 100">
+                    <path d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="#1a2540" stroke-width="12" stroke-linecap="round"/>
+                    <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
+                </svg>
+                <div id="gauge-label" class="gauge-label">0%</div>
+                <div id="gauge-verdict" class="gauge-verdict">—</div>
+            </div>
+            <div id="breakdown-bar" class="breakdown-bar"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#67f3da"></div>Safe</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff9f43"></div>Suspicious</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Dangerous</div>
+            </div>
+            <div id="result-summary" style="text-align:center;font-size:1.05rem;margin-bottom:16px;font-weight:600"></div>
+            <div id="result-explanation" style="text-align:center;color:var(--muted);font-size:0.95rem;margin-bottom:20px;line-height:1.6"></div>
+            <div class="metrics-grid">
+                <div class="metric-card"><strong>Threat Score</strong><span id="m-threat">N/A</span></div>
+                <div class="metric-card"><strong>Visual Score</strong><span id="m-visual">N/A</span></div>
+                <div class="metric-card"><strong>Media Type</strong><span id="m-type">N/A</span></div>
+                <div class="metric-card"><strong>Proof Hash</strong><span id="m-proof">N/A</span></div>
+            </div>
+        </section>
+
+        <section class="card how-section">
+            <h2>How Image Detection Works</h2>
+            <div class="how-steps">
+                <div class="how-step">
+                    <strong>1. Upload</strong>
+                    <p>Select or drag a photo into the analysis zone. The file stays in your browser until submission.</p>
+                </div>
+                <div class="how-step">
+                    <strong>2. Forensic Scan</strong>
+                    <p>Our engine checks for GAN artifacts, EXIF metadata anomalies, compression patterns, and pixel-level inconsistencies.</p>
+                </div>
+                <div class="how-step">
+                    <strong>3. Verdict</strong>
+                    <p>You receive a threat score, detailed breakdown, and a cryptographic proof hash for the analysis record.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const statusBar = document.getElementById('status-bar');
+        const resultsSection = document.getElementById('results-section');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                statusBar.textContent = `Selected: ${fileInput.files[0].name}`;
+                statusBar.dataset.tone = 'success';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function formatPct(v) { return typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) + '%' : 'N/A'; }
+
+        function renderGauge(score) {
+            const maxLen = 251.33;
+            const pct = Math.min(Math.max(score, 0), 100) / 100;
+            const arc = document.getElementById('gauge-arc');
+            arc.setAttribute('stroke-dasharray', `${pct * maxLen} ${maxLen}`);
+            arc.setAttribute('stroke', score > 65 ? '#ff6b6b' : score > 35 ? '#ff9f43' : '#67f3da');
+            document.getElementById('gauge-label').textContent = score.toFixed(1) + '%';
+            const verdictEl = document.getElementById('gauge-verdict');
+            if (score > 65) { verdictEl.textContent = 'LIKELY FAKE'; verdictEl.style.color = '#ff6b6b'; }
+            else if (score > 35) { verdictEl.textContent = 'SUSPICIOUS'; verdictEl.style.color = '#ff9f43'; }
+            else { verdictEl.textContent = 'LIKELY AUTHENTIC'; verdictEl.style.color = '#67f3da'; }
+        }
+
+        function renderBreakdown(score) {
+            const bar = document.getElementById('breakdown-bar');
+            const safe = Math.max(100 - score, 0);
+            const warn = score > 35 && score <= 65 ? score : 0;
+            const danger = score > 65 ? score : 0;
+            const safeWidth = score <= 35 ? 100 : safe;
+            bar.innerHTML = `<div class="seg-safe" style="width:${safeWidth}%"></div>` +
+                (warn ? `<div class="seg-warn" style="width:${warn}%"></div>` : '') +
+                (danger ? `<div class="seg-danger" style="width:${danger}%"></div>` : '');
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            statusBar.textContent = `Uploading and analyzing ${file.name}...`;
+            statusBar.dataset.tone = 'loading';
+            analyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Analysis failed.');
+
+                const score = data.overall_threat_score || 0;
+                renderGauge(score);
+                renderBreakdown(score);
+                document.getElementById('result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('result-explanation').textContent = data.explanation || '';
+                document.getElementById('m-threat').textContent = formatPct(data.overall_threat_score);
+                document.getElementById('m-visual').textContent = formatPct(data.visual_deepfake_score);
+                document.getElementById('m-type').textContent = data.media_type || 'image';
+                document.getElementById('m-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 16) + '...' : 'N/A';
+                resultsSection.classList.add('visible');
+                statusBar.textContent = data.analysis_summary || 'Analysis complete.';
+                statusBar.dataset.tone = score > 65 ? 'error' : 'success';
+            } catch (err) {
+                statusBar.textContent = err.message || 'Analysis failed.';
+                statusBar.dataset.tone = 'error';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+    """
+
+
+@app.get("/detect/video", response_class=HTMLResponse)
+def detect_video() -> str:
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Video Detection – Synthetic Media Shield</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08101f;
+            --panel: rgba(11, 19, 38, 0.9);
+            --line: rgba(105, 229, 255, 0.28);
+            --text: #ecf7ff;
+            --muted: #9fb6c9;
+            --accent: #67f3da;
+            --accent-2: #ff9f43;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(103, 243, 218, 0.12), transparent 30%),
+                radial-gradient(circle at right, rgba(255, 159, 67, 0.14), transparent 28%),
+                linear-gradient(160deg, #050a14, var(--bg));
+            min-height: 100vh;
+        }
+        a { color: inherit; text-decoration: none; }
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 56px; }
+        .page-nav {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            margin-bottom: 24px; padding: 14px 18px;
+            border: 1px solid rgba(103, 243, 218, 0.18); border-radius: 999px;
+            background: rgba(9, 16, 31, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(14px);
+        }
+        .page-brand { font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--text); }
+        .page-nav-links { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .page-nav-btn {
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(103, 243, 218, 0.16); background: rgba(255, 255, 255, 0.04);
+            color: var(--text); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .page-nav-btn:hover { transform: translateY(-1px); border-color: rgba(103, 243, 218, 0.34); background: rgba(103, 243, 218, 0.08); }
+        .page-nav-btn.active { background: rgba(103, 243, 218, 0.12); color: var(--accent); }
+        .card {
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35); backdrop-filter: blur(14px);
+        }
+        .hero-section { text-align: center; padding: 48px 24px 32px; }
+        .hero-section h1 { margin: 0 0 12px; font-size: clamp(2rem, 3.5vw, 3.6rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; }
+        .hero-section p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1.05rem; max-width: 640px; margin-inline: auto; }
+        .upload-section { margin-top: 24px; padding: 32px; }
+        .drop-zone {
+            border: 2px dashed rgba(103, 243, 218, 0.3); border-radius: 16px; padding: 48px 24px;
+            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+        }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(103, 243, 218, 0.06); }
+        .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+        .drop-zone-text { font-size: 1.1rem; font-weight: 700; }
+        .drop-zone-hint { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+        .file-input-hidden { display: none; }
+        .analyze-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-top: 18px; padding: 12px 32px; border-radius: 999px;
+            background: rgba(103, 243, 218, 0.14); border: 1px solid rgba(103, 243, 218, 0.3);
+            color: var(--accent); font: inherit; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: background 0.18s, transform 0.18s;
+        }
+        .analyze-btn:hover { background: rgba(103, 243, 218, 0.22); transform: translateY(-1px); }
+        .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .status-bar { margin-top: 16px; padding: 10px 16px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; }
+        .status-bar[data-tone="idle"] { color: var(--muted); }
+        .status-bar[data-tone="loading"] { color: var(--accent-2); }
+        .status-bar[data-tone="success"] { color: var(--accent); }
+        .status-bar[data-tone="error"] { color: #ff6b6b; }
+        .results-section { margin-top: 24px; padding: 32px; display: none; }
+        .results-section.visible { display: block; }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .gauge-svg { width: 180px; height: 100px; }
+        .gauge-label { font-size: 2rem; font-weight: 800; margin-top: 8px; }
+        .gauge-verdict { font-size: 1.1rem; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .breakdown-bar { height: 10px; border-radius: 5px; background: #1a2540; margin: 16px 0; overflow: hidden; display: flex; }
+        .breakdown-bar .seg-safe { background: #67f3da; }
+        .breakdown-bar .seg-warn { background: #ff9f43; }
+        .breakdown-bar .seg-danger { background: #ff6b6b; }
+        .legend { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.12);
+            border-radius: 14px; padding: 16px; text-align: center;
+        }
+        .metric-card strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+        .metric-card span { font-size: 1.3rem; font-weight: 800; }
+        .how-section { margin-top: 32px; padding: 32px; }
+        .how-section h2 { margin: 0 0 20px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .how-step {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.1);
+            border-radius: 14px; padding: 20px;
+        }
+        .how-step strong { color: var(--accent); display: block; margin-bottom: 6px; }
+        .how-step p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+        .privacy-note { text-align: center; margin-top: 24px; color: var(--muted); font-size: 0.85rem; padding: 12px; border: 1px solid rgba(103, 243, 218, 0.1); border-radius: 12px; }
+        @media (max-width: 700px) {
+            .page-nav { border-radius: 24px; flex-direction: column; align-items: flex-start; }
+            .page-nav-links { width: 100%; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="page-nav">
+            <div class="page-brand">Synthetic Media Shield</div>
+            <nav class="page-nav-links">
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn active">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <h1>Video Deepfake Detection</h1>
+            <p>Upload a video file for multi-layer forensic analysis. The engine extracts frames, analyzes visual consistency, checks audio tracks for voice cloning, and evaluates biological liveness signals.</p>
+        </section>
+
+        <section class="card upload-section">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-icon">🎬</div>
+                <div class="drop-zone-text">Drag & drop a video here, or click to browse</div>
+                <div class="drop-zone-hint">Accepts MP4, MOV, AVI — max 100 MB</div>
+                <input id="file-input" class="file-input-hidden" type="file" accept=".mp4,.mov,.avi">
+            </div>
+            <div style="text-align:center">
+                <button id="analyze-btn" class="analyze-btn" disabled>Analyze Video</button>
+            </div>
+            <div id="status-bar" class="status-bar" data-tone="idle">Select a video to begin.</div>
+        </section>
+
+        <section id="results-section" class="card results-section">
+            <div class="gauge-wrap">
+                <svg class="gauge-svg" viewBox="0 0 180 100">
+                    <path d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="#1a2540" stroke-width="12" stroke-linecap="round"/>
+                    <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
+                </svg>
+                <div id="gauge-label" class="gauge-label">0%</div>
+                <div id="gauge-verdict" class="gauge-verdict">—</div>
+            </div>
+            <div id="breakdown-bar" class="breakdown-bar"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#67f3da"></div>Safe</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff9f43"></div>Suspicious</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Dangerous</div>
+            </div>
+            <div id="result-summary" style="text-align:center;font-size:1.05rem;margin-bottom:16px;font-weight:600"></div>
+            <div id="result-explanation" style="text-align:center;color:var(--muted);font-size:0.95rem;margin-bottom:20px;line-height:1.6"></div>
+            <div class="metrics-grid">
+                <div class="metric-card"><strong>Threat Score</strong><span id="m-threat">N/A</span></div>
+                <div class="metric-card"><strong>Visual Score</strong><span id="m-visual">N/A</span></div>
+                <div class="metric-card"><strong>Audio Score</strong><span id="m-audio">N/A</span></div>
+                <div class="metric-card"><strong>Liveness</strong><span id="m-liveness">N/A</span></div>
+                <div class="metric-card"><strong>Frames Analyzed</strong><span id="m-frames">N/A</span></div>
+                <div class="metric-card"><strong>Proof Hash</strong><span id="m-proof">N/A</span></div>
+            </div>
+        </section>
+
+        <section class="card how-section">
+            <h2>How Video Detection Works</h2>
+            <div class="how-steps">
+                <div class="how-step">
+                    <strong>1. Upload</strong>
+                    <p>Select or drag a video file. Supported formats include MP4, MOV, and AVI.</p>
+                </div>
+                <div class="how-step">
+                    <strong>2. Frame Extraction</strong>
+                    <p>The engine samples up to 90 frames from the video and analyzes each for deepfake artifacts and temporal inconsistencies.</p>
+                </div>
+                <div class="how-step">
+                    <strong>3. Audio Analysis</strong>
+                    <p>If the video contains an audio track, it is extracted and checked for voice cloning signatures and synthesis artifacts.</p>
+                </div>
+                <div class="how-step">
+                    <strong>4. Verdict</strong>
+                    <p>Results combine visual, audio, and liveness scores into an overall threat assessment with a cryptographic proof hash.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const statusBar = document.getElementById('status-bar');
+        const resultsSection = document.getElementById('results-section');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                statusBar.textContent = `Selected: ${fileInput.files[0].name}`;
+                statusBar.dataset.tone = 'success';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function formatPct(v) { return typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) + '%' : 'N/A'; }
+
+        function renderGauge(score) {
+            const maxLen = 251.33;
+            const pct = Math.min(Math.max(score, 0), 100) / 100;
+            const arc = document.getElementById('gauge-arc');
+            arc.setAttribute('stroke-dasharray', `${pct * maxLen} ${maxLen}`);
+            arc.setAttribute('stroke', score > 65 ? '#ff6b6b' : score > 35 ? '#ff9f43' : '#67f3da');
+            document.getElementById('gauge-label').textContent = score.toFixed(1) + '%';
+            const verdictEl = document.getElementById('gauge-verdict');
+            if (score > 65) { verdictEl.textContent = 'LIKELY FAKE'; verdictEl.style.color = '#ff6b6b'; }
+            else if (score > 35) { verdictEl.textContent = 'SUSPICIOUS'; verdictEl.style.color = '#ff9f43'; }
+            else { verdictEl.textContent = 'LIKELY AUTHENTIC'; verdictEl.style.color = '#67f3da'; }
+        }
+
+        function renderBreakdown(score) {
+            const bar = document.getElementById('breakdown-bar');
+            const safe = Math.max(100 - score, 0);
+            const warn = score > 35 && score <= 65 ? score : 0;
+            const danger = score > 65 ? score : 0;
+            const safeWidth = score <= 35 ? 100 : safe;
+            bar.innerHTML = `<div class="seg-safe" style="width:${safeWidth}%"></div>` +
+                (warn ? `<div class="seg-warn" style="width:${warn}%"></div>` : '') +
+                (danger ? `<div class="seg-danger" style="width:${danger}%"></div>` : '');
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            statusBar.textContent = `Uploading and analyzing ${file.name}... This may take a moment for video files.`;
+            statusBar.dataset.tone = 'loading';
+            analyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Analysis failed.');
+
+                const score = data.overall_threat_score || 0;
+                renderGauge(score);
+                renderBreakdown(score);
+                document.getElementById('result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('result-explanation').textContent = data.explanation || '';
+                document.getElementById('m-threat').textContent = formatPct(data.overall_threat_score);
+                document.getElementById('m-visual').textContent = formatPct(data.visual_deepfake_score);
+                document.getElementById('m-audio').textContent = formatPct(data.audio_clone_score);
+                document.getElementById('m-liveness').textContent = formatPct(data.biological_liveness);
+                document.getElementById('m-frames').textContent = data.frames_analyzed ?? 0;
+                document.getElementById('m-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 16) + '...' : 'N/A';
+                resultsSection.classList.add('visible');
+                statusBar.textContent = data.analysis_summary || 'Analysis complete.';
+                statusBar.dataset.tone = score > 65 ? 'error' : 'success';
+            } catch (err) {
+                statusBar.textContent = err.message || 'Analysis failed.';
+                statusBar.dataset.tone = 'error';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+    """
+
+
+@app.get("/detect/voice", response_class=HTMLResponse)
+def detect_voice() -> str:
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voice Detection – Synthetic Media Shield</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08101f;
+            --panel: rgba(11, 19, 38, 0.9);
+            --line: rgba(105, 229, 255, 0.28);
+            --text: #ecf7ff;
+            --muted: #9fb6c9;
+            --accent: #67f3da;
+            --accent-2: #ff9f43;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(103, 243, 218, 0.12), transparent 30%),
+                radial-gradient(circle at right, rgba(255, 159, 67, 0.14), transparent 28%),
+                linear-gradient(160deg, #050a14, var(--bg));
+            min-height: 100vh;
+        }
+        a { color: inherit; text-decoration: none; }
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 56px; }
+        .page-nav {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            margin-bottom: 24px; padding: 14px 18px;
+            border: 1px solid rgba(103, 243, 218, 0.18); border-radius: 999px;
+            background: rgba(9, 16, 31, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(14px);
+        }
+        .page-brand { font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--text); }
+        .page-nav-links { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .page-nav-btn {
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(103, 243, 218, 0.16); background: rgba(255, 255, 255, 0.04);
+            color: var(--text); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .page-nav-btn:hover { transform: translateY(-1px); border-color: rgba(103, 243, 218, 0.34); background: rgba(103, 243, 218, 0.08); }
+        .page-nav-btn.active { background: rgba(103, 243, 218, 0.12); color: var(--accent); }
+        .card {
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35); backdrop-filter: blur(14px);
+        }
+        .hero-section { text-align: center; padding: 48px 24px 32px; }
+        .hero-section h1 { margin: 0 0 12px; font-size: clamp(2rem, 3.5vw, 3.6rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; }
+        .hero-section p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1.05rem; max-width: 640px; margin-inline: auto; }
+        .upload-section { margin-top: 24px; padding: 32px; }
+        .drop-zone {
+            border: 2px dashed rgba(103, 243, 218, 0.3); border-radius: 16px; padding: 48px 24px;
+            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+        }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(103, 243, 218, 0.06); }
+        .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+        .drop-zone-text { font-size: 1.1rem; font-weight: 700; }
+        .drop-zone-hint { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+        .file-input-hidden { display: none; }
+        .analyze-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-top: 18px; padding: 12px 32px; border-radius: 999px;
+            background: rgba(103, 243, 218, 0.14); border: 1px solid rgba(103, 243, 218, 0.3);
+            color: var(--accent); font: inherit; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: background 0.18s, transform 0.18s;
+        }
+        .analyze-btn:hover { background: rgba(103, 243, 218, 0.22); transform: translateY(-1px); }
+        .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .status-bar { margin-top: 16px; padding: 10px 16px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; }
+        .status-bar[data-tone="idle"] { color: var(--muted); }
+        .status-bar[data-tone="loading"] { color: var(--accent-2); }
+        .status-bar[data-tone="success"] { color: var(--accent); }
+        .status-bar[data-tone="error"] { color: #ff6b6b; }
+        .results-section { margin-top: 24px; padding: 32px; display: none; }
+        .results-section.visible { display: block; }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .gauge-svg { width: 180px; height: 100px; }
+        .gauge-label { font-size: 2rem; font-weight: 800; margin-top: 8px; }
+        .gauge-verdict { font-size: 1.1rem; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .breakdown-bar { height: 10px; border-radius: 5px; background: #1a2540; margin: 16px 0; overflow: hidden; display: flex; }
+        .breakdown-bar .seg-safe { background: #67f3da; }
+        .breakdown-bar .seg-warn { background: #ff9f43; }
+        .breakdown-bar .seg-danger { background: #ff6b6b; }
+        .legend { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.12);
+            border-radius: 14px; padding: 16px; text-align: center;
+        }
+        .metric-card strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+        .metric-card span { font-size: 1.3rem; font-weight: 800; }
+        .how-section { margin-top: 32px; padding: 32px; }
+        .how-section h2 { margin: 0 0 20px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .how-step {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.1);
+            border-radius: 14px; padding: 20px;
+        }
+        .how-step strong { color: var(--accent); display: block; margin-bottom: 6px; }
+        .how-step p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+        .privacy-note { text-align: center; margin-top: 24px; color: var(--muted); font-size: 0.85rem; padding: 12px; border: 1px solid rgba(103, 243, 218, 0.1); border-radius: 12px; }
+        @media (max-width: 700px) {
+            .page-nav { border-radius: 24px; flex-direction: column; align-items: flex-start; }
+            .page-nav-links { width: 100%; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="page-nav">
+            <div class="page-brand">Synthetic Media Shield</div>
+            <nav class="page-nav-links">
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn active">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <h1>Voice Clone Detection</h1>
+            <p>Upload an audio recording to check for AI-generated voice cloning, text-to-speech synthesis artifacts, and other audio manipulation signatures.</p>
+        </section>
+
+        <section class="card upload-section">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-icon">🎙️</div>
+                <div class="drop-zone-text">Drag & drop an audio file here, or click to browse</div>
+                <div class="drop-zone-hint">Accepts MP3, WAV — max 50 MB</div>
+                <input id="file-input" class="file-input-hidden" type="file" accept=".mp3,.wav">
+            </div>
+            <div style="text-align:center">
+                <button id="analyze-btn" class="analyze-btn" disabled>Analyze Audio</button>
+            </div>
+            <div id="status-bar" class="status-bar" data-tone="idle">Select an audio file to begin.</div>
+        </section>
+
+        <section id="results-section" class="card results-section">
+            <div class="gauge-wrap">
+                <svg class="gauge-svg" viewBox="0 0 180 100">
+                    <path d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="#1a2540" stroke-width="12" stroke-linecap="round"/>
+                    <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
+                </svg>
+                <div id="gauge-label" class="gauge-label">0%</div>
+                <div id="gauge-verdict" class="gauge-verdict">—</div>
+            </div>
+            <div id="breakdown-bar" class="breakdown-bar"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#67f3da"></div>Safe</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff9f43"></div>Suspicious</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Dangerous</div>
+            </div>
+            <div id="result-summary" style="text-align:center;font-size:1.05rem;margin-bottom:16px;font-weight:600"></div>
+            <div id="result-explanation" style="text-align:center;color:var(--muted);font-size:0.95rem;margin-bottom:20px;line-height:1.6"></div>
+            <div class="metrics-grid">
+                <div class="metric-card"><strong>Audio Clone Risk</strong><span id="m-audio">N/A</span></div>
+                <div class="metric-card"><strong>Threat Score</strong><span id="m-threat">N/A</span></div>
+                <div class="metric-card"><strong>Media Type</strong><span id="m-type">N/A</span></div>
+                <div class="metric-card"><strong>Proof Hash</strong><span id="m-proof">N/A</span></div>
+            </div>
+        </section>
+
+        <section class="card how-section">
+            <h2>How Voice Detection Works</h2>
+            <div class="how-steps">
+                <div class="how-step">
+                    <strong>1. Upload</strong>
+                    <p>Select or drag an audio file. We accept MP3 and WAV recordings.</p>
+                </div>
+                <div class="how-step">
+                    <strong>2. Audio Analysis</strong>
+                    <p>The engine examines spectral patterns, pitch consistency, breathing artifacts, and synthesis markers that distinguish real human speech from AI-generated audio.</p>
+                </div>
+                <div class="how-step">
+                    <strong>3. Verdict</strong>
+                    <p>You receive a clone risk score indicating the likelihood that the voice was synthetically generated or cloned from a real person.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const statusBar = document.getElementById('status-bar');
+        const resultsSection = document.getElementById('results-section');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                statusBar.textContent = `Selected: ${fileInput.files[0].name}`;
+                statusBar.dataset.tone = 'success';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function formatPct(v) { return typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) + '%' : 'N/A'; }
+
+        function renderGauge(score) {
+            const maxLen = 251.33;
+            const pct = Math.min(Math.max(score, 0), 100) / 100;
+            const arc = document.getElementById('gauge-arc');
+            arc.setAttribute('stroke-dasharray', `${pct * maxLen} ${maxLen}`);
+            arc.setAttribute('stroke', score > 65 ? '#ff6b6b' : score > 35 ? '#ff9f43' : '#67f3da');
+            document.getElementById('gauge-label').textContent = score.toFixed(1) + '%';
+            const verdictEl = document.getElementById('gauge-verdict');
+            if (score > 65) { verdictEl.textContent = 'LIKELY CLONED'; verdictEl.style.color = '#ff6b6b'; }
+            else if (score > 35) { verdictEl.textContent = 'SUSPICIOUS'; verdictEl.style.color = '#ff9f43'; }
+            else { verdictEl.textContent = 'LIKELY AUTHENTIC'; verdictEl.style.color = '#67f3da'; }
+        }
+
+        function renderBreakdown(score) {
+            const bar = document.getElementById('breakdown-bar');
+            const safe = Math.max(100 - score, 0);
+            const warn = score > 35 && score <= 65 ? score : 0;
+            const danger = score > 65 ? score : 0;
+            const safeWidth = score <= 35 ? 100 : safe;
+            bar.innerHTML = `<div class="seg-safe" style="width:${safeWidth}%"></div>` +
+                (warn ? `<div class="seg-warn" style="width:${warn}%"></div>` : '') +
+                (danger ? `<div class="seg-danger" style="width:${danger}%"></div>` : '');
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            statusBar.textContent = `Uploading and analyzing ${file.name}...`;
+            statusBar.dataset.tone = 'loading';
+            analyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Analysis failed.');
+
+                const score = data.overall_threat_score || 0;
+                renderGauge(score);
+                renderBreakdown(score);
+                document.getElementById('result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('result-explanation').textContent = data.explanation || '';
+                document.getElementById('m-audio').textContent = formatPct(data.audio_clone_score);
+                document.getElementById('m-threat').textContent = formatPct(data.overall_threat_score);
+                document.getElementById('m-type').textContent = data.media_type || 'audio';
+                document.getElementById('m-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 16) + '...' : 'N/A';
+                resultsSection.classList.add('visible');
+                statusBar.textContent = data.analysis_summary || 'Analysis complete.';
+                statusBar.dataset.tone = score > 65 ? 'error' : 'success';
+            } catch (err) {
+                statusBar.textContent = err.message || 'Analysis failed.';
+                statusBar.dataset.tone = 'error';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+    """
+
+
+@app.get("/about", response_class=HTMLResponse)
+def about() -> str:
+    return f"""
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About – Synthetic Media Shield</title>
+    <style>
+        :root {{
+            --bg: #f5efe4;
+            --ink: #112129;
+            --muted: #556872;
+            --panel: rgba(255, 252, 247, 0.78);
+            --line: rgba(17, 33, 41, 0.12);
+            --accent: #0f766e;
+            --accent-2: #c2410c;
+            --shadow: 0 24px 60px rgba(31, 41, 55, 0.12);
+        }}
+        * {{ box-sizing: border-box; }}
+        html {{ scroll-behavior: smooth; }}
+        body {{
+            margin: 0; color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 24%),
+                radial-gradient(circle at right 20%, rgba(194, 65, 12, 0.14), transparent 22%),
+                linear-gradient(180deg, #fbf5ea 0%, var(--bg) 100%);
+            font-family: Georgia, "Times New Roman", serif;
+        }}
+        a {{ color: inherit; text-decoration: none; }}
+        .shell {{ max-width: 1180px; margin: 0 auto; padding: 24px; }}
+        .nav {{
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            padding: 14px 18px; border: 1px solid var(--line); border-radius: 999px;
+            background: rgba(255, 250, 242, 0.76); backdrop-filter: blur(14px);
+            position: sticky; top: 16px; z-index: 10; box-shadow: var(--shadow);
+        }}
+        .brand {{ font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; }}
+        .nav-links {{ display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }}
+        .nav-link-btn {{
+            display: inline-flex; align-items: center; justify-content: center;
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(17, 33, 41, 0.1); background: rgba(255, 255, 255, 0.72);
+            color: var(--muted); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }}
+        .nav-link-btn:hover {{ transform: translateY(-1px); border-color: rgba(15, 118, 110, 0.22); color: var(--ink); }}
+        .nav-link-btn.active {{ color: var(--accent); border-color: rgba(15, 118, 110, 0.22); }}
+        .section-card {{
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: var(--shadow); padding: 40px; margin-top: 32px;
+        }}
+        .hero-area {{ text-align: center; padding: 52px 24px 28px; }}
+        .hero-area h1 {{ margin: 0 0 12px; font-size: clamp(2.2rem, 3.5vw, 3.6rem); line-height: 1.05; }}
+        .hero-area p {{ margin: 8px auto 0; color: var(--muted); line-height: 1.7; font-size: 1.05rem; max-width: 680px; }}
+        .section-card h2 {{ margin: 0 0 16px; font-size: 1.4rem; color: var(--accent); }}
+        .section-card p {{ margin: 0 0 12px; color: var(--muted); line-height: 1.7; font-size: 1rem; }}
+        .section-card p:last-child {{ margin-bottom: 0; }}
+        .tech-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }}
+        .tech-item {{
+            background: rgba(15, 118, 110, 0.05); border: 1px solid rgba(15, 118, 110, 0.12);
+            border-radius: 14px; padding: 20px;
+        }}
+        .tech-item strong {{ display: block; margin-bottom: 6px; color: var(--ink); }}
+        .tech-item p {{ margin: 0; font-size: 0.95rem; }}
+        .team-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }}
+        .team-member {{
+            background: rgba(15, 118, 110, 0.04); border: 1px solid rgba(15, 118, 110, 0.1);
+            border-radius: 14px; padding: 20px; text-align: center;
+        }}
+        .team-avatar {{ font-size: 2.4rem; margin-bottom: 8px; }}
+        .team-member strong {{ display: block; font-size: 1.05rem; margin-bottom: 4px; }}
+        .team-member span {{ color: var(--muted); font-size: 0.9rem; }}
+        .policy-list {{ padding-left: 20px; color: var(--muted); line-height: 1.8; }}
+        .policy-list li {{ margin-bottom: 6px; }}
+        @media (max-width: 700px) {{
+            .nav {{ border-radius: 26px; flex-direction: column; align-items: start; }}
+            .nav-links {{ flex-wrap: wrap; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header class="nav">
+            <div class="brand">Synthetic Media Shield</div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link-btn">Home</a>
+                <a href="/detect/image" class="nav-link-btn">Detect Image</a>
+                <a href="/detect/video" class="nav-link-btn">Detect Video</a>
+                <a href="/detect/voice" class="nav-link-btn">Detect Voice</a>
+                <a href="/demo" class="nav-link-btn">Demo</a>
+                <a href="/about" class="nav-link-btn active">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-area">
+            <h1>About Synthetic Media Shield</h1>
+            <p>An open proof-of-reality platform built to help journalists, researchers, and everyday users verify the authenticity of digital media in the age of generative AI.</p>
+        </section>
+
+        <section class="section-card">
+            <h2>Our Mission</h2>
+            <p>Synthetic Media Shield was created to combat the growing threat of AI-generated deepfakes, voice clones, and manipulated imagery. As generative models become more powerful and accessible, the line between real and synthetic content blurs further every day.</p>
+            <p>Our goal is to provide accessible, transparent, and privacy-respecting forensic tools that empower anyone to verify digital media before trusting or sharing it.</p>
+        </section>
+
+        <section class="section-card">
+            <h2>Technology Overview</h2>
+            <p>The platform combines multiple detection approaches for comprehensive analysis:</p>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <strong>Visual Forensics</strong>
+                    <p>Deep learning models trained to detect GAN artifacts, facial inconsistencies, compression anomalies, and pixel-level manipulation signatures in images and video frames.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Audio Analysis</strong>
+                    <p>Spectral analysis and neural classifiers that identify voice cloning artifacts, text-to-speech synthesis markers, and unnatural pitch or breathing patterns.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Biological Liveness</strong>
+                    <p>Multi-frame liveness detection that evaluates natural micro-movements, blinking patterns, and temporal consistency across video sequences.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Metadata Forensics</strong>
+                    <p>EXIF data analysis, C2PA provenance checking, and compression artifact examination to trace the origin and editing history of media files.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Proof of Reality</strong>
+                    <p>Cryptographic hashing of analysis results to create tamper-proof records that can be used as evidence of verification.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Multi-Engine Support</strong>
+                    <p>Flexible architecture supporting local PyTorch models, cloud-based Reality Defender API, and demo mode for development and testing.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>Privacy Policy</h2>
+            <p>We take your privacy seriously. Here is how we handle your data:</p>
+            <ul class="policy-list">
+                <li>Uploaded files are processed in memory and immediately deleted after analysis — nothing is stored on disk permanently.</li>
+                <li>No media files are transmitted to third-party services unless you explicitly configure an external detection API.</li>
+                <li>Authentication uses one-time passwords sent to your email — no passwords are ever stored.</li>
+                <li>Analysis results and proof hashes are generated client-side or in your local backend instance.</li>
+                <li>No tracking cookies, analytics scripts, or advertising are used anywhere in the platform.</li>
+            </ul>
+        </section>
+
+        <section class="section-card">
+            <h2>Team</h2>
+            <p>Synthetic Media Shield is developed by a multidisciplinary team of AI researchers and cybersecurity experts dedicated to building trust in digital media.</p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-avatar">🧑‍🔬</div>
+                    <strong>AI Research Lead</strong>
+                    <span>Deep learning and computer vision specialist focused on GAN detection and adversarial robustness.</span>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">🔐</div>
+                    <strong>Cybersecurity Architect</strong>
+                    <span>Security engineer specializing in digital forensics, cryptographic verification, and threat analysis.</span>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">🎛️</div>
+                    <strong>Audio ML Engineer</strong>
+                    <span>Researcher in speech synthesis detection, spectral analysis, and voice biometrics.</span>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">🌐</div>
+                    <strong>Platform Engineer</strong>
+                    <span>Full-stack developer building the web platform, browser extension, and API infrastructure.</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+"""
 
 
 @app.post("/analyze-url")
