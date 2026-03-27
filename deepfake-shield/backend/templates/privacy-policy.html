@@ -4,51 +4,53 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Privacy Policy - Deepfake Detection</title>
+  <link rel="icon" type="image/png" href="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root { --bg: #f8fafc; --ink: #0f172a; --muted: #64748b; --panel: #ffffff; --line: #e2e8f0; --accent: #2563eb; --accent-light: #dbeafe; --radius: 16px; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
+    :root{--bg:#f7f9fc;--panel:#fff;--ink:#13203a;--muted:#70819b;--line:#e6ecf5;--accent:#2f66f3;--accent-soft:#eaf1ff;--shadow:0 8px 28px rgba(17,24,39,.06)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+    a{color:inherit;text-decoration:none}
     .nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #f0f0f0;padding:0 32px}
     .nav-inner{max-width:2589px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
     .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.5rem;color:#1a1a2e}
     .nav-brand img{width:36px;height:36px}
     .nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
     .nav-link{display:flex;align-items:center;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border-radius:8px;transition:color .15s}
-    .nav-link:hover,.nav-link.active{color:#1d4ed8;text-decoration:none}
+    .nav-link:hover,.nav-link.active{color:#1d4ed8}
     .nav-dropdown{position:relative}
     .nav-dropdown-btn{display:flex;align-items:center;gap:5px;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border:none;background:none;cursor:pointer;border-radius:8px;font-family:inherit;transition:color .15s}
     .nav-dropdown-btn:hover{color:#1d4ed8}
     .nav-dropdown-btn i{font-size:.65rem;transition:transform .2s}
     .nav-dropdown-menu{display:none;position:absolute;top:100%;right:0;min-width:220px;background:#fff;border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.1);padding:8px;margin-top:4px;z-index:200}
-    .nav-dropdown:hover .nav-dropdown-menu{display:block}
-    .nav-dropdown:hover .nav-dropdown-btn i{transform:rotate(180deg)}
-    .nav-dropdown.open .nav-dropdown-menu{display:block}
-    .nav-dropdown.open .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown.open .nav-dropdown-menu{display:block}
+    .nav-dropdown:hover .nav-dropdown-btn i,.nav-dropdown.open .nav-dropdown-btn i{transform:rotate(180deg)}
     .nav-dropdown-menu a{display:block;padding:10px 16px;font-size:.9rem;color:#333;border-radius:8px;font-weight:500}
-    .nav-dropdown-menu a:hover{background:#f5f7ff;color:#2563eb}
-
-    .container { max-width: 800px; margin: 0 auto; padding: 60px 24px 80px; }
-    h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
-    .last-updated { color: var(--muted); font-size: 0.9rem; margin-bottom: 32px; }
-    h2 { font-size: 1.25rem; font-weight: 700; margin: 32px 0 12px; }
-    p, li { color: var(--muted); margin-bottom: 12px; line-height: 1.8; }
-    ul, ol { padding-left: 24px; margin-bottom: 16px; }
-    li { margin-bottom: 6px; }
-    strong { color: var(--ink); }
-
-    .highlight-box { padding: 20px 24px; border-radius: 12px; background: var(--accent-light); border-left: 4px solid var(--accent); margin: 24px 0; }
-    .highlight-box p { color: var(--ink); margin: 0; font-weight: 500; }
-
-    .footer { padding: 40px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; margin-top: 48px; }
-    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-    .footer-links { display: flex; gap: 20px; }
-    .footer-links a { color: var(--muted); }
-
-    @media (max-width: 640px) { .nav { padding: 0 18px; } .nav-links { display: none; } h1 { font-size: 1.8rem; } }
+    .nav-dropdown-menu a:hover,.nav-dropdown-menu a.active{background:#f5f7ff;color:#2563eb}
+    .container{max-width:980px;margin:0 auto;padding:56px 28px 76px}
+    .hero{text-align:center;margin-bottom:28px}
+    .hero h1{font-size:clamp(2.4rem,4vw,4rem);line-height:1.06;letter-spacing:-.04em;margin-bottom:10px}
+    .hero p{max-width:720px;margin:0 auto;color:var(--muted);font-size:1rem}
+    .updated{margin-top:10px;color:var(--muted);font-size:.92rem}
+    .quote{margin:26px 0 34px;padding:20px 22px;border-radius:18px;background:#eef4ff;border:1px solid #d8e6ff;color:#1e3a8a;font-weight:600}
+    .policy{background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px 28px;box-shadow:var(--shadow)}
+    .policy h2{font-size:1.3rem;margin:28px 0 12px}
+    .policy h2:first-child{margin-top:0}
+    .policy h3{font-size:1rem;margin:18px 0 8px}
+    .policy p,.policy li{color:#4f6079;font-size:.96rem}
+    .policy ul{padding-left:20px;margin:0 0 10px}
+    .policy li{margin:0 0 8px}
+    .footer{border-top:1px solid var(--line);background:#fff}
+    .footer-inner{max-width:1280px;margin:0 auto;padding:40px 28px 28px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:28px}
+    .footer-brand{display:flex;align-items:center;gap:10px;font-weight:700;color:#1a1a2e;font-size:1.02rem;margin-bottom:12px}
+    .footer-brand img{width:34px;height:34px}
+    .footer-copy{color:var(--muted);font-size:.9rem;max-width:360px}
+    .footer-col h4{font-size:.92rem;margin-bottom:12px}
+    .footer-col a,.footer-col p{display:block;color:var(--muted);font-size:.88rem;line-height:1.8}
+    .footer-bottom{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.84rem}
+    .back-link{display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:12px 18px;border-radius:999px;background:var(--accent);color:#fff;font-weight:700}
+    @media (max-width:760px){.nav{padding:0 18px}.nav-links{display:none}.container{padding:40px 18px 64px}.footer-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -71,88 +73,109 @@
       </div>
     </div>
   </nav>
-
   <main class="container">
-    <h1>Privacy Policy</h1>
-    <p class="last-updated">Last updated: March 28, 2025</p>
-
-    <div class="highlight-box">
-      <p><i class="fa-solid fa-lock"></i>&ensp;Deepfake Detection is designed with privacy at its core. All analysis runs locally on your machine &mdash; your files are never stored, shared, or sent to third-party services.</p>
+    <div class="hero">
+      <h1>Privacy Policy</h1>
+      <p>We built Deepfake Detection to help people verify suspicious media while keeping their data exposure as low as possible.</p>
+      <div class="updated">Last Updated: July 27, 2025</div>
     </div>
+    <div class="quote">We do not want authenticity checks to become a privacy risk of their own. This policy explains what we process, why we process it, and how we keep that handling limited.</div>
+    <section class="policy">
+      <h2>1. Who We Are</h2>
+      <p>Deepfake Detection is an AI-powered media verification service focused on manipulated images, video, and audio. If you have privacy questions, you can reach us at hello@deepfakedetection.io.</p>
 
-    <h2>1. Overview</h2>
-    <p>Deepfake Detection ("we", "our", "the Service") provides AI-powered deepfake detection tools through a web interface and browser extension. This Privacy Policy describes how we handle information when you use our Service.</p>
+      <h2>2. What We Collect</h2>
+      <h3>Your Uploaded Files</h3>
+      <p>Media files are processed to generate an authenticity result and related reporting. The product is designed around short-lived handling rather than long-term content retention.</p>
+      <h3>Basic Usage Information</h3>
+      <p>We may keep aggregate service-level statistics such as request volume, error rates, or feature usage to operate and improve the detector.</p>
+      <h3>Technical Data</h3>
+      <p>Like any web service, we may temporarily process IP address, browser information, and device details needed for delivery, reliability, and abuse prevention.</p>
+      <h3>What We Do Not Intend To Collect</h3>
+      <ul>
+        <li>Unnecessary personal profile data such as your home address or phone number.</li>
+        <li>Long-term copies of uploaded media after normal processing completes.</li>
+        <li>Advertising profiles built from your detection activity.</li>
+      </ul>
 
-    <h2>2. Information We Collect</h2>
-    <p><strong>Account Information:</strong> If you create an account, we collect your email address for authentication purposes (OTP login). We do not collect names, phone numbers, or payment card details.</p>
-    <p><strong>Uploaded Media:</strong> When you upload images, videos, or audio files for analysis, the files are processed in-memory on your local backend server. <strong>We do not store, retain, or transmit uploaded files.</strong> Files are discarded immediately after analysis completes.</p>
-    <p><strong>Analysis Results:</strong> Detection results (scores, verdicts, proof hashes) are returned to your browser and are not stored on any server unless you explicitly save them.</p>
-    <p><strong>Usage Data:</strong> The self-hosted backend does not collect analytics, telemetry, or browsing behavior.</p>
+      <h2>3. How We Use Data</h2>
+      <ul>
+        <li>To analyze uploaded content and return authenticity scores, summaries, and detailed reports.</li>
+        <li>To maintain uptime, investigate bugs, and improve detector quality over time.</li>
+        <li>To adapt the system as new manipulation techniques appear.</li>
+      </ul>
 
-    <h2>3. How We Use Information</h2>
-    <ul>
-      <li>To authenticate your identity via one-time passwords sent to your email</li>
-      <li>To process your uploaded media files and return detection results</li>
-      <li>To manage subscription status if you upgrade to a premium plan</li>
-    </ul>
+      <h2>4. How Long We Keep Data</h2>
+      <p>Uploaded content is intended to be processed temporarily. Operational logs and aggregate metrics may be retained for limited periods where needed for support, security, and service monitoring.</p>
 
-    <h2>4. Data Storage &amp; Security</h2>
-    <p>All data is stored locally in a SQLite database on your machine. Email addresses and OTP hashes are the only persistent data. Media files are never written to disk during analysis.</p>
-    <p>We use industry-standard security practices including:</p>
-    <ul>
-      <li>Bcrypt hashing for OTP codes</li>
-      <li>JWT tokens for authentication with expiration</li>
-      <li>HTTPS encryption (when configured)</li>
-      <li>No third-party tracking scripts or analytics</li>
-    </ul>
+      <h2>5. Legal Basis</h2>
+      <p>Where privacy laws such as GDPR apply, our processing is generally based on providing the service you requested, maintaining the security of the product, and improving detection quality in our legitimate interest.</p>
 
-    <h2>5. Third-Party Services</h2>
-    <p>By default, the Service runs entirely on your local machine and does not share data with third parties. If the optional Reality Defender API integration is enabled, media data may be sent to Reality Defender's servers for analysis. This is an opt-in feature that requires explicit API key configuration.</p>
-    <p>The browser extension communicates only with your local backend server (<code>127.0.0.1:8000</code>) and does not send data to any external servers.</p>
+      <h2>6. Your Privacy Rights</h2>
+      <p>Depending on your region, you may be able to request access, deletion, correction, restriction, or export of personal data associated with your use of the service.</p>
 
-    <h2>6. Browser Extension Permissions</h2>
-    <p>The Deepfake Detection browser extension requests the following permissions:</p>
-    <ul>
-      <li><strong>activeTab:</strong> To scan video elements on the currently viewed web page</li>
-      <li><strong>scripting:</strong> To inject the content script that performs frame capture and displays results</li>
-      <li><strong>storage:</strong> To save your authentication token locally in the browser</li>
-    </ul>
-    <p>The extension does not access browsing history, bookmarks, cookies, or any data beyond the active tab's video elements.</p>
+      <h2>7. AI and Automated Decisions</h2>
+      <p>The detector evaluates uploaded media for signs of manipulation. It does not make decisions about you as an individual, and you remain responsible for how you interpret or act on the result.</p>
 
-    <h2>7. Cookies</h2>
-    <p>The Service does not use cookies for tracking. Authentication is handled via JWT tokens stored in your browser's localStorage.</p>
+      <h2>8. Cookies and Analytics</h2>
+      <p>Essential website functions may require technical cookies or equivalent storage. If analytics are used, they should be limited to operating and improving the site rather than building invasive behavioral profiles.</p>
 
-    <h2>8. Data Retention</h2>
-    <p>Account emails remain in the local database until you delete your account. OTP codes expire after 10 minutes and are automatically invalidated. Uploaded files are never persisted.</p>
+      <h2>9. Who We Share Data With</h2>
+      <p>We aim to keep sharing minimal. Data may be processed by secure infrastructure or protection partners only where needed to run the service, defend against abuse, or comply with legal obligations.</p>
 
-    <h2>9. Children's Privacy</h2>
-    <p>The Service is not intended for children under 13. We do not knowingly collect information from children.</p>
+      <h2>10. Children’s Privacy</h2>
+      <p>The service is not designed for children under 13, and we do not knowingly seek personal data from children.</p>
 
-    <h2>10. Your Rights</h2>
-    <p>Since all data is stored locally on your machine, you have full control:</p>
-    <ul>
-      <li>You can delete the SQLite database file to remove all account data</li>
-      <li>You can uninstall the browser extension to remove all extension data</li>
-      <li>You can clear localStorage to remove authentication tokens</li>
-    </ul>
+      <h2>11. Incident Response</h2>
+      <p>If a material security event affects personal data, we intend to respond promptly, investigate the scope, and make legally required notifications where applicable.</p>
 
-    <h2>11. Changes to This Policy</h2>
-    <p>We may update this Privacy Policy from time to time. Changes will be reflected in the "Last updated" date at the top of this page.</p>
+      <h2>12. International Transfers</h2>
+      <p>If data is processed across borders, we aim to use appropriate safeguards consistent with the applicable privacy framework.</p>
 
-    <h2>12. Contact</h2>
-    <p>If you have questions about this Privacy Policy, please reach out via the project's repository or contact page.</p>
+      <h2>13. How We Protect Data</h2>
+      <ul>
+        <li>Encryption in transit and protected service infrastructure.</li>
+        <li>Limited retention and controlled access paths.</li>
+        <li>Operational practices designed to reduce unnecessary exposure of uploaded media.</li>
+      </ul>
+
+      <h2>14. Policy Changes</h2>
+      <p>We may revise this policy as the product changes. When we do, the date above will be updated to reflect the latest version.</p>
+
+      <h2>15. California Privacy Rights</h2>
+      <p>If California privacy laws apply to you, you may have additional rights concerning disclosure, deletion, and non-discrimination. We do not intend to sell personal information.</p>
+
+      <h2>16. Contact Us About Privacy</h2>
+      <p>For privacy questions, email support@deepfakedetection.io or privacy@deepfakedetection.io. We will review requests and respond as reasonably quickly as possible.</p>
+
+      <a href="/" class="back-link">Back to Deepfake Detection <i class="fa-solid fa-arrow-right"></i></a>
+    </section>
   </main>
-
   <footer class="footer">
     <div class="footer-inner">
-      <span>&copy; 2025 Deepfake Detection. All rights reserved.</span>
-      <div class="footer-links">
-        <a href="/about">About</a>
-        <a href="/privacy-policy">Privacy</a>
-        <a href="/deepfake-image-detection">Image</a>
-        <a href="/deepfake-video-detection">Video</a>
-        <a href="/deepfake-voice-detection">Voice</a>
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</div>
+          <p class="footer-copy">Deepfake Detection is a free AI-powered tool that helps identify manipulated images, videos, and audio files to reduce fraud, misinformation, and impersonation risk.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Deepfake Detection Tools</h4>
+          <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+          <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+          <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <a href="/about">About Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p>hello@deepfakedetection.io</p>
+          <p>support@deepfakedetection.io</p>
+        </div>
       </div>
+      <div class="footer-bottom">&copy; 2026 Deepfake Detection. All rights reserved.</div>
     </div>
   </footer>
 </body>

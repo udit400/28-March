@@ -176,18 +176,17 @@
     .section-heading { text-align: center; max-width: 860px; margin: 0 auto 28px; }
     .section-heading h2 { font-size: clamp(2rem, 3vw, 2.45rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; }
     .section-heading p { color: var(--muted); font-size: 1rem; }
-    .howto-layout { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(620px, 760px); gap: 42px; align-items: start; max-width: 1520px; margin: 0 auto; }
-    .steps-list { display: grid; gap: 28px; padding-top: 8px; }
-    .step-card { padding: 0; }
-    .step-title { display: flex; align-items: center; gap: 14px; font-size: 1rem; font-weight: 700; margin-bottom: 10px; color: #12284c; }
-    .step-title span { font-size: clamp(1.15rem, 1.6vw, 1.45rem); line-height: 1.25; }
-    .step-title i { color: #2f66f3; font-size: 1.45rem; width: 20px; text-align: center; flex-shrink: 0; }
-    .step-card p { color: #42597f; font-size: 1rem; line-height: 1.62; max-width: 640px; }
-    .howto-visual { background: #f7f9fd; border: 1px solid #edf2fb; border-radius: 22px; box-shadow: 0 16px 40px rgba(47, 102, 243, 0.08); padding: 14px; width: 100%; }
+    .howto-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(460px, 560px); gap: 28px; align-items: start; max-width: 1260px; margin: 0 auto; }
+    .steps-list { display: grid; gap: 14px; }
+    .step-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 18px 18px 18px 20px; }
+    .step-title { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .step-title i { color: var(--accent); font-size: 0.95rem; }
+    .step-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.75; }
+    .howto-visual { background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow-lg); padding: 14px; width: 100%; }
     .howto-visual img { width: 100%; border-radius: 16px; }
-    .howto-cta { display: flex; justify-content: center; margin-top: 36px; }
-    .howto-cta-link { display: inline-flex; align-items: center; gap: 12px; padding: 16px 28px; border-radius: 18px; background: #2f66f3; color: #fff; font-size: 1rem; font-weight: 700; box-shadow: 0 18px 34px rgba(47, 102, 243, 0.22); }
-    .howto-cta-link i { font-size: 1rem; }
+    .howto-cta { display: flex; justify-content: center; margin-top: 28px; }
+    .howto-cta-link { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 0.98rem; font-weight: 700; box-shadow: 0 14px 28px rgba(47, 102, 243, 0.18); }
+    .howto-cta-link i { font-size: 0.95rem; }
 
     .benefits { padding: 0 0 72px; }
     .benefits-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; max-width: 1040px; margin: 0 auto; }
@@ -214,8 +213,14 @@
     .cta-link.secondary { background: var(--violet); }
 
     .footer { border-top: 1px solid var(--line); background: #fff; }
-    .footer-inner { max-width: 1280px; margin: 0 auto; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 0.86rem; }
-    .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; padding: 40px 28px 28px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 28px; }
+    .footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #1a1a2e; font-size: 1.02rem; margin-bottom: 12px; }
+    .footer-brand img { width: 34px; height: 34px; }
+    .footer-copy { color: var(--muted); font-size: 0.9rem; max-width: 360px; line-height: 1.8; }
+    .footer-col h4 { font-size: 0.92rem; margin-bottom: 12px; }
+    .footer-col a, .footer-col p { display: block; color: var(--muted); font-size: 0.88rem; line-height: 1.8; }
+    .footer-bottom { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.84rem; }
 
     .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.35); border-top-color: #fff; border-radius: 999px; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -225,8 +230,7 @@
       .upload-column { padding-right: 0; }
       .benefits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .report-summary-card, .report-detail-grid { grid-template-columns: 1fr; }
-      .steps-list { gap: 22px; }
-      .step-card p { max-width: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 760px) {
@@ -241,10 +245,9 @@
       .summary-panel h3, .report-panel h3, .analysis-block h4 { font-size: 1.5rem; }
       .breakdown-item { grid-template-columns: 1fr; gap: 10px; }
       .breakdown-value { text-align: left; }
-      .step-title span { font-size: 1.05rem; }
-      .step-card p { font-size: 0.96rem; }
       .howto-cta-link { width: 100%; justify-content: center; text-align: center; border-radius: 16px; }
       .cta-card { padding: 28px 18px; }
+      .footer-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -417,6 +420,10 @@
     </section>
 
     <section class="howto">
+      <div class="section-heading">
+        <h2>How to Use Deepfake Voice Detection</h2>
+        <p>It's fast and super simple. Just follow a few easy steps to check if your audio is real or fake. No tech skills needed, our AI handles the hard stuff. You'll get clear results you can download and share.</p>
+      </div>
       <div class="howto-layout">
         <div class="steps-list">
           <div class="step-card">
@@ -438,7 +445,7 @@
         </div>
 
         <div class="howto-visual">
-          <img src="https://deepfakedetection.io/images/page/fakevoice-how-to.webp" alt="How to use deepfake voice detection tool step by step guide">
+          <img src="https://deepfakedetection.io/_next/image?url=%2Fimages%2Fpage%2Ffakevoice-how-to.webp&w=1920&q=75" alt="How to use deepfake voice detection tool step by step guide">
         </div>
       </div>
       <div class="howto-cta">
@@ -518,14 +525,29 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <span>&copy; 2026 Deepfake Detection. All rights reserved.</span>
-      <div class="footer-links">
-        <a href="/about">About</a>
-        <a href="/privacy-policy">Privacy Policy</a>
-        <a href="/deepfake-image-detection">Image</a>
-        <a href="/deepfake-video-detection">Video</a>
-        <a href="/deepfake-voice-detection">Voice</a>
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</div>
+          <p class="footer-copy">Deepfake Detection is a free AI-powered tool that helps identify manipulated images, videos, and audio files to reduce fraud, misinformation, and impersonation risk.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Deepfake Detection Tools</h4>
+          <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+          <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+          <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <a href="/about">About Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p>hello@deepfakedetection.io</p>
+          <p>support@deepfakedetection.io</p>
+        </div>
       </div>
+      <div class="footer-bottom">&copy; 2026 Deepfake Detection. All rights reserved.</div>
     </div>
   </footer>
 

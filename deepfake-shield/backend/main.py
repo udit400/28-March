@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import datetime
 import html
 import hashlib
@@ -791,10 +791,7 @@ def resolve_youtube_thumbnail_url(url: str) -> Optional[str]:
 
 @app.get("/", response_class=HTMLResponse)
 def root() -> str:
-<<<<<<< HEAD
-    index_path = Path(__file__).resolve().parent / "templates" / "index.html"
-    return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
-=======
+    return _serve_template("index.html")
     warning_text = html.escape(startup_warning or "All core services loaded.")
     detector_mode = html.escape(detector.mode.upper())
     model_loaded = "LIVE MODEL" if detector.mode == "torch" else "DEMO ENGINE"
@@ -1878,7 +1875,7 @@ def root() -> str:
             if (!email) {{
                 return 'No account selected yet.';
             }}
-            return profileName ? `${{profileName}} • ${{email}}` : `Account: ${{email}}`;
+            return profileName ? `${{profileName}} ΓÇó ${{email}}` : `Account: ${{email}}`;
         }}
 
         function websiteUpdateAccountLabels(profileName, email) {{
@@ -2137,7 +2134,6 @@ def root() -> str:
 </body>
 </html>
 """
->>>>>>> 0b5028a91215614047ae1a30d997ca6a9116397e
 
 
 @app.get("/api/status")
@@ -3332,7 +3328,7 @@ def detect_image() -> str:
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Image Detection – Synthetic Media Shield</title>
+    <title>Image Detection ΓÇô Synthetic Media Shield</title>
     <style>
         :root {
             color-scheme: dark;
@@ -3464,9 +3460,9 @@ def detect_image() -> str:
 
         <section class="card upload-section">
             <div id="drop-zone" class="drop-zone">
-                <div class="drop-zone-icon">🖼️</div>
+                <div class="drop-zone-icon">≡ƒû╝∩╕Å</div>
                 <div class="drop-zone-text">Drag & drop an image here, or click to browse</div>
-                <div class="drop-zone-hint">Accepts JPG, JPEG, PNG — max 20 MB</div>
+                <div class="drop-zone-hint">Accepts JPG, JPEG, PNG ΓÇö max 20 MB</div>
                 <input id="file-input" class="file-input-hidden" type="file" accept=".jpg,.jpeg,.png">
             </div>
             <div style="text-align:center">
@@ -3482,7 +3478,7 @@ def detect_image() -> str:
                     <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
                 </svg>
                 <div id="gauge-label" class="gauge-label">0%</div>
-                <div id="gauge-verdict" class="gauge-verdict">—</div>
+                <div id="gauge-verdict" class="gauge-verdict">ΓÇö</div>
             </div>
             <div id="breakdown-bar" class="breakdown-bar"></div>
             <div class="legend">
@@ -3518,7 +3514,7 @@ def detect_image() -> str:
             </div>
         </section>
 
-        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+        <div class="privacy-note">≡ƒöÆ Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
     </main>
 
     <script>
@@ -3621,7 +3617,7 @@ def detect_video() -> str:
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Video Detection – Synthetic Media Shield</title>
+    <title>Video Detection ΓÇô Synthetic Media Shield</title>
     <style>
         :root {
             color-scheme: dark;
@@ -3753,9 +3749,9 @@ def detect_video() -> str:
 
         <section class="card upload-section">
             <div id="drop-zone" class="drop-zone">
-                <div class="drop-zone-icon">🎬</div>
+                <div class="drop-zone-icon">≡ƒÄ¼</div>
                 <div class="drop-zone-text">Drag & drop a video here, or click to browse</div>
-                <div class="drop-zone-hint">Accepts MP4, MOV, AVI — max 100 MB</div>
+                <div class="drop-zone-hint">Accepts MP4, MOV, AVI ΓÇö max 100 MB</div>
                 <input id="file-input" class="file-input-hidden" type="file" accept=".mp4,.mov,.avi">
             </div>
             <div style="text-align:center">
@@ -3771,7 +3767,7 @@ def detect_video() -> str:
                     <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
                 </svg>
                 <div id="gauge-label" class="gauge-label">0%</div>
-                <div id="gauge-verdict" class="gauge-verdict">—</div>
+                <div id="gauge-verdict" class="gauge-verdict">ΓÇö</div>
             </div>
             <div id="breakdown-bar" class="breakdown-bar"></div>
             <div class="legend">
@@ -3813,7 +3809,7 @@ def detect_video() -> str:
             </div>
         </section>
 
-        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+        <div class="privacy-note">≡ƒöÆ Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
     </main>
 
     <script>
@@ -3918,7 +3914,7 @@ def detect_voice() -> str:
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Voice Detection – Synthetic Media Shield</title>
+    <title>Voice Detection ΓÇô Synthetic Media Shield</title>
     <style>
         :root {
             color-scheme: dark;
@@ -4050,9 +4046,9 @@ def detect_voice() -> str:
 
         <section class="card upload-section">
             <div id="drop-zone" class="drop-zone">
-                <div class="drop-zone-icon">🎙️</div>
+                <div class="drop-zone-icon">≡ƒÄÖ∩╕Å</div>
                 <div class="drop-zone-text">Drag & drop an audio file here, or click to browse</div>
-                <div class="drop-zone-hint">Accepts MP3, WAV — max 50 MB</div>
+                <div class="drop-zone-hint">Accepts MP3, WAV ΓÇö max 50 MB</div>
                 <input id="file-input" class="file-input-hidden" type="file" accept=".mp3,.wav">
             </div>
             <div style="text-align:center">
@@ -4068,7 +4064,7 @@ def detect_voice() -> str:
                     <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
                 </svg>
                 <div id="gauge-label" class="gauge-label">0%</div>
-                <div id="gauge-verdict" class="gauge-verdict">—</div>
+                <div id="gauge-verdict" class="gauge-verdict">ΓÇö</div>
             </div>
             <div id="breakdown-bar" class="breakdown-bar"></div>
             <div class="legend">
@@ -4104,7 +4100,7 @@ def detect_voice() -> str:
             </div>
         </section>
 
-        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+        <div class="privacy-note">≡ƒöÆ Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
     </main>
 
     <script>
@@ -4201,13 +4197,14 @@ def detect_voice() -> str:
 
 @app.get("/about", response_class=HTMLResponse)
 def about() -> str:
-    return f"""
+    return _serve_template("about.html")
+    """
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>About – Synthetic Media Shield</title>
+    <title>About ΓÇô Synthetic Media Shield</title>
     <style>
         :root {{
             --bg: #f5efe4;
@@ -4341,9 +4338,9 @@ def about() -> str:
             <h2>Privacy Policy</h2>
             <p>We take your privacy seriously. Here is how we handle your data:</p>
             <ul class="policy-list">
-                <li>Uploaded files are processed in memory and immediately deleted after analysis — nothing is stored on disk permanently.</li>
+                <li>Uploaded files are processed in memory and immediately deleted after analysis ΓÇö nothing is stored on disk permanently.</li>
                 <li>No media files are transmitted to third-party services unless you explicitly configure an external detection API.</li>
-                <li>Authentication uses one-time passwords sent to your email — no passwords are ever stored.</li>
+                <li>Authentication uses one-time passwords sent to your email ΓÇö no passwords are ever stored.</li>
                 <li>Analysis results and proof hashes are generated client-side or in your local backend instance.</li>
                 <li>No tracking cookies, analytics scripts, or advertising are used anywhere in the platform.</li>
             </ul>
@@ -4354,22 +4351,22 @@ def about() -> str:
             <p>Synthetic Media Shield is developed by a multidisciplinary team of AI researchers and cybersecurity experts dedicated to building trust in digital media.</p>
             <div class="team-grid">
                 <div class="team-member">
-                    <div class="team-avatar">🧑‍🔬</div>
+                    <div class="team-avatar">≡ƒºæΓÇì≡ƒö¼</div>
                     <strong>AI Research Lead</strong>
                     <span>Deep learning and computer vision specialist focused on GAN detection and adversarial robustness.</span>
                 </div>
                 <div class="team-member">
-                    <div class="team-avatar">🔐</div>
+                    <div class="team-avatar">≡ƒöÉ</div>
                     <strong>Cybersecurity Architect</strong>
                     <span>Security engineer specializing in digital forensics, cryptographic verification, and threat analysis.</span>
                 </div>
                 <div class="team-member">
-                    <div class="team-avatar">🎛️</div>
+                    <div class="team-avatar">≡ƒÄ¢∩╕Å</div>
                     <strong>Audio ML Engineer</strong>
                     <span>Researcher in speech synthesis detection, spectral analysis, and voice biometrics.</span>
                 </div>
                 <div class="team-member">
-                    <div class="team-avatar">🌐</div>
+                    <div class="team-avatar">≡ƒîÉ</div>
                     <strong>Platform Engineer</strong>
                     <span>Full-stack developer building the web platform, browser extension, and API infrastructure.</span>
                 </div>
@@ -4727,7 +4724,7 @@ async def analyze_full_media(file: UploadFile = File(...)) -> dict:
             os.remove(temp_path)
 
 
-# ── Template-served pages ─────────────────────────────────────────
+# ΓöÇΓöÇ Template-served pages ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 
 

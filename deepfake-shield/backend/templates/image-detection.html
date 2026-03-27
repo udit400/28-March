@@ -169,8 +169,14 @@
     .faq-item.open .faq-q i{transform:rotate(180deg)}
 
     .footer{border-top:1px solid var(--line);background:#fff}
-    .footer-inner{max-width:1280px;margin:0 auto;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:.86rem}
-    .footer-links{display:flex;gap:18px;flex-wrap:wrap}
+    .footer-inner{max-width:1280px;margin:0 auto;padding:40px 28px 28px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:28px}
+    .footer-brand{display:flex;align-items:center;gap:10px;font-weight:700;color:#1a1a2e;font-size:1.02rem;margin-bottom:12px}
+    .footer-brand img{width:34px;height:34px}
+    .footer-copy{color:var(--muted);font-size:.9rem;max-width:360px;line-height:1.8}
+    .footer-col h4{font-size:.92rem;margin-bottom:12px}
+    .footer-col a,.footer-col p{display:block;color:var(--muted);font-size:.88rem;line-height:1.8}
+    .footer-bottom{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.84rem}
 
     .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:999px;animation:spin .7s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -180,6 +186,7 @@
       .upload-column{padding-right:0}
       .hero-visual-frame{max-width:500px}
       .howto-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .footer-grid{grid-template-columns:1fr 1fr}
     }
 
     @media (max-width: 760px){
@@ -195,6 +202,7 @@
       .carousel-arrow.left{left:0}
       .carousel-arrow.right{right:0}
       .howto-grid{grid-template-columns:1fr}
+      .footer-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -447,14 +455,29 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <span>&copy; 2026 Deepfake Detection. All rights reserved.</span>
-      <div class="footer-links">
-        <a href="/about">About</a>
-        <a href="/privacy-policy">Privacy Policy</a>
-        <a href="/deepfake-image-detection">Image Detection</a>
-        <a href="/deepfake-video-detection">Video Detection</a>
-        <a href="/deepfake-voice-detection">Voice Detection</a>
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</div>
+          <p class="footer-copy">Deepfake Detection is a free AI-powered tool that helps identify manipulated images, videos, and audio files to reduce fraud, misinformation, and impersonation risk.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Deepfake Detection Tools</h4>
+          <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+          <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+          <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <a href="/about">About Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p>hello@deepfakedetection.io</p>
+          <p>support@deepfakedetection.io</p>
+        </div>
       </div>
+      <div class="footer-bottom">&copy; 2026 Deepfake Detection. All rights reserved.</div>
     </div>
   </footer>
 
