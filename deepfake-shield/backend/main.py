@@ -1852,28 +1852,6 @@ def root() -> str:
             localStorage.removeItem(websiteStorageKey);
         }}
 
-        function websiteGoHome() {{
-            window.location.href = '/';
-        }}
-
-        function websiteGoSubscription() {{
-            const session = websiteGetSession();
-            if (session.userEmail && session.authStage === 'verified' && session.hasSub) {{
-                window.location.href = '/demo';
-                return;
-            }}
-
-            const accessSection = document.getElementById('access');
-            if (accessSection) {{
-                accessSection.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-            }}
-        }}
-
-        function websiteLogout() {{
-            websiteClearSession();
-            window.location.href = '/';
-        }}
-
         function websiteSetStatus(message, targetId = 'website-status') {{
             const element = document.getElementById(targetId);
             if (element) {{
@@ -2149,9 +2127,6 @@ def root() -> str:
             websiteSetStatus('Demo UTR inserted. Click Activate Premium.', 'website-dashboard-status');
         }});
         document.getElementById('web-activate-premium').addEventListener('click', websiteActivatePremium);
-        document.getElementById('nav-home').addEventListener('click', websiteGoHome);
-        document.getElementById('nav-subscription').addEventListener('click', websiteGoSubscription);
-        document.getElementById('nav-logout').addEventListener('click', websiteLogout);
 
         websiteRenderView(websiteGetSession());
     </script>
