@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Synthetic Media Shield",
+  "name": "Deepfake Detection",
   "version": "1.0.0",
   "description": "Real-time local deepfake scanning for visible videos.",
   "permissions": [
@@ -10,7 +10,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Synthetic Media Shield Dashboard"
+    "default_title": "Deepfake Detection Dashboard"
   },
   "host_permissions": [
     "http://127.0.0.1:8000/*",

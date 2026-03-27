@@ -1,6 +1,6 @@
-# Synthetic Media Shield
+# Deepfake Detection
 
-Synthetic Media Shield is a local demo stack for scanning visible video frames with a Chrome extension and a FastAPI backend.
+Deepfake Detection is a local demo stack for scanning visible video frames with a Chrome extension and a FastAPI backend.
 
 ## Project layout
 

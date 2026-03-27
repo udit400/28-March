@@ -116,13 +116,13 @@ def verify_otp_hash(email: str, otp: str, expected_hash: str) -> bool:
 def send_otp_email(receiver_email: str, otp: str, activity: str = "Login Attempt") -> tuple[bool, str]:
     message_body = (
         f"Activity: {activity}\n\n"
-        f"Your Synthetic Media Shield OTP is: {otp}\n"
+        f"Your Deepfake Detection OTP is: {otp}\n"
         f"This expires in {OTP_EXPIRY_MINUTES} minutes.\n"
         "If you did not request this code, you can ignore this email."
     )
     return send_activity_email(
         receiver_email=receiver_email,
-        subject=f"Synthetic Media Shield OTP: {activity}",
+        subject=f"Deepfake Detection OTP: {activity}",
         message_body=message_body,
     )
 

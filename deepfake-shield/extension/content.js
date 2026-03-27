@@ -238,7 +238,7 @@ async function analyzeVideo(video, button, badge, overlay) {
       tone
     });
   } catch (error) {
-    console.error("Synthetic Media Shield error", error);
+    console.error("Deepfake Detection error", error);
     setState(button, badge, overlay, {
       buttonLabel: "SERVER OFFLINE",
       badgeLabel: error.message || "Unable to reach the backend.",
@@ -296,7 +296,7 @@ function drawFallbackSnapshot(context, canvas, video) {
 
   context.fillStyle = "#b4fff6";
   context.font = "bold 28px Segoe UI";
-  context.fillText("Synthetic Media Shield", 40, 72);
+  context.fillText("Deepfake Detection", 40, 72);
 
   context.fillStyle = "#dce9ff";
   context.font = "18px Segoe UI";

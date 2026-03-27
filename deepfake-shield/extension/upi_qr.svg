@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
   <title id="title">UPI QR Placeholder</title>
-  <desc id="desc">Placeholder QR graphic for Synthetic Media Shield premium payment. Replace with your real PhonePe or UPI QR image for production.</desc>
+  <desc id="desc">Placeholder QR graphic for Deepfake Detection premium payment. Replace with your real PhonePe or UPI QR image for production.</desc>
   <rect width="240" height="240" fill="#ffffff"/>
   <rect x="16" y="16" width="208" height="208" rx="12" fill="#ffffff" stroke="#0b162d" stroke-width="6"/>
   <rect x="28" y="28" width="42" height="42" fill="#0b162d"/>

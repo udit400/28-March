@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deepfake Image Detection - Deepfake Detection</title>
+  <link rel="icon" type="image/png" href="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg:#f7f9fc;
+      --panel:#ffffff;
+      --ink:#13203a;
+      --muted:#70819b;
+      --line:#e6ecf5;
+      --accent:#2f66f3;
+      --accent-strong:#1f56ea;
+      --accent-soft:#eaf1ff;
+      --danger:#ef4444;
+      --shadow:0 8px 28px rgba(17, 24, 39, 0.06);
+      --shadow-lg:0 18px 48px rgba(17, 24, 39, 0.08);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    button,input{font:inherit}
+
+    .nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #f0f0f0;padding:0 32px}
+    .nav-inner{max-width:2589px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+    .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.5rem;color:#1a1a2e}
+    .nav-brand img{width:36px;height:36px}
+    .nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+    .nav-link{display:flex;align-items:center;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border-radius:8px;transition:color .15s}
+    .nav-link:hover{color:#1d4ed8}
+    .nav-link.active{color:#1d4ed8}
+    .nav-dropdown{position:relative}
+    .nav-dropdown-btn{display:flex;align-items:center;gap:5px;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border:none;background:none;cursor:pointer;border-radius:8px;font-family:inherit;transition:color .15s}
+    .nav-dropdown-btn:hover,.nav-dropdown-btn.active{color:#1d4ed8}
+    .nav-dropdown-btn i{font-size:.65rem;transition:transform .2s}
+    .nav-dropdown-menu{display:none;position:absolute;top:100%;right:0;min-width:220px;background:#fff;border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.1);padding:8px;margin-top:4px;z-index:200}
+    .nav-dropdown:hover .nav-dropdown-menu{display:block}
+    .nav-dropdown:hover .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown.open .nav-dropdown-menu{display:block}
+    .nav-dropdown.open .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown-menu a{display:block;padding:10px 16px;font-size:.9rem;color:#333;border-radius:8px;font-weight:500}
+    .nav-dropdown-menu a:hover,.nav-dropdown-menu a.active{background:#f5f7ff;color:#2563eb}
+
+    .container{max-width:1280px;margin:0 auto;padding:0 28px}
+
+    .hero{padding:52px 0 22px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.78rem;font-weight:700;margin-bottom:18px}
+    .hero h1{font-size:clamp(2.5rem,4vw,4rem);line-height:1.06;letter-spacing:-.04em;font-weight:800;margin-bottom:12px}
+    .hero p{max-width:700px;margin:0 auto;color:var(--muted);font-size:1.05rem}
+
+    .mode-tabs{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px}
+    .mode-tab{display:inline-flex;align-items:center;justify-content:center;min-width:64px;padding:8px 16px;border-radius:10px;background:#eef2f8;color:var(--muted);font-size:.84rem;font-weight:600;transition:all .18s ease}
+    .mode-tab.active{background:var(--accent);color:#fff}
+
+    .workbench{padding:10px 0 68px}
+    .workbench-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:18px;align-items:center;max-width:980px;margin:0 auto}
+    .upload-column{padding-right:10px}
+
+    .upload-zone{position:relative;display:flex;align-items:center;justify-content:center;min-height:220px;border:1.8px dashed #d7deeb;border-radius:18px;background:#fff;cursor:pointer;overflow:hidden;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:#fbfdff;transform:translateY(-1px)}
+    .upload-placeholder{text-align:center;padding:24px}
+    .upload-placeholder i{font-size:2.7rem;color:#7d8ca5;margin-bottom:16px}
+    .upload-placeholder h3{font-size:1.15rem;font-weight:700;margin-bottom:8px}
+    .upload-placeholder p{color:var(--muted);font-size:.95rem}
+    .upload-preview{display:none;position:absolute;inset:0;background:#fff}
+    .upload-zone.filled .upload-placeholder{display:none}
+    .upload-zone.filled .upload-preview{display:flex;align-items:center;justify-content:center;padding:14px}
+    .upload-preview img{width:100%;height:100%;object-fit:contain;border-radius:14px}
+    #file-input{display:none}
+
+    .proof-row{display:flex;align-items:center;justify-content:center;gap:14px;margin:12px 0 14px;flex-wrap:wrap}
+    .avatar-stack{display:flex;align-items:center}
+    .avatar-stack img{width:26px;height:26px;border-radius:999px;border:2px solid #fff;margin-left:-8px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .avatar-stack img:first-child{margin-left:0}
+    .rating{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+    .stars{display:flex;gap:2px;color:#fbbf24;font-size:.8rem}
+    .rating span{font-size:.78rem;color:var(--muted)}
+
+    .cta-row{text-align:center}
+    .detect-btn{display:inline-flex;align-items:center;justify-content:center;min-width:122px;padding:12px 26px;border:none;border-radius:8px;background:#9aa4b5;color:#fff;font-size:.88rem;font-weight:600;box-shadow:0 8px 20px rgba(148, 163, 184, .25);cursor:pointer;transition:all .18s ease}
+    .detect-btn.ready{background:var(--accent);box-shadow:0 10px 22px rgba(47, 102, 243, .28)}
+    .detect-btn:hover{transform:translateY(-1px)}
+    .detect-btn:disabled{cursor:not-allowed;transform:none}
+
+    .examples{margin-top:12px;text-align:center}
+    .examples p{color:var(--muted);font-size:.74rem;margin-bottom:10px}
+    .example-grid{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+    .example-btn{border:none;background:none;padding:0;cursor:pointer;border-radius:8px;overflow:hidden;box-shadow:0 0 0 2px transparent;transition:all .18s ease}
+    .example-btn:hover,.example-btn.active{box-shadow:0 0 0 2px var(--accent)}
+    .example-btn img{width:34px;height:34px;object-fit:cover}
+
+    .hero-visual{display:flex;flex-direction:column;align-items:center}
+    .hero-visual-frame{width:100%;max-width:420px;border-radius:18px;overflow:hidden;background:#fff;box-shadow:var(--shadow-lg)}
+    .hero-visual-frame img{width:100%;aspect-ratio:1.06/1;object-fit:cover}
+
+    .results-section{display:none;max-width:760px;margin:0 auto 56px}
+    .results-section.visible{display:block}
+    .result-card{background:transparent;border:none;border-radius:0;box-shadow:none;overflow:visible}
+    .result-head{text-align:center;margin-bottom:20px}
+    .result-head h2{font-size:clamp(2rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
+    .result-head p{color:var(--muted);font-size:1rem}
+    .result-head p span{color:var(--ink);font-weight:600}
+    .result-overview{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start;margin-bottom:28px}
+    .result-media{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+    .result-media img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px}
+    .result-side{display:grid;gap:14px}
+    .result-score-card{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;text-align:center;box-shadow:var(--shadow)}
+    .result-score-card .eyebrow{font-size:.9rem;color:#70819b;margin-bottom:6px}
+    .result-score-number{font-size:3.6rem;line-height:1;font-weight:300;color:var(--score-color,#f97316)}
+    .result-score-number span{font-size:1.8rem}
+    .result-summary-card{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+    .result-summary-card h3{text-align:center;font-size:1rem;font-weight:800;margin-bottom:8px}
+    .result-copy{color:#50627d;font-size:.96rem;line-height:1.8}
+    .result-breakdown-title{text-align:center;font-size:1.25rem;font-weight:800;margin:8px 0 18px}
+    .result-breakdown{display:grid;gap:16px}
+    .breakdown-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+    .breakdown-item.warning{border-color:#fb923c;background:#fff9f4}
+    .breakdown-item.safe{border-color:#bbf7d0;background:#f0fdf4}
+    .breakdown-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+    .breakdown-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:1.05rem;font-weight:700}
+    .breakdown-badge{display:inline-flex;align-items:center;justify-content:center;padding:3px 8px;border-radius:999px;background:#f97316;color:#fff;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+    .breakdown-score{font-size:2rem;font-weight:500;line-height:1;color:#f97316;white-space:nowrap}
+    .breakdown-score.low{color:#22c55e}
+    .breakdown-score.mid{color:#f59e0b}
+    .breakdown-score.high{color:#f97316}
+    .breakdown-desc{margin-top:8px;color:#5d6f89;font-size:.94rem;line-height:1.8}
+    .result-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:22px 0 0}
+    .btn-outline{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .18s ease}
+    .btn-outline:hover{border-color:#c7d5eb;color:var(--accent)}
+
+    .action-section{padding:30px 0 68px}
+    .section-heading{text-align:center;max-width:760px;margin:0 auto 30px}
+    .section-heading h2{font-size:clamp(2rem,3vw,2.55rem);font-weight:800;letter-spacing:-.03em;margin-bottom:10px}
+    .section-heading p{color:var(--muted);font-size:1rem}
+    .carousel{position:relative;max-width:980px;margin:0 auto}
+    .carousel-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 6px}
+    .carousel-track::-webkit-scrollbar{display:none}
+    .carousel-card{min-width:calc(33.333% - 10px);background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);scroll-snap-align:start}
+    .carousel-card img{width:100%;aspect-ratio:1/.98;object-fit:cover}
+    .carousel-body{padding:14px 16px 16px;text-align:center}
+    .carousel-body h3{font-size:.95rem;font-weight:700;margin-bottom:4px}
+    .carousel-score{color:var(--danger);font-weight:800;font-size:1rem;margin-right:4px}
+    .carousel-label{color:var(--muted);font-size:.86rem;font-weight:500}
+    .carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border:none;border-radius:999px;background:#fff;box-shadow:var(--shadow);color:#5f6f88;display:grid;place-items:center;cursor:pointer;z-index:2}
+    .carousel-arrow.left{left:-10px}
+    .carousel-arrow.right{right:-10px}
+
+    .howto{padding:12px 0 70px}
+    .howto-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;max-width:980px;margin:0 auto}
+    .howto-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px 16px}
+    .howto-num{width:28px;height:28px;border-radius:999px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:.82rem;font-weight:800;margin-bottom:14px}
+    .howto-card h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+    .howto-card p{font-size:.86rem;color:var(--muted);line-height:1.75}
+
+    .faq{padding:6px 0 72px}
+    .faq-list{max-width:860px;margin:0 auto}
+    .faq-item{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;font-size:.95rem;font-weight:700;cursor:pointer}
+    .faq-q i{color:var(--muted);transition:transform .2s ease}
+    .faq-a{display:none;padding:0 20px 18px;color:var(--muted);font-size:.92rem;line-height:1.75}
+    .faq-item.open .faq-a{display:block}
+    .faq-item.open .faq-q i{transform:rotate(180deg)}
+
+    .footer{border-top:1px solid var(--line);background:#fff}
+    .footer-inner{max-width:1280px;margin:0 auto;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:.86rem}
+    .footer-links{display:flex;gap:18px;flex-wrap:wrap}
+
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:999px;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media (max-width: 1024px){
+      .workbench-grid{grid-template-columns:1fr;max-width:680px}
+      .upload-column{padding-right:0}
+      .hero-visual-frame{max-width:500px}
+      .howto-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width: 760px){
+      .nav{padding:0 18px}
+      .nav-links{display:none}
+      .container{padding:0 18px}
+      .hero{padding-top:38px}
+      .hero h1{font-size:2.25rem}
+      .proof-row{gap:10px}
+      .result-overview{grid-template-columns:1fr}
+      .result-media{max-width:360px;margin:0 auto}
+      .carousel-card{min-width:85%}
+      .carousel-arrow.left{left:0}
+      .carousel-arrow.right{right:0}
+      .howto-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo">
+        <span>Deepfake Detection</span>
+      </a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <div class="nav-dropdown" id="toolsDropdown">
+          <button class="nav-dropdown-btn active" onclick="document.getElementById('toolsDropdown').classList.toggle('open')">
+            Deepfake Detection Tools <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="/deepfake-image-detection" class="active">Deepfake Image Detection</a>
+            <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+            <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+          </div>
+        </div>
+        <a href="/about" class="nav-link">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-badge"><i class="fa-solid fa-image"></i> AI Image Analysis</div>
+      <h1>Deepfake Image Detection Online</h1>
+      <p>Our Deepfake image detection free giving you a precise authenticity score. Protect your content with real-time analysis, designed for security and simplicity.</p>
+      <div class="mode-tabs">
+        <span class="mode-tab active">Image</span>
+        <a href="/deepfake-video-detection" class="mode-tab">Video</a>
+        <a href="/deepfake-voice-detection" class="mode-tab">Voice</a>
+      </div>
+    </section>
+
+    <section class="workbench">
+      <div class="workbench-grid">
+        <div class="upload-column">
+          <label class="upload-zone" id="upload-zone" for="file-input">
+            <div class="upload-placeholder">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <h3>Drag &amp; drop an image or click</h3>
+              <p>PNG, JPG, WEBP up to 3 MB</p>
+            </div>
+            <div class="upload-preview">
+              <img id="preview-img" alt="Selected preview image">
+            </div>
+            <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp">
+          </label>
+
+          <div class="proof-row">
+            <div class="avatar-stack" aria-hidden="true">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-4.webp" alt="">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-2.webp" alt="">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-3.webp" alt="">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-1.webp" alt="">
+            </div>
+            <div class="rating">
+              <div class="stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <span>18,000+ images analyzed successfully</span>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <button class="detect-btn" id="analyze-btn" type="button" disabled>Detect Forgery</button>
+          </div>
+
+          <div class="examples">
+            <p>Or try with example images:</p>
+            <div class="example-grid">
+              <button class="example-btn" type="button" data-url="https://deepfakedetection.io/images/reviews/User-review-1.webp" data-name="example-1.webp"><img src="https://deepfakedetection.io/images/reviews/User-review-1.webp" alt="Example 1"></button>
+              <button class="example-btn" type="button" data-url="https://deepfakedetection.io/images/reviews/User-review-2.webp" data-name="example-2.webp"><img src="https://deepfakedetection.io/images/reviews/User-review-2.webp" alt="Example 2"></button>
+              <button class="example-btn" type="button" data-url="https://deepfakedetection.io/images/reviews/User-review-3.webp" data-name="example-3.webp"><img src="https://deepfakedetection.io/images/reviews/User-review-3.webp" alt="Example 3"></button>
+              <button class="example-btn" type="button" data-url="https://deepfakedetection.io/images/reviews/User-review-4.webp" data-name="example-4.webp"><img src="https://deepfakedetection.io/images/reviews/User-review-4.webp" alt="Example 4"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-visual-frame">
+            <img src="https://deepfakedetection.io/images/page/fake-true-hero.webp" alt="Real versus fake image comparison">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-section" id="results-section">
+      <div class="result-card">
+        <div class="result-head">
+          <h2>Detection Report</h2>
+          <p>Image Type: <span id="result-image-type">Uploaded Image</span></p>
+        </div>
+        <div class="result-overview">
+          <div class="result-media">
+            <img id="result-preview" alt="Analyzed image preview">
+          </div>
+          <div class="result-side">
+            <div class="result-score-card">
+              <div class="eyebrow">Overall Forgery Score</div>
+              <div class="result-score-number" id="gauge-value">0<span>%</span></div>
+            </div>
+            <div class="result-summary-card">
+              <h3>Analysis Summary</h3>
+              <div class="result-copy" id="result-explanation">No analysis has been run yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-breakdown-title">Detailed Breakdown</div>
+        <div class="result-breakdown" id="result-breakdown">
+          <div class="breakdown-item">
+            <div class="breakdown-top">
+              <div class="breakdown-title">Waiting for analysis</div>
+              <div class="breakdown-score mid">0%</div>
+            </div>
+            <div class="breakdown-desc">Upload an image and run detection to populate a detailed breakdown.</div>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-outline" id="btn-new-scan" type="button"><i class="fa-solid fa-rotate-right"></i> New Scan</button>
+          <button class="btn-outline" id="btn-copy-result" type="button"><i class="fa-solid fa-copy"></i> Copy Result</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="action-section">
+      <div class="section-heading">
+        <h2>Deepfake Image Detection in Action: Protecting Your Assets</h2>
+        <p>Learn how our deepfake detection technology helped an influencer avoid identity theft by identifying fake images used in a fraudulent campaign.</p>
+      </div>
+
+      <div class="carousel">
+        <button class="carousel-arrow left" type="button" onclick="scrollImageCases(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="carousel-track" id="imageCaseTrack">
+          <article class="carousel-card">
+            <img src="https://deepfakedetection.io/images/page/image-fake-info6.webp" alt="Deepfake financial data">
+            <div class="carousel-body">
+              <h3>Deepfake financial data</h3>
+              <span class="carousel-score">87%</span><span class="carousel-label">Deepfake</span>
+            </div>
+          </article>
+          <article class="carousel-card">
+            <img src="https://deepfakedetection.io/images/page/image-fake-info.webp" alt="Deepfake phishing info">
+            <div class="carousel-body">
+              <h3>Deepfake phishing info</h3>
+              <span class="carousel-score">45%</span><span class="carousel-label">Deepfake</span>
+            </div>
+          </article>
+          <article class="carousel-card">
+            <img src="https://deepfakedetection.io/images/page/image-fake-info2.webp" alt="Deepfake video calls">
+            <div class="carousel-body">
+              <h3>Deepfake video calls</h3>
+              <span class="carousel-score">92%</span><span class="carousel-label">Deepfake</span>
+            </div>
+          </article>
+          <article class="carousel-card">
+            <img src="https://deepfakedetection.io/images/page/image-fake-info3.webp" alt="Deepfake family information">
+            <div class="carousel-body">
+              <h3>Deepfake family information</h3>
+              <span class="carousel-score">31%</span><span class="carousel-label">Deepfake</span>
+            </div>
+          </article>
+          <article class="carousel-card">
+            <img src="https://deepfakedetection.io/images/page/image-fake-info4.webp" alt="Deepfake job offers">
+            <div class="carousel-body">
+              <h3>Deepfake job offers</h3>
+              <span class="carousel-score">78%</span><span class="carousel-label">Deepfake</span>
+            </div>
+          </article>
+          <article class="carousel-card">
+            <img src="https://deepfakedetection.io/images/page/image-fake-info5.webp" alt="Deepfake celebrity info">
+            <div class="carousel-body">
+              <h3>Deepfake celebrity info</h3>
+              <span class="carousel-score">56%</span><span class="carousel-label">Deepfake</span>
+            </div>
+          </article>
+        </div>
+        <button class="carousel-arrow right" type="button" onclick="scrollImageCases(1)"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </section>
+
+    <section class="howto">
+      <div class="section-heading">
+        <h2>How to Use Deepfake Image Detection</h2>
+        <p>It&apos;s super easy. Just upload a photo, let our AI Deepfake Image Detection do the work, and get a full report in seconds.</p>
+      </div>
+      <div class="howto-grid">
+        <article class="howto-card">
+          <div class="howto-num">1</div>
+          <h3>Upload Your Image</h3>
+          <p>Click the upload button and select any photo you want to check. You can drag and drop too. We support JPG, PNG, and WEBP images up to 3 MB.</p>
+        </article>
+        <article class="howto-card">
+          <div class="howto-num">2</div>
+          <h3>Detect Image</h3>
+          <p>Once uploaded, our AI gets to work fast. It scans for clues like lighting, shadows, pixel noise, and face textures linked to deepfake generation.</p>
+        </article>
+        <article class="howto-card">
+          <div class="howto-num">3</div>
+          <h3>Review the Detection Report</h3>
+          <p>In a few seconds, you&apos;ll see a summary showing the authenticity score, plain-language explanation, and detailed metadata-driven indicators.</p>
+        </article>
+        <article class="howto-card">
+          <div class="howto-num">4</div>
+          <h3>Download or Share</h3>
+          <p>Keep the results or share them with your team. You can copy the analysis summary and rerun the scan anytime from the same page.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="faq">
+      <div class="section-heading">
+        <h2>Frequently Asked Questions</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q"><span>What is deepfake image detection?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">Deepfake image detection uses AI to figure out whether an image has been manipulated or generated artificially. The analysis checks for lighting glitches, strange textures, metadata issues, and other forensic clues.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>Is the deepfake detector 100% accurate?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">No detector is perfect. Results should be treated as a strong signal, not an absolute guarantee. That&apos;s why the report includes both a score and an explanation.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>Is my data safe?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">Yes. Images are processed by your backend and not stored permanently by the page. You can scan sensitive files without creating an account.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>What file types does the product support?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">The page supports JPG, JPEG, PNG, and WEBP. The current UI is designed around a 3 MB limit for quick uploads and fast scans.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>How do I interpret the detection results?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">You&apos;ll get an overall forgery score, a verdict, and a plain-language explanation. Lower scores suggest the image looks authentic, while higher scores mean more suspicious patterns were detected.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 Deepfake Detection. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/deepfake-image-detection">Image Detection</a>
+        <a href="/deepfake-video-detection">Video Detection</a>
+        <a href="/deepfake-voice-detection">Voice Detection</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const uploadZone = document.getElementById('upload-zone');
+    const fileInput = document.getElementById('file-input');
+    const previewImg = document.getElementById('preview-img');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const resultsSection = document.getElementById('results-section');
+    const resultPreview = document.getElementById('result-preview');
+    const resultBreakdown = document.getElementById('result-breakdown');
+    const exampleButtons = Array.from(document.querySelectorAll('.example-btn'));
+
+    let selectedFile = null;
+    let previewSrc = '';
+
+    function setReadyState(isReady) {
+      analyzeBtn.disabled = !isReady;
+      analyzeBtn.classList.toggle('ready', isReady);
+    }
+
+    function setPreview(src) {
+      previewSrc = src;
+      previewImg.src = src;
+      uploadZone.classList.add('filled');
+      setReadyState(true);
+      exampleButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.url === src);
+      });
+    }
+
+    function resetExamples() {
+      exampleButtons.forEach((button) => button.classList.remove('active'));
+    }
+
+    async function createFileFromUrl(url, name) {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Could not load example image.');
+      const blob = await response.blob();
+      return new File([blob], name, { type: blob.type || 'image/webp' });
+    }
+
+    function handleFile(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      if (file.size > 3 * 1024 * 1024) {
+        alert('Please choose an image up to 3 MB.');
+        return;
+      }
+      selectedFile = file;
+      resetExamples();
+      const reader = new FileReader();
+      reader.onload = (event) => setPreview(event.target.result);
+      reader.readAsDataURL(file);
+      resultsSection.classList.remove('visible');
+    }
+
+    uploadZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const file = event.dataTransfer.files[0];
+      handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) handleFile(fileInput.files[0]);
+    });
+
+    exampleButtons.forEach((button) => {
+      button.addEventListener('click', async () => {
+        try {
+          const url = button.dataset.url;
+          selectedFile = await createFileFromUrl(url, button.dataset.name);
+          setPreview(url);
+          exampleButtons.forEach((item) => item.classList.toggle('active', item === button));
+          resultsSection.classList.remove('visible');
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+    });
+
+    analyzeBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      analyzeBtn.disabled = true;
+      analyzeBtn.innerHTML = '<span class="spinner"></span> Detecting...';
+      resultsSection.classList.add('visible');
+      resultPreview.src = previewSrc;
+      document.getElementById('result-image-type').textContent = getImageTypeLabel();
+      document.getElementById('result-explanation').textContent = 'The detection engine is processing your upload.';
+      document.getElementById('gauge-value').innerHTML = '0<span>%</span>';
+      document.querySelector('.result-score-number').style.setProperty('--score-color', '#f59e0b');
+      renderBreakdown([
+        {
+          title: 'Scanning upload',
+          description: 'The backend is checking visual patterns, metadata consistency, and possible synthetic artifacts.',
+          score: 0,
+          tone: 'mid',
+          badge: ''
+        }
+      ]);
+
+      try {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        const response = await fetch('/analyze-full-media', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.detail || 'Analysis failed.');
+        renderResult(data);
+      } catch (error) {
+        document.getElementById('result-image-type').textContent = getImageTypeLabel();
+        document.getElementById('result-explanation').textContent = 'The image could not be analyzed. Try a different file or verify that the backend is running.';
+        document.getElementById('gauge-value').textContent = 'N/A';
+        document.querySelector('.result-score-number').style.color = '#ef4444';
+        renderBreakdown([
+          {
+            title: 'Analysis error',
+            description: error.message,
+            score: 100,
+            tone: 'high',
+            badge: 'Warning'
+          }
+        ]);
+      } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.innerHTML = 'Detect Forgery';
+        setReadyState(Boolean(selectedFile));
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    function renderResult(data) {
+      const score = Math.round(data.overall_threat_score || data.visual_deepfake_score || data.fake_score || 0);
+      const metadata = data.metadata || {};
+      document.getElementById('result-image-type').textContent = getImageTypeLabel();
+      document.getElementById('gauge-value').innerHTML = score + '<span>%</span>';
+      document.querySelector('.result-score-number').style.color = score >= 66 ? '#ef4444' : score >= 35 ? '#f97316' : '#22c55e';
+      document.getElementById('result-explanation').textContent = data.explanation || 'No additional explanation is available for this scan.';
+      renderBreakdown(buildBreakdownItems(data, score, metadata));
+    }
+
+    function getImageTypeLabel() {
+      const width = resultPreview.naturalWidth || previewImg.naturalWidth || 0;
+      const height = resultPreview.naturalHeight || previewImg.naturalHeight || 0;
+      if (!width || !height) return 'Uploaded Image';
+      if (height > width * 1.05) return 'Portrait Photo';
+      if (width > height * 1.05) return 'Landscape Photo';
+      return 'Square Image';
+    }
+
+    function getTone(score) {
+      if (score >= 50) return 'high';
+      if (score <= 25) return 'low';
+      return 'mid';
+    }
+
+    function toneClass(score) {
+      const tone = getTone(score);
+      return tone === 'high' ? 'warning' : tone === 'low' ? 'safe' : '';
+    }
+
+    function makeSentence(text, fallback) {
+      const cleaned = (text || '').trim();
+      if (!cleaned) return fallback;
+      return /[.!?]$/.test(cleaned) ? cleaned : cleaned + '.';
+    }
+
+    function buildBreakdownItems(data, score, metadata) {
+      const items = [];
+      const summary = makeSentence(data.analysis_summary, 'The detector completed its review of the uploaded image.');
+      const provenance = metadata.c2pa_signature || 'No AI Signature Detected';
+      const source = metadata.is_original || 'Unknown';
+      const software = metadata.software_platform || 'Unknown';
+      const camera = metadata.camera_device || 'Unknown';
+      const created = metadata.creation_date || 'Unknown';
+
+      items.push({
+        title: score >= 66 ? 'Strong Forgery Indicators' : score >= 35 ? 'Suspicious Pattern Level' : 'Authenticity Signal',
+        description: summary,
+        score,
+        badge: score >= 50 ? 'Warning' : ''
+      });
+
+      items.push({
+        title: 'AI Provenance Marker',
+        description: provenance === 'No AI Signature Detected'
+          ? 'No explicit AI provenance marker was found in the file metadata.'
+          : 'The file metadata contains an AI provenance marker or platform signature that may indicate generated content.',
+        score: provenance === 'No AI Signature Detected' ? Math.min(24, Math.max(10, Math.round(score * 0.35))) : Math.max(55, Math.round(score * 0.9)),
+        badge: provenance === 'No AI Signature Detected' ? '' : 'Warning'
+      });
+
+      items.push({
+        title: 'Source Integrity',
+        description: source === 'Likely a Copy/Stripped (Social Media)'
+          ? 'The file appears to be a repost or stripped copy, so there are fewer original details available for inspection.'
+          : source === 'Original File (EXIF Intact)'
+            ? 'The image still carries its original metadata, which improves traceability and lowers suspicion.'
+            : 'The original-source signal is limited, so authenticity has to rely more heavily on visual inspection.',
+        score: source === 'Likely a Copy/Stripped (Social Media)' ? Math.max(50, Math.round(score * 0.85)) : source === 'Original File (EXIF Intact)' ? 18 : Math.max(30, Math.round(score * 0.55)),
+        badge: source === 'Likely a Copy/Stripped (Social Media)' ? 'Warning' : ''
+      });
+
+      items.push({
+        title: 'Editing Software Trace',
+        description: software !== 'Unknown'
+          ? 'Metadata shows the file was touched by ' + software + ', which can be normal editing or a clue that the image was processed after capture.'
+          : 'No editing software trace was exposed in metadata, so there is less direct evidence of post-processing history.',
+        score: software !== 'Unknown' ? Math.max(42, Math.round(score * 0.72)) : Math.min(24, Math.max(12, Math.round(score * 0.32))),
+        badge: software !== 'Unknown' && score >= 35 ? 'Warning' : ''
+      });
+
+      items.push({
+        title: 'Capture Metadata Availability',
+        description: created !== 'Unknown' || camera !== 'Unknown'
+          ? 'Capture clues are available' + (camera !== 'Unknown' ? ' from ' + camera : '') + (created !== 'Unknown' ? ', dated ' + created : '') + ', which helps validate the image history.'
+          : 'No reliable camera or capture-date metadata was available, which reduces the number of authenticity checks that can be performed.',
+        score: created !== 'Unknown' || camera !== 'Unknown' ? 20 : Math.max(28, Math.round(score * 0.48)),
+        badge: created !== 'Unknown' || camera !== 'Unknown' ? '' : 'Warning'
+      });
+
+      if (data.proof_hash) {
+        items.push({
+          title: 'Report Verification Hash',
+          description: 'A proof hash was generated for this analysis, which helps verify the report output after the scan is complete.',
+          score: 12,
+          badge: ''
+        });
+      }
+
+      return items.slice(0, 6);
+    }
+
+    function renderBreakdown(items) {
+      resultBreakdown.innerHTML = items.map((item) => {
+        const score = Math.max(0, Math.min(100, Math.round(item.score || 0)));
+        const tone = getTone(score);
+        const cardClass = toneClass(score);
+        return `
+          <div class="breakdown-item ${cardClass}">
+            <div class="breakdown-top">
+              <div class="breakdown-title">
+                <span>${item.title}</span>
+                ${item.badge ? `<span class="breakdown-badge">${item.badge}</span>` : ''}
+              </div>
+              <div class="breakdown-score ${tone}">${score}%</div>
+            </div>
+            <div class="breakdown-desc">${item.description}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('btn-new-scan').addEventListener('click', () => {
+      selectedFile = null;
+      previewSrc = '';
+      fileInput.value = '';
+      uploadZone.classList.remove('filled');
+      resetExamples();
+      resultsSection.classList.remove('visible');
+      setReadyState(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-copy-result').addEventListener('click', async () => {
+      const text = [
+        'Deepfake Image Detection Result',
+        'Verdict: ' + document.getElementById('verdict-title').textContent,
+        'Score: ' + document.getElementById('gauge-value').textContent,
+        '',
+        document.getElementById('result-explanation').textContent
+      ].join('\n');
+
+      try {
+        await navigator.clipboard.writeText(text);
+        const button = document.getElementById('btn-copy-result');
+        button.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+        setTimeout(() => {
+          button.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Result';
+        }, 1800);
+      } catch (error) {
+        alert('Could not copy the result.');
+      }
+    });
+
+    document.querySelectorAll('.faq-q').forEach((item) => {
+      item.addEventListener('click', () => {
+        item.parentElement.classList.toggle('open');
+      });
+    });
+
+    window.scrollImageCases = function(dir) {
+      const track = document.getElementById('imageCaseTrack');
+      const card = track.querySelector('.carousel-card');
+      if (!card) return;
+      track.scrollBy({ left: dir * (card.offsetWidth + 14), behavior: 'smooth' });
+    };
+
+    setReadyState(false);
+  </script>
+</body>
+</html>

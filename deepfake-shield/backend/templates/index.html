@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Deepfake Detection - AI Deepfake Detection Online Free</title>
+  <link rel="icon" type="image/png" href="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1a1a2e;background:#fff;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* ── NAV ── */
+    .nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #f0f0f0;padding:0 32px}
+    .nav-inner{max-width:2589px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+    .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.5rem;color:#1a1a2e}
+    .nav-brand img,.nav-brand svg{width:32px;height:32px}
+    .nav-brand-icon{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:grid;place-items:center}
+    .nav-brand-icon i{color:#fff;font-size:.85rem}
+    .nav-links{display:flex;align-items:center;gap:4px}
+    .nav-link{display:flex;align-items:center;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border-radius:8px;transition:color .15s}
+    .nav-link:hover{color:#1d4ed8}
+    .nav-link.active{color:#1d4ed8}
+    .nav-dropdown{position:relative}
+    .nav-dropdown-btn{display:flex;align-items:center;gap:5px;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border:none;background:none;cursor:pointer;border-radius:8px;font-family:inherit;transition:color .15s}
+    .nav-dropdown-btn:hover{color:#1d4ed8}
+    .nav-dropdown-btn i{font-size:.65rem;transition:transform .2s}
+    .nav-dropdown-menu{display:none;position:absolute;top:100%;right:0;min-width:220px;background:#fff;border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.1);padding:8px;margin-top:4px;z-index:200}
+    .nav-dropdown:hover .nav-dropdown-menu{display:block}
+    .nav-dropdown:hover .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown.open .nav-dropdown-menu{display:block}
+    .nav-dropdown.open .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown-menu a{display:block;padding:10px 16px;font-size:.9rem;color:#333;border-radius:8px;font-weight:500}
+    .nav-dropdown-menu a:hover{background:#f5f7ff;color:#2563eb}
+
+    /* ── HERO ── */
+    .hero{max-width:1200px;margin:0 auto;padding:64px 32px 48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    .hero-content h1{font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;color:#1a1a2e;margin-bottom:20px}
+    .hero-content p{color:#555;font-size:1.05rem;line-height:1.7;margin-bottom:28px;max-width:500px}
+    .hero-social{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+    .avatar-stack{display:flex}
+    .avatar-stack span{width:36px;height:36px;border-radius:50%;border:2px solid #fff;margin-left:-10px;background:#ddd;display:inline-block;overflow:hidden;background-size:cover;background-position:center}
+    .avatar-stack span:first-child{margin-left:0}
+    .avatar-stack .a1{background-image:url('https://deepfakedetection.io/images/reviews/User-review-1.webp');background-size:cover;background-position:center}
+    .avatar-stack .a2{background-image:url('https://deepfakedetection.io/images/reviews/User-review-2.webp');background-size:cover;background-position:center}
+    .avatar-stack .a3{background-image:url('https://deepfakedetection.io/images/reviews/User-review-3.webp');background-size:cover;background-position:center}
+    .avatar-stack .a4{background-image:url('https://deepfakedetection.io/images/reviews/User-review-4.webp');background-size:cover;background-position:center}
+    .hero-stars{display:flex;align-items:center;gap:6px}
+    .hero-stars i{color:#f59e0b;font-size:.85rem}
+    .hero-stars span{color:#555;font-size:.85rem;font-weight:500}
+    .hero-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:#2563eb;color:#fff;font-weight:600;font-size:.95rem;border-radius:10px;border:none;cursor:pointer;transition:all .15s;text-decoration:none !important}
+    .hero-btn:hover{background:#1d4ed8;transform:translateY(-1px)}
+    .hero-btn i{font-size:.8rem}
+    .hero-image{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.12)}
+    .hero-image img{width:100%;aspect-ratio:4/3;object-fit:cover}
+    .hero-image-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#1a1a2e 0%,#2d2d44 50%,#1a1a2e 100%);position:relative;display:flex}
+    .hero-image-placeholder .side{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
+    .hero-image-placeholder .side::after{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);padding:4px 16px;border-radius:6px;font-size:.75rem;font-weight:600;color:#fff}
+    .hero-image-placeholder .fake-side{background:linear-gradient(135deg,#1e293b,#334155)}
+    .hero-image-placeholder .fake-side::after{content:"Fake";background:rgba(239,68,68,.8)}
+    .hero-image-placeholder .true-side{background:linear-gradient(135deg,#334155,#475569)}
+    .hero-image-placeholder .true-side::after{content:"True";background:rgba(34,197,94,.8)}
+    .face-icon{font-size:4rem;color:rgba(255,255,255,.25)}
+
+    /* ── GALLERY ── */
+    .gallery-section{padding:64px 0;background:#f8fafc}
+    .gallery-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+    .gallery-inner h2{text-align:center;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#1a1a2e;margin-bottom:12px}
+    .gallery-inner>p{text-align:center;color:#555;max-width:640px;margin:0 auto 40px;font-size:1rem;line-height:1.7}
+    .gallery-carousel{position:relative;overflow:hidden;margin:0 -32px;padding:0 32px}
+    .gallery-track{display:flex;gap:20px;overflow:hidden;transition:transform .5s ease}
+    .gallery-card{min-width:calc(60% - 10px);border-radius:16px;background:#fff;border:1px solid #e8e8e8;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);flex-shrink:0;transition:transform .3s,opacity .3s}
+    .gallery-card-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e2e8f0}
+    .gallery-card-img-placeholder{width:100%;aspect-ratio:4/3;display:grid;place-items:center;font-size:2.5rem;color:#94a3b8}
+    .gc-blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
+    .gc-purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe)}
+    .gc-green{background:linear-gradient(135deg,#d1fae5,#a7f3d0)}
+    .gc-amber{background:linear-gradient(135deg,#fef3c7,#fde68a)}
+    .gc-pink{background:linear-gradient(135deg,#fce7f3,#fbcfe8)}
+    .gc-slate{background:linear-gradient(135deg,#e2e8f0,#cbd5e1)}
+    .gallery-card-body{padding:16px 20px;text-align:center}
+    .gallery-card-body h3{font-size:.95rem;font-weight:600;margin-bottom:4px;color:#1a1a2e}
+    .gallery-card-body .score{font-weight:700;margin-right:4px}
+    .gallery-card-body .score.red{color:#ef4444}
+    .gallery-card-body .score.amber{color:#f59e0b}
+    .gallery-card-body .score.green{color:#22c55e}
+    .gallery-card-body .label{color:#888;font-size:.85rem;font-weight:500}
+    .gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:#fff;border:1px solid #e0e0e0;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);z-index:5;font-size:.9rem;color:#555;transition:all .15s}
+    .gallery-arrow:hover{background:#f5f5f5;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+    .gallery-arrow.left{left:8px}
+    .gallery-arrow.right{right:8px}
+    .gallery-dots{display:flex;justify-content:center;gap:8px;margin-top:24px}
+    .gallery-dot{width:10px;height:10px;border-radius:50%;background:#cbd5e1;border:none;cursor:pointer;padding:0;transition:background .2s}
+    .gallery-dot.active{background:#1a1a2e}
+
+    /* ── HOW TO ── */
+    .howto-section{padding:64px 32px;background:#fff}
+    .howto-inner{max-width:1200px;margin:0 auto}
+    .howto-inner h2{text-align:center;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#1a1a2e;margin-bottom:8px}
+    .howto-inner>p{text-align:center;color:#555;max-width:560px;margin:0 auto 48px;font-size:1rem}
+    .howto-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px}
+    .howto-card{padding:28px;border-radius:16px;background:#f8fafc;border:1px solid #eff1f3}
+    .howto-card .step-num{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;color:#2563eb;margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
+    .howto-card h3{font-size:1.05rem;font-weight:700;color:#1a1a2e;margin-bottom:8px}
+    .howto-card p{color:#555;font-size:.9rem;line-height:1.7}
+    .howto-image{border-radius:16px;overflow:hidden;background:#f8fafc;min-height:300px;border:1px solid #e2e8f0;padding:40px 32px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+    .howto-image i{font-size:4rem;color:#cbd5e1}
+    .howto-cta{text-align:center;margin-top:32px}
+
+    /* How-to mockup cards */
+    .mockup-card{background:#fff;border-radius:16px;padding:28px 24px;box-shadow:0 2px 16px rgba(0,0,0,.06);border:1px solid #f0f0f0}
+    .mockup-step-badge{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:#2563eb;color:#fff;font-weight:700;font-size:1rem;margin-right:12px;flex-shrink:0}
+    .mockup-step-title{display:flex;align-items:center;margin-bottom:20px}
+    .mockup-step-title span{font-size:1.15rem;font-weight:700;color:#1a1a2e}
+
+    .upload-zone{border:2px dashed #c5cee0;border-radius:12px;padding:40px 20px;text-align:center;background:#fafbfd}
+    .upload-zone .upload-icon{font-size:2.4rem;color:#94a3b8;margin-bottom:10px}
+    .upload-zone p{color:#555;font-size:.88rem;margin:0}
+    .upload-zone .sub{color:#94a3b8;font-size:.78rem;margin-top:4px}
+
+    .submit-preview{border:2px solid #e8ecf1;border-radius:12px;padding:16px;text-align:center;background:#fafbfd;position:relative}
+    .submit-preview img{width:180px;height:140px;object-fit:cover;border-radius:8px}
+    .submit-close{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:#333;color:#fff;border:none;font-size:1rem;display:grid;place-items:center;cursor:pointer}
+    .detect-btn{display:inline-block;margin-top:16px;padding:10px 28px;border-radius:6px;background:#4f46e5;color:#fff;font-weight:600;font-size:.9rem;border:none;cursor:pointer}
+    .hand-cursor{font-size:2rem;color:#bbb;margin-top:10px;text-align:center}
+
+    .result-card{background:#fff;border-radius:16px;padding:28px 24px;box-shadow:0 2px 16px rgba(0,0,0,.06);border:1px solid #f0f0f0}
+    .report-header{font-size:1.1rem;font-weight:700;text-align:center;color:#1a1a2e;margin-bottom:4px}
+    .report-subheader{text-align:center;font-size:.8rem;color:#888;margin-bottom:16px}
+    .report-subheader b{color:#2563eb}
+    .report-top{display:flex;gap:16px;margin-bottom:16px;align-items:start}
+    .report-top img{width:110px;height:110px;object-fit:cover;border-radius:12px;flex-shrink:0}
+    .report-score-box{text-align:center;flex:1}
+    .report-score-label{font-size:.75rem;color:#888;margin-bottom:4px}
+    .report-score-num{font-size:2.4rem;font-weight:800;color:#f59e0b}
+    .report-score-num sup{font-size:1rem;font-weight:600}
+    .report-summary-title{font-size:.85rem;font-weight:700;text-align:center;margin:8px 0 6px;color:#1a1a2e}
+    .report-summary-text{font-size:.72rem;color:#666;line-height:1.5;text-align:center}
+    .report-breakdown-title{font-size:.85rem;font-weight:700;text-align:center;margin:16px 0 10px;color:#1a1a2e}
+    .breakdown-item{display:flex;justify-content:space-between;align-items:start;padding:12px 0;border-top:1px solid #f0f0f0}
+    .breakdown-item-left{flex:1}
+    .breakdown-item-left h4{font-size:.82rem;font-weight:600;color:#1a1a2e;margin:0 0 4px}
+    .breakdown-item-left p{font-size:.7rem;color:#888;margin:0;line-height:1.4}
+    .breakdown-score{font-size:.95rem;font-weight:700;color:#f59e0b;flex-shrink:0;margin-left:12px}
+
+    @media(max-width:768px){.howto-image{grid-template-columns:1fr;padding:24px 16px}}
+
+    /* ── USE CASES ── */
+    .usecase-section{padding:80px 32px}
+    .usecase-inner{max-width:1200px;margin:0 auto}
+    .usecase-block{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-bottom:80px}
+    .usecase-block:nth-child(even){direction:rtl}
+    .usecase-block:nth-child(even)>*{direction:ltr}
+    .usecase-text h2{font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:800;color:#1a1a2e;margin-bottom:16px;line-height:1.3}
+    .usecase-text p{color:#555;font-size:.95rem;line-height:1.8;margin-bottom:24px}
+    .usecase-img{border-radius:16px;overflow:hidden;background:#f1f5f9;aspect-ratio:16/10;display:grid;place-items:center;border:1px solid #e2e8f0}
+    .usecase-img i{font-size:4rem;color:#cbd5e1}
+
+    /* ── TRUST ── */
+    .trust-section{padding:64px 32px;background:#f8fafc}
+    .trust-inner{max-width:1200px;margin:0 auto}
+    .trust-inner h2{text-align:center;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#1a1a2e;margin-bottom:40px}
+    .trust-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+    .trust-card{padding:28px;border-radius:16px;background:#fff;border:1px solid #e8e8e8}
+    .trust-card h3{font-size:1.05rem;font-weight:700;color:#1a1a2e;margin-bottom:8px}
+    .trust-card p{color:#555;font-size:.9rem;line-height:1.7}
+
+    /* ── TESTIMONIAL ── */
+    .testimonial-section{padding:64px 32px;background:#fff}
+    .testimonial-inner{max-width:800px;margin:0 auto}
+    .testimonial-box{padding:40px;border-radius:20px;background:#f8fafc;border:1px solid #eff1f3;position:relative}
+    .testimonial-box blockquote{font-size:1.05rem;color:#333;line-height:1.8;font-style:italic;margin-bottom:24px}
+    .testimonial-author{display:flex;align-items:center;gap:12px}
+    .testimonial-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:grid;place-items:center;color:#fff;font-weight:700;font-size:1rem}
+    .testimonial-meta strong{display:block;color:#1a1a2e;font-size:.95rem}
+    .testimonial-meta span{color:#888;font-size:.85rem}
+    .testimonial-rating{display:flex;gap:3px;margin-top:4px}
+    .testimonial-rating i{color:#f59e0b;font-size:.75rem}
+    .testimonial-nav{display:flex;justify-content:center;gap:8px;margin-top:24px}
+    .testimonial-dot{width:10px;height:10px;border-radius:50%;background:#ddd;cursor:pointer;border:none;padding:0}
+    .testimonial-dot.active{background:#2563eb}
+
+    /* ── FAQ ── */
+    .faq-section{padding:64px 32px;background:#f8fafc}
+    .faq-inner{max-width:760px;margin:0 auto}
+    .faq-inner h2{text-align:center;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#1a1a2e;margin-bottom:32px}
+    .faq-item{border-bottom:1px solid #e2e8f0}
+    .faq-q{width:100%;padding:20px 0;border:none;background:none;text-align:left;font:inherit;font-size:1rem;font-weight:600;color:#1a1a2e;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px}
+    .faq-q i{color:#999;font-size:.8rem;transition:transform .2s;flex-shrink:0}
+    .faq-a{max-height:0;overflow:hidden;color:#555;font-size:.9rem;line-height:1.8;transition:max-height .3s ease,padding .3s ease}
+    .faq-item.open .faq-a{max-height:500px;padding-bottom:20px}
+    .faq-item.open .faq-q i{transform:rotate(180deg)}
+
+    /* ── CTA ── */
+    .cta-section{padding:64px 32px;background:#fff}
+    .cta-inner{max-width:700px;margin:0 auto;text-align:center}
+    .cta-inner h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#1a1a2e;margin-bottom:12px}
+    .cta-inner p{color:#555;margin-bottom:28px;font-size:1.05rem}
+
+    /* ── FOOTER ── */
+    .site-footer{padding:48px 32px 32px;background:#f8fafc;border-top:1px solid #eff1f3}
+    .footer-inner{max-width:1200px;margin:0 auto}
+    .footer-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:32px}
+    .footer-col h4{font-size:.9rem;font-weight:700;color:#1a1a2e;margin-bottom:14px}
+    .footer-col p{color:#888;font-size:.85rem;line-height:1.7}
+    .footer-col a{display:block;color:#555;font-size:.85rem;padding:3px 0;transition:color .15s}
+    .footer-col a:hover{color:#2563eb}
+    .footer-brand{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-weight:700;color:#1a1a2e;font-size:.95rem}
+    .footer-brand .nav-brand-icon{width:28px;height:28px}
+    .footer-brand .nav-brand-icon i{font-size:.7rem}
+    .footer-bottom{padding-top:24px;border-top:1px solid #e8e8e8;color:#999;font-size:.8rem;text-align:center}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr;text-align:center;padding:40px 20px 32px}
+      .hero-content p{margin-left:auto;margin-right:auto}
+      .hero-social{justify-content:center}
+      .gallery-card{min-width:calc(50% - 10px)}
+      .howto-grid{grid-template-columns:1fr}
+      .usecase-block,.usecase-block:nth-child(even){grid-template-columns:1fr;direction:ltr}
+      .trust-grid{grid-template-columns:1fr}
+      .footer-cols{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:640px){
+      .nav-links{display:none}
+      .gallery-card{min-width:calc(100% - 0px)}
+      .footer-cols{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo" style="width:36px;height:36px">
+      Deepfake Detection
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link active">Home</a>
+      <div class="nav-dropdown" id="toolsDropdown">
+        <button class="nav-dropdown-btn" onclick="document.getElementById('toolsDropdown').classList.toggle('open')">
+          Deepfake Detection Tools <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+          <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+          <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+        </div>
+      </div>
+      <a href="/about" class="nav-link">About</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>AI Deepfake Detection Online Free</h1>
+    <p>Use our AI deepfake detection tool to quickly check if an image, video, or voice is real or fake. You'll get fast results, clear reports, and even cultural insights—all for free.</p>
+    <div class="hero-social">
+      <div class="avatar-stack">
+        <span class="a1"></span>
+        <span class="a2"></span>
+        <span class="a3"></span>
+        <span class="a4"></span>
+      </div>
+      <div class="hero-stars">
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star-half-stroke"></i>
+        <span>50,000+ deepfakes detected successfully</span>
+      </div>
+    </div>
+    <a href="/deepfake-image-detection" class="hero-btn">Try Deepfake Detection <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+  <div class="hero-image">
+    <img src="https://deepfakedetection.io/images/page/fake-true-home.webp" alt="Deepfake detection tool interface showing AI analysis in action">
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="gallery-inner">
+    <h2>Different Deepfake Detection Online</h2>
+    <p>Whether it's for education, research, or just peace of mind—people love using our AI deepfake detection tool. Discover how it helps creators, researchers, and families stay safe and informed.</p>
+    <div class="gallery-carousel">
+      <div class="gallery-track" id="galleryTrack">
+        <div class="gallery-card">
+          <img class="gallery-card-img" src="https://deepfakedetection.io/images/page/fake-social-girl.webp" alt="Social media deepfake detection example">
+          <div class="gallery-card-body">
+            <h3>Social Media Profile</h3>
+            <span class="score red">89%</span><span class="label">Deepfake</span>
+          </div>
+        </div>
+        <div class="gallery-card">
+          <img class="gallery-card-img" src="https://deepfakedetection.io/images/page/fake-iamge.webp" alt="General image deepfake detection">
+          <div class="gallery-card-body">
+            <h3>Parade Images</h3>
+            <span class="score red">45%</span><span class="label">Deepfake</span>
+          </div>
+        </div>
+        <div class="gallery-card">
+          <img class="gallery-card-img" src="https://deepfakedetection.io/images/page/fake-finance-info.webp" alt="Financial information deepfake verification">
+          <div class="gallery-card-body">
+            <h3>Financial Document</h3>
+            <span class="score red">31%</span><span class="label">Deepfake</span>
+          </div>
+        </div>
+        <div class="gallery-card">
+          <img class="gallery-card-img" src="https://deepfakedetection.io/images/page/fake-social-guy.webp" alt="Video call deepfake detection">
+          <div class="gallery-card-body">
+            <h3>Video Calls</h3>
+            <span class="score red">67%</span><span class="label">Deepfake</span>
+          </div>
+        </div>
+        <div class="gallery-card">
+          <img class="gallery-card-img" src="https://deepfakedetection.io/images/page/news.webp" alt="News media deepfake detection">
+          <div class="gallery-card-body">
+            <h3>News Media</h3>
+            <span class="score red">15%</span><span class="label">Deepfake</span>
+          </div>
+        </div>
+        <div class="gallery-card">
+          <img class="gallery-card-img" src="https://deepfakedetection.io/images/page/cheat.webp" alt="Fraud and scam deepfake detection">
+          <div class="gallery-card-body">
+            <h3>Scam Calls</h3>
+            <span class="score red">22%</span><span class="label">Deepfake</span>
+          </div>
+        </div>
+      </div>
+      <button class="gallery-arrow left" onclick="scrollGallery(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="gallery-arrow right" onclick="scrollGallery(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <div class="gallery-dots" id="galleryDots"></div>
+  </div>
+</section>
+
+<!-- HOW TO USE -->
+<section class="howto-section">
+  <div class="howto-inner">
+    <h2>How to Use Deepfake Detection</h2>
+    <p>It's super easy. Just follow these steps to check if an image, video, or voice is real—or totally fake.</p>
+    <div class="howto-grid">
+      <div class="howto-card">
+        <div class="step-num"><i class="fa-solid fa-circle-1"></i> Step 1: Upload Your File</div>
+        <h3>Upload Your File</h3>
+        <p>Click the "Upload" button and choose the file you want to check. You can upload images, videos, or audio. We support most formats—JPEG, MP4, MP3, PNG, and more. No sign-up, no fuss. Just pick a file from your device.</p>
+      </div>
+      <div class="howto-card">
+        <div class="step-num"><i class="fa-solid fa-circle-2"></i> Step 2: Let AI Do the Work</div>
+        <h3>Let AI Do the Work</h3>
+        <p>Once your file is uploaded, our AI-powered system starts analyzing it. We use deep learning and neural networks to scan for signs of deepfake manipulation. It usually takes just 5 seconds. Faster than brewing tea.</p>
+      </div>
+      <div class="howto-card">
+        <div class="step-num"><i class="fa-solid fa-circle-3"></i> Step 3: View the Results</div>
+        <h3>View the Results</h3>
+        <p>Boom—results appear! You'll see a clear score showing how "real" or "fake" your file is. There's also a simple summary and a detailed report for deep dives. You even get some cultural insights if the image matches historical data.</p>
+      </div>
+      <div class="howto-card">
+        <div class="step-num"><i class="fa-solid fa-circle-4"></i> Step 4: Download or Share</div>
+        <h3>Download or Share</h3>
+        <p>Want to save or share your results? Easy. Click "Download" for a full report or "Copy Link" to share your deepfake check with friends or your team. And yes—totally free, always. No paywall surprises.</p>
+      </div>
+    </div>
+    <div class="howto-image">
+      <!-- Left column: Step 1 + Step 2 -->
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <!-- Step 1: Upload -->
+        <div class="mockup-card">
+          <div class="mockup-step-title"><span class="mockup-step-badge">1</span><span>Upload Image</span></div>
+          <div class="upload-zone">
+            <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <p>Drag &amp; drop an image, or click to select</p>
+            <p class="sub">PNG, JPG, WEBP up to 3 MB</p>
+          </div>
+        </div>
+        <!-- Step 2: Submit -->
+        <div class="mockup-card">
+          <div class="mockup-step-title"><span class="mockup-step-badge">2</span><span>Submit Image</span></div>
+          <div class="submit-preview">
+            <img src="https://deepfakedetection.io/images/page/fake-social-girl.webp" alt="Preview image">
+            <button class="submit-close">&times;</button>
+          </div>
+          <div style="text-align:center"><button class="detect-btn">Detect Forgery</button></div>
+          <div class="hand-cursor"><i class="fa-solid fa-hand-pointer"></i></div>
+        </div>
+      </div>
+      <!-- Right column: Step 3 -->
+      <div class="result-card">
+        <div class="mockup-step-title"><span class="mockup-step-badge">3</span><span>Get result</span></div>
+        <div class="report-header">Detection Report</div>
+        <div class="report-subheader">Image Type: <b>Portrait Photo</b></div>
+        <div class="report-top">
+          <img src="https://deepfakedetection.io/images/page/fake-social-girl.webp" alt="Analyzed photo">
+          <div class="report-score-box">
+            <div class="report-score-label">Overall Forgery Score</div>
+            <div class="report-score-num">40<sup>%</sup></div>
+            <div class="report-summary-title">Analysis Summary</div>
+            <div class="report-summary-text">The image presents some suspicious elements such as overly smooth skin, symmetrical facial features, and slightly artificial-looking hair. While lighting and background are coherent, the 'too perfect' quality suggests possible AI influence or heavy manipulation. Overall, the image falls into an uncertain category.</div>
+          </div>
+        </div>
+        <div class="report-breakdown-title">Detailed Breakdown</div>
+        <div class="breakdown-item">
+          <div class="breakdown-item-left">
+            <h4>Eye Reflection Consistency</h4>
+            <p>The catchlights in the eyes appear relatively symmetrical, which can be an indicator of AI generation. However, the slight asymmetry present suggests it may be a natural photo.</p>
+          </div>
+          <div class="breakdown-score">30%</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-item-left">
+            <h4>Skin Texture</h4>
+            <p>The skin has an overly smooth, airbrushed appearance, lacking the natural imperfections usually found in real photos.</p>
+          </div>
+          <div class="breakdown-score">45%</div>
+        </div>
+        <div class="hand-cursor"><i class="fa-solid fa-hand-pointer"></i></div>
+      </div>
+    </div>
+    <div class="howto-cta">
+      <a href="/deepfake-image-detection" class="hero-btn">Try Deepfake Detection Now <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section class="usecase-section">
+  <div class="usecase-inner">
+    <div class="usecase-block">
+      <div class="usecase-text">
+        <h2>Teachers Spotting Fake Historical Photos</h2>
+        <p>History teachers often use our AI deepfake detection tool in class to show students how to spot fake images. They upload a picture, get an instant authenticity score, and use the result to explain how digital media can be misleading. One teacher even told us, "I like how fast it is—it lets us jump right into discussion." It's a smart way to blend tech with education—and honestly, it's a bit fun, too.</p>
+        <a href="/deepfake-image-detection" class="hero-btn">Try Deepfake Detection <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="usecase-img"><img src="https://deepfakedetection.io/images/page/teacher-spotting-fake-history.webp" alt="Teacher using deepfake detection for education" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+    <div class="usecase-block">
+      <div class="usecase-text">
+        <h2>Journalists Verifying Viral Videos</h2>
+        <p>News reporters use our tool to check if viral videos online are real or digitally altered. Before publishing anything, they upload the clip, run the AI check, and download the detailed report for their editorial team. One journalist said, "This saved me from reporting a fake." When the news moves fast, real-time deepfake detection makes all the difference.</p>
+        <a href="/deepfake-video-detection" class="hero-btn">Try Deepfake Detection <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="usecase-img"><img src="https://deepfakedetection.io/images/page/Journalists-Verifying-Viral-Videos.webp" alt="Journalist verifying viral video authenticity" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+    <div class="usecase-block">
+      <div class="usecase-text">
+        <h2>Creators Protecting Their Online Content</h2>
+        <p>Some YouTubers and streamers use our platform to check if their face or voice is being copied online. Just upload a video, get the AI analysis, and see if someone's deepfaking your identity. One creator told us, "I found a fake version of me promoting a scam—this helped me shut it down." That's a serious win for digital safety.</p>
+        <a href="/deepfake-image-detection" class="hero-btn">Try Deepfake Detection <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="usecase-img"><img src="https://deepfakedetection.io/images/page/Creators-Protecting.webp" alt="Content creator protecting online identity" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+    <div class="usecase-block">
+      <div class="usecase-text">
+        <h2>Families Checking Deepfake Scam Calls</h2>
+        <p>A dad uploaded an audio message that sounded like his daughter asking for help. It was fake. Deepfake voice scams are scary, but tools like ours help families protect themselves. Upload the clip, see the voice authenticity report, and breathe easy. As he said, "I almost fell for it. I'm glad I checked."</p>
+        <a href="/deepfake-voice-detection" class="hero-btn">Try Deepfake Detection <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="usecase-img"><img src="https://deepfakedetection.io/images/page/Families-Checking.webp" alt="Family checking deepfake scam calls" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST / WHY US -->
+<section class="trust-section">
+  <div class="trust-inner">
+    <h2>Why Thousands Trust Our Deepfake Detection Tool</h2>
+    <div class="trust-grid">
+      <div class="trust-card">
+        <h3>Simple &amp; Free to Use</h3>
+        <p>Just upload and go. There's no sign-up, no ads, and no limits. Whether you're a teacher, journalist, or just curious, you'll get fast results with zero hassle. It works on all devices and it's completely free—forever.</p>
+      </div>
+      <div class="trust-card">
+        <h3>Natural, Accurate Results</h3>
+        <p>Our AI deepfake detector doesn't just flag fakes—it explains them. You'll get three result types, including a clear score and side-by-side comparisons. The results are readable, well-formatted, and make perfect sense.</p>
+      </div>
+      <div class="trust-card">
+        <h3>See Words in Real-World Use</h3>
+        <p>This tool doesn't just tell you what's fake—it shows you where and how that fake content would appear. From newsrooms to classrooms, you'll see context and meaning in action. It's a real eye-opener.</p>
+      </div>
+      <div class="trust-card">
+        <h3>Your Privacy Stays Private</h3>
+        <p>We don't save your files. Period. All analysis is done securely, and nothing leaves your screen without your say. No creepy tracking, no hidden data grabs. One of the most respectful tools you'll ever use.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-section">
+  <div class="testimonial-inner">
+    <div class="testimonial-box" id="testimonialBox">
+      <blockquote id="testimonialQuote">"I used Deepfake Detection during a lesson on WWII photography. My students uploaded 'real' images from the web—and were shocked by how many were fake. The results came fast, and the reports were easy enough for my 10th graders to understand. I now use it in every media literacy unit."</blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" id="testimonialAvatar">EH</div>
+        <div>
+          <div class="testimonial-meta">
+            <strong id="testimonialName">Emily Harper</strong>
+            <span id="testimonialRole">High School History Teacher</span>
+          </div>
+          <div class="testimonial-rating">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <span id="testimonialScore" style="font-size:.8rem;color:#888;margin-top:2px;display:inline-block">5.0</span>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-nav">
+      <button class="testimonial-dot active" onclick="showTestimonial(0)"></button>
+      <button class="testimonial-dot" onclick="showTestimonial(1)"></button>
+      <button class="testimonial-dot" onclick="showTestimonial(2)"></button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <h2>Frequently Asked Questions</h2>
+    <div id="faqList">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What is deepfake detection? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Deepfake detection is the process of identifying AI-generated or digitally manipulated content—like fake images, videos, or voices—that are made to look and sound real. These "deepfakes" are created using machine learning and neural networks to mimic real people. Deepfake detection uses algorithms to analyze signs of tampering, such as pixel inconsistencies, unnatural movements, or audio mismatches. If you're unsure about the authenticity of a file, tools like ours let you check it in seconds—no tech skills required.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How does deepfake detection work? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Step by step: 1. Upload a file (image, video, or audio). 2. AI scans the file using deep learning models trained on real vs. fake data. 3. The tool compares patterns like lighting, lip sync, voice tone, or metadata anomalies. 4. It assigns a detection score showing how likely the file is AI-generated. 5. You get a full report, often with a breakdown and recommendations. Want to see it in action? Try our AI-powered deepfake detection tool—it's free and instant.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Which platforms specialize in real-time deepfake detection? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Several platforms offer real-time deepfake threat detection, including Microsoft Video Authenticator, Reality Defender, and Hive AI. These tools often run in the background of video conferencing apps, streaming platforms, or live newsrooms to flag manipulated content as it's being shared. Our platform offers real-time results as well—just upload and get your analysis in under 5 seconds, no install needed.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How do deepfake detection tools integrate with phishing protection? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Deepfake detection tools support phishing protection by analyzing voice or video messages for authenticity. In phishing scams, attackers may use deepfaked audio or video pretending to be a trusted person. Detection tools integrate with email security platforms or customer service systems to flag potential deepfakes. Our AI tool helps detect audio deepfakes in scam calls or voicemails—just upload the file and see the truth instantly.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How effective are current deepfake detection tools? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Most modern deepfake detection tools are around 85–95% accurate, depending on the file type and the quality of the fake. They're especially effective with images and structured videos but may struggle with ultra-high-quality synthetic voices. In real-world testing, our platform catches the vast majority of fake content—users have even flagged scam calls and viral hoaxes within seconds.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How effective are deepfake detection tools in real-world scenarios? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">In real-life settings—like newsrooms, schools, or family emergencies—deepfake detection tools are proving to be extremely helpful. For example, journalists use them to vet viral clips, while parents check voice messages that might be scams. Our users have prevented false reports, caught fake ads using their identity, and avoided falling for fraud. Real world = real impact.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What are the limitations of current deepfake detection technologies? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Current deepfake detectors still face some challenges. Ultra-high-quality deepfakes with professional editing are harder to catch. Voice deepfakes are especially tricky because audio lacks the visual cues that tools rely on. Also, models trained on old data may miss newer fakes. That said, detection tools—like ours—are improving fast and offer a strong first line of defense in most everyday situations.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What are the latest advancements in deepfake detection? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Recent breakthroughs include multimodal detection, which analyzes voice, face, and gestures together; GAN fingerprinting, which finds tell-tale signs of how a fake was generated; and real-time detection APIs for live video feeds. There's also growing research in biometric spoofing resistance and combining human reviewers with AI models. Our tool includes several of these new techniques—see it in action now.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What are the latest innovations in deepfake detection technology? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Advances in deepfake detection technology include real-time analysis, synthetic audio detection, and zero-shot learning—where models spot fakes they've never seen before. There's also progress in detecting manipulation in compressed or low-res videos. It's a fast-moving field, and we're staying up to date. You can try these innovations directly through our free detection platform.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How does Reality Defender ensure the accuracy of its deepfake detection? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Reality Defender uses multiple AI models and a layered approach to identify deepfakes. It cross-checks audio, image, and video inputs using neural networks trained on large datasets. Accuracy is improved by comparing results from multiple detection algorithms and generating confidence scores. While Reality Defender is solid, if you want a fast, no-login option for checking files right now, our tool is a great place to start.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What's on the horizon for deepfake detection? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">The future of deepfake detection is automation + context awareness. Expect browser plug-ins, email filters, and mobile apps that instantly verify media. More open-source datasets and explainable AI will make results easier to trust and verify. There's even work on detecting intent—not just if something's fake, but why it was made. Our platform is part of this next wave—simple, smart, and always improving.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Free Online Deepfake Detection at Your Fingertips</h2>
+    <p>Start using our deepfake detection tool online free today. It's fast, accurate, and made for everyone.</p>
+    <a href="/deepfake-image-detection" class="hero-btn">Try Deepfake Detection Now <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <span class="nav-brand-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+          Deepfake Detection
+        </div>
+        <p>Deepfake Detection is a free AI-powered tool that helps you identify manipulated images, videos, and audio files to protect against misinformation and fraud.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Deepfake Detection Tools</h4>
+        <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+        <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+        <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <a href="/about">About Us</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:hello@deepfakedetection.io">hello@deepfakedetection.io</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Deepfake Detection. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<script>
+/* Gallery carousel - single centered card */
+(function(){
+  const track=document.getElementById('galleryTrack');
+  const cards=Array.from(track.querySelectorAll('.gallery-card'));
+  const dotsWrap=document.getElementById('galleryDots');
+  let current=0;
+  const total=cards.length;
+  /* build dots */
+  cards.forEach((_,i)=>{
+    const d=document.createElement('button');
+    d.className='gallery-dot'+(i===0?' active':'');
+    d.onclick=()=>goTo(i);
+    dotsWrap.appendChild(d);
+  });
+  function goTo(idx){
+    current=Math.max(0,Math.min(idx,total-1));
+    const card=cards[current];
+    const trackRect=track.getBoundingClientRect();
+    const cardRect=card.getBoundingClientRect();
+    const scrollLeft=track.scrollLeft+(cardRect.left-trackRect.left)-(trackRect.width-cardRect.width)/2;
+    track.scrollTo({left:scrollLeft,behavior:'smooth'});
+    dotsWrap.querySelectorAll('.gallery-dot').forEach((d,i)=>d.classList.toggle('active',i===current));
+  }
+  window.scrollGallery=function(dir){goTo(current+dir)};
+  track.style.overflowX='auto';
+  track.style.scrollSnapType='x mandatory';
+  track.style.scrollbarWidth='none';
+  track.style.msOverflowStyle='none';
+  cards.forEach(c=>{c.style.scrollSnapAlign='center'});
+  /* sync dots on manual scroll */
+  let scrollTimeout;
+  track.addEventListener('scroll',()=>{
+    clearTimeout(scrollTimeout);
+    scrollTimeout=setTimeout(()=>{
+      const center=track.scrollLeft+track.offsetWidth/2;
+      let closest=0,minDist=Infinity;
+      cards.forEach((c,i)=>{
+        const mid=c.offsetLeft+c.offsetWidth/2;
+        const dist=Math.abs(center-mid);
+        if(dist<minDist){minDist=dist;closest=i}
+      });
+      current=closest;
+      dotsWrap.querySelectorAll('.gallery-dot').forEach((d,i)=>d.classList.toggle('active',i===current));
+    },100);
+  });
+})();
+
+/* FAQ accordion */
+function toggleFaq(btn){
+  const item=btn.parentElement;
+  const wasOpen=item.classList.contains('open');
+  /* close all */
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+}
+
+/* Testimonials */
+const testimonials=[
+  {quote:'"I used Deepfake Detection during a lesson on WWII photography. My students uploaded \u201creal\u201d images from the web\u2014and were shocked by how many were fake. The results came fast, and the reports were easy enough for my 10th graders to understand. I now use it in every media literacy unit."',name:'Emily Harper',role:'High School History Teacher',initials:'EH',score:'5.0'},
+  {quote:'"This saved me from reporting a fake. I uploaded a viral clip making rounds on Twitter, and within seconds the tool flagged inconsistencies in the lip sync and lighting. My editor was impressed. This is now part of our editorial workflow."',name:'James Liu',role:'Investigative Journalist',initials:'JL',score:'5.0'},
+  {quote:'"I almost fell for it. Someone sent my dad a voice message pretending to be me, asking for money urgently. We uploaded the audio here and the AI instantly showed it was a cloned voice. This tool literally saved us from a scam."',name:'Priya Mehta',role:'Software Engineer',initials:'PM',score:'5.0'}
+];
+let currentTestimonial=0;
+function showTestimonial(i){
+  currentTestimonial=i;
+  const t=testimonials[i];
+  document.getElementById('testimonialQuote').textContent=t.quote;
+  document.getElementById('testimonialName').textContent=t.name;
+  document.getElementById('testimonialRole').textContent=t.role;
+  document.getElementById('testimonialAvatar').textContent=t.initials;
+  document.getElementById('testimonialScore').textContent=t.score;
+  document.querySelectorAll('.testimonial-dot').forEach((d,idx)=>d.classList.toggle('active',idx===i));
+}
+
+/* Close dropdown on outside click */
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('toolsDropdown');
+  if(dd && !dd.contains(e.target)) dd.classList.remove('open');
+});
+</script>
+</body>
+</html>

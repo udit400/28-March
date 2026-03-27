@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About - Deepfake Detection</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root { --bg: #f8fafc; --ink: #0f172a; --muted: #64748b; --panel: #ffffff; --line: #e2e8f0; --accent: #2563eb; --accent-light: #dbeafe; --radius: 16px; --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.04); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #f0f0f0;padding:0 32px}
+    .nav-inner{max-width:2589px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+    .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.5rem;color:#1a1a2e}
+    .nav-brand img{width:36px;height:36px}
+    .nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+    .nav-link{display:flex;align-items:center;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border-radius:8px;transition:color .15s}
+    .nav-link:hover,.nav-link.active{color:#1d4ed8;text-decoration:none}
+    .nav-dropdown{position:relative}
+    .nav-dropdown-btn{display:flex;align-items:center;gap:5px;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border:none;background:none;cursor:pointer;border-radius:8px;font-family:inherit;transition:color .15s}
+    .nav-dropdown-btn:hover{color:#1d4ed8}
+    .nav-dropdown-btn i{font-size:.65rem;transition:transform .2s}
+    .nav-dropdown-menu{display:none;position:absolute;top:100%;right:0;min-width:220px;background:#fff;border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.1);padding:8px;margin-top:4px;z-index:200}
+    .nav-dropdown:hover .nav-dropdown-menu{display:block}
+    .nav-dropdown:hover .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown.open .nav-dropdown-menu{display:block}
+    .nav-dropdown.open .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown-menu a{display:block;padding:10px 16px;font-size:.9rem;color:#333;border-radius:8px;font-weight:500}
+    .nav-dropdown-menu a:hover{background:#f5f7ff;color:#2563eb}
+
+    .container { max-width: 800px; margin: 0 auto; padding: 60px 24px; }
+    h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 24px; }
+    h2 { font-size: 1.5rem; font-weight: 700; margin: 40px 0 16px; }
+    p { color: var(--muted); margin-bottom: 16px; line-height: 1.8; }
+    .hero-text { font-size: 1.15rem; color: var(--ink); margin-bottom: 32px; line-height: 1.8; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin: 32px 0; }
+    .feature-card { padding: 24px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .feature-card i { font-size: 1.5rem; color: var(--accent); margin-bottom: 12px; }
+    .feature-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    .feature-card p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+    .team-section { margin-top: 48px; }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+    .team-card { padding: 24px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); text-align: center; }
+    .team-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--accent-light); display: grid; place-items: center; margin: 0 auto 12px; }
+    .team-avatar i { font-size: 1.5rem; color: var(--accent); }
+    .team-card h3 { font-size: 1rem; margin-bottom: 4px; }
+    .team-card p { color: var(--muted); font-size: 0.85rem; margin: 0; }
+
+    .cta-box { margin-top: 48px; padding: 32px; border-radius: var(--radius); background: linear-gradient(135deg, var(--accent-light), #ede9fe); border: 1px solid rgba(37,99,235,0.12); text-align: center; }
+    .cta-box h2 { margin-top: 0; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 999px; background: var(--accent); color: white; font-weight: 700; margin-top: 16px; }
+    .cta-btn:hover { text-decoration: none; transform: translateY(-1px); }
+
+    .footer { padding: 40px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; margin-top: 48px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { color: var(--muted); }
+
+    @media (max-width: 640px) { .nav { padding: 0 18px; } .nav-links { display: none; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <div class="nav-dropdown" id="toolsDropdown">
+          <button class="nav-dropdown-btn" onclick="document.getElementById('toolsDropdown').classList.toggle('open')">
+            Deepfake Detection Tools <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+            <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+            <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+          </div>
+        </div>
+        <a href="/about" class="nav-link active">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>About Deepfake Detection</h1>
+    <p class="hero-text">Deepfake Detection is an AI-powered deepfake detection platform that helps individuals, journalists, educators, and organizations verify the authenticity of digital media. We provide tools to detect manipulated images, videos, and audio in real-time.</p>
+
+    <h2>Our Mission</h2>
+    <p>In a world where AI can generate hyper-realistic fake content, trust in digital media is more important than ever. Deepfake Detection was built to give everyone the tools they need to verify what they see and hear online. We believe that access to truth-verification technology should be simple, fast, and accessible to all.</p>
+
+    <h2>What We Offer</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fa-solid fa-image"></i>
+        <h3>Image Detection</h3>
+        <p>Upload any image to detect AI generation, face manipulation, and editing artifacts with detailed forensic analysis.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-video"></i>
+        <h3>Video Detection</h3>
+        <p>Analyze videos for face swaps, lip-sync manipulation, and synthetic generation with multi-frame analysis and liveness checks.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-microphone"></i>
+        <h3>Voice Detection</h3>
+        <p>Verify audio recordings for signs of voice cloning or AI speech synthesis to protect against voice scam attacks.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-puzzle-piece"></i>
+        <h3>Browser Extension</h3>
+        <p>Real-time scanning of videos directly in your browser, with on-page visual overlays showing scan results.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-fingerprint"></i>
+        <h3>Proof of Reality</h3>
+        <p>Cryptographic proof hashes for every analysis, creating a verifiable chain of evidence for your records.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-lock"></i>
+        <h3>Privacy First</h3>
+        <p>All analysis runs on your local server. No files are stored, shared, or sent to third parties.</p>
+      </div>
+    </div>
+
+    <h2>How It Works</h2>
+    <p>Deepfake Detection uses deep learning models trained on large datasets of real and synthetic media. When you upload a file, the system analyzes it using multiple detection signals:</p>
+    <p><strong>Visual Analysis:</strong> Pixel-level inspection for manipulation artifacts, GAN fingerprints, inconsistent lighting, and unnatural facial features.</p>
+    <p><strong>Audio Analysis:</strong> Spectral feature extraction to detect voice cloning patterns, synthesis artifacts, and unnatural speech cadence.</p>
+    <p><strong>Metadata Forensics:</strong> EXIF data inspection, AI provenance marker detection (C2PA), and software platform identification.</p>
+    <p><strong>Biological Liveness:</strong> Multi-frame analysis of facial micro-movements and physiological signals to verify human presence in videos.</p>
+
+    <h2>Who Uses Deepfake Detection</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fa-solid fa-chalkboard-teacher"></i>
+        <h3>Educators</h3>
+        <p>Teaching media literacy and helping students identify manipulated content in the digital age.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-newspaper"></i>
+        <h3>Journalists</h3>
+        <p>Verifying viral content authenticity before publication to maintain editorial integrity.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-users"></i>
+        <h3>Families</h3>
+        <p>Protecting against deepfake scam calls and verifying suspicious media content.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-building-shield"></i>
+        <h3>Organizations</h3>
+        <p>Brand protection, trust and safety operations, and content authenticity verification.</p>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h2>Ready to Detect Deepfakes?</h2>
+      <p>Start using our free AI-powered detection tools right now. No sign-up required for basic analysis.</p>
+      <a href="/deepfake-image-detection" class="cta-btn"><i class="fa-solid fa-rocket"></i> Try Deepfake Detection</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>&copy; 2025 Deepfake Detection. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/privacy-policy">Privacy</a>
+        <a href="/deepfake-image-detection">Image</a>
+        <a href="/deepfake-video-detection">Video</a>
+        <a href="/deepfake-voice-detection">Voice</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
