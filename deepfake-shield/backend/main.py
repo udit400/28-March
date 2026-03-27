@@ -791,8 +791,1353 @@ def resolve_youtube_thumbnail_url(url: str) -> Optional[str]:
 
 @app.get("/", response_class=HTMLResponse)
 def root() -> str:
+<<<<<<< HEAD
     index_path = Path(__file__).resolve().parent / "templates" / "index.html"
     return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+=======
+    warning_text = html.escape(startup_warning or "All core services loaded.")
+    detector_mode = html.escape(detector.mode.upper())
+    model_loaded = "LIVE MODEL" if detector.mode == "torch" else "DEMO ENGINE"
+    email_mode = "SMTP READY" if email_delivery_configured() else "LOCAL OTP MODE"
+    threshold_text = html.escape(f"{FAKE_THRESHOLD:.1f}%")
+
+    return f"""
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Synthetic Media Shield</title>
+    <style>
+        :root {{
+            --bg: #f5efe4;
+            --ink: #112129;
+            --muted: #556872;
+            --panel: rgba(255, 252, 247, 0.78);
+            --line: rgba(17, 33, 41, 0.12);
+            --accent: #0f766e;
+            --accent-2: #c2410c;
+            --accent-3: #f2c14e;
+            --shadow: 0 24px 60px rgba(31, 41, 55, 0.12);
+        }}
+
+        * {{
+            box-sizing: border-box;
+        }}
+
+        html {{
+            scroll-behavior: smooth;
+        }}
+
+        body {{
+            margin: 0;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 24%),
+                radial-gradient(circle at right 20%, rgba(194, 65, 12, 0.14), transparent 22%),
+                linear-gradient(180deg, #fbf5ea 0%, var(--bg) 100%);
+            font-family: Georgia, "Times New Roman", serif;
+        }}
+
+        a {{
+            color: inherit;
+            text-decoration: none;
+        }}
+
+        .shell {{
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 24px;
+        }}
+
+        .nav {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 18px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 250, 242, 0.76);
+            backdrop-filter: blur(14px);
+            position: sticky;
+            top: 16px;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }}
+
+        .brand {{
+            font-size: 0.92rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }}
+
+        .nav-links {{
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }}
+
+        .nav-link-btn {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(17, 33, 41, 0.1);
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--muted);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }}
+
+        .nav-link-btn:hover {{
+            transform: translateY(-1px);
+            border-color: rgba(15, 118, 110, 0.22);
+            color: var(--ink);
+        }}
+
+        .nav-auth {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 0 16px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.1);
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            color: var(--accent);
+            font-weight: 700;
+        }}
+
+        .hero {{
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+            gap: 26px;
+            padding: 52px 0 28px;
+            align-items: start;
+        }}
+
+        .eyebrow {{
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 118, 110, 0.18);
+            background: rgba(15, 118, 110, 0.08);
+            color: var(--accent);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }}
+
+        h1 {{
+            margin: 18px 0 14px;
+            font-size: clamp(3rem, 7vw, 6.4rem);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            font-weight: 700;
+        }}
+
+        .hero-copy p {{
+            max-width: 62ch;
+            margin: 0;
+            color: var(--muted);
+            font-size: 1.08rem;
+            line-height: 1.7;
+        }}
+
+        .cta-row {{
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 26px;
+        }}
+
+        .button {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+        }}
+
+        .button:hover {{
+            transform: translateY(-1px);
+        }}
+
+        .button-primary {{
+            background: linear-gradient(135deg, var(--accent), #14b8a6);
+            color: white;
+            box-shadow: 0 16px 32px rgba(15, 118, 110, 0.22);
+        }}
+
+        .button-secondary {{
+            background: rgba(255, 255, 255, 0.62);
+            border-color: var(--line);
+            color: var(--ink);
+        }}
+
+        .grid {{
+            display: grid;
+            gap: 18px;
+        }}
+
+        .hero-panel,
+        .feature,
+        .metric,
+        .endpoint,
+        .timeline-step {{
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            background: var(--panel);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+        }}
+
+        .hero-panel {{
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .hero-panel::after {{
+            content: "";
+            position: absolute;
+            inset: auto -30px -30px auto;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 193, 78, 0.44), transparent 70%);
+            pointer-events: none;
+        }}
+
+        .panel-label {{
+            font-size: 0.74rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 700;
+        }}
+
+        .panel-value {{
+            margin-top: 10px;
+            font-size: 2rem;
+            font-weight: 700;
+        }}
+
+        .panel-note {{
+            margin-top: 10px;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 0.96rem;
+        }}
+
+        .metrics {{
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin: 8px 0 34px;
+        }}
+
+        .metric {{
+            padding: 18px;
+        }}
+
+        .metric strong {{
+            display: block;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }}
+
+        .section {{
+            padding: 28px 0;
+        }}
+
+        .section-header {{
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: end;
+            margin-bottom: 18px;
+        }}
+
+        .section-header h2 {{
+            margin: 0;
+            font-size: clamp(1.8rem, 3vw, 3rem);
+            letter-spacing: -0.04em;
+        }}
+
+        .section-header p {{
+            margin: 0;
+            max-width: 54ch;
+            color: var(--muted);
+            line-height: 1.7;
+        }}
+
+        .features {{
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }}
+
+        .auth-surface {{
+            display: grid;
+            grid-template-columns: minmax(300px, 0.95fr) minmax(0, 1.05fr);
+            gap: 20px;
+            align-items: stretch;
+        }}
+
+        .auth-visual,
+        .auth-panel,
+        .web-dashboard {{
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+        }}
+
+        .auth-visual {{
+            padding: 28px;
+            background:
+                linear-gradient(160deg, rgba(17, 101, 179, 0.92), rgba(17, 33, 41, 0.82)),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            min-height: 560px;
+        }}
+
+        .auth-visual::before {{
+            content: "";
+            position: absolute;
+            inset: auto -50px -70px auto;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 68%);
+        }}
+
+        .auth-visual::after {{
+            content: "";
+            position: absolute;
+            left: -20px;
+            right: -20px;
+            bottom: -30px;
+            height: 160px;
+            background:
+                radial-gradient(circle at 12% 74%, rgba(17, 33, 41, 0.82) 0 42%, transparent 43%),
+                radial-gradient(circle at 34% 62%, rgba(17, 33, 41, 0.86) 0 38%, transparent 39%),
+                radial-gradient(circle at 58% 74%, rgba(17, 33, 41, 0.88) 0 42%, transparent 43%),
+                radial-gradient(circle at 84% 67%, rgba(17, 33, 41, 0.84) 0 42%, transparent 43%);
+            opacity: 0.9;
+        }}
+
+        .auth-visual-tag {{
+            display: inline-flex;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            font-size: 0.76rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }}
+
+        .auth-visual h3 {{
+            margin: 22px 0 10px;
+            font-size: clamp(2.2rem, 4vw, 4rem);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+        }}
+
+        .auth-visual p {{
+            max-width: 34ch;
+            color: rgba(255, 255, 255, 0.84);
+            font-size: 1rem;
+            line-height: 1.7;
+        }}
+
+        .auth-bullets {{
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 10px;
+            margin-top: 22px;
+        }}
+
+        .auth-bullet {{
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 0.95rem;
+        }}
+
+        .auth-panel,
+        .web-dashboard {{
+            background: rgba(255, 252, 247, 0.9);
+            padding: 26px;
+        }}
+
+        .auth-panel h3,
+        .web-dashboard h3 {{
+            margin: 0;
+            font-size: 2.1rem;
+            letter-spacing: -0.04em;
+        }}
+
+        .auth-panel p,
+        .web-dashboard p {{
+            color: var(--muted);
+            line-height: 1.7;
+        }}
+
+        .mode-tabs {{
+            display: inline-grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 18px;
+            padding: 6px;
+            border-radius: 999px;
+            background: rgba(17, 33, 41, 0.05);
+            border: 1px solid rgba(17, 33, 41, 0.08);
+        }}
+
+        .mode-tab {{
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }}
+
+        .mode-tab.active {{
+            background: linear-gradient(135deg, var(--accent), #14b8a6);
+            color: white;
+            box-shadow: 0 12px 24px rgba(15, 118, 110, 0.2);
+        }}
+
+        .auth-form,
+        .otp-card {{
+            display: none;
+        }}
+
+        .auth-form.active,
+        .otp-card.active {{
+            display: block;
+        }}
+
+        .field-grid {{
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }}
+
+        .field {{
+            margin-top: 14px;
+        }}
+
+        .field label {{
+            display: block;
+            margin-bottom: 6px;
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }}
+
+        .field input {{
+            width: 100%;
+            min-height: 50px;
+            border-radius: 16px;
+            border: 1px solid rgba(17, 33, 41, 0.12);
+            background: white;
+            padding: 0 14px;
+            font: inherit;
+            color: var(--ink);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        }}
+
+        .field input:focus {{
+            outline: none;
+            border-color: rgba(15, 118, 110, 0.42);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+        }}
+
+        .form-note {{
+            margin-top: 12px;
+            font-size: 0.92rem;
+        }}
+
+        .auth-actions {{
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }}
+
+        .auth-actions button,
+        .dashboard-actions button {{
+            min-height: 50px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }}
+
+        .action-primary {{
+            background: linear-gradient(135deg, var(--accent), #14b8a6);
+            color: white;
+            box-shadow: 0 16px 32px rgba(15, 118, 110, 0.18);
+        }}
+
+        .action-secondary {{
+            background: rgba(255, 255, 255, 0.72);
+            border-color: var(--line);
+            color: var(--ink);
+        }}
+
+        .otp-card {{
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 22px;
+            background: rgba(15, 118, 110, 0.06);
+            border: 1px solid rgba(15, 118, 110, 0.14);
+        }}
+
+        .account-chip {{
+            margin-top: 10px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid rgba(17, 33, 41, 0.08);
+            color: var(--ink);
+            word-break: break-word;
+        }}
+
+        .website-status {{
+            margin-top: 16px;
+            min-height: 24px;
+            color: #8c5a1b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }}
+
+        .web-dashboard {{
+            display: none;
+        }}
+
+        .web-dashboard.active {{
+            display: block;
+        }}
+
+        .dashboard-badge {{
+            display: inline-flex;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.08);
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }}
+
+        .dashboard-badge.premium {{
+            background: rgba(110, 245, 219, 0.14);
+            color: #0f766e;
+        }}
+
+        .dashboard-grid {{
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }}
+
+        .dashboard-card-small {{
+            padding: 18px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(17, 33, 41, 0.08);
+        }}
+
+        .dashboard-card-small strong {{
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.08rem;
+        }}
+
+        .upgrade-box {{
+            margin-top: 18px;
+            padding: 20px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.1), rgba(194, 65, 12, 0.08));
+            border: 1px solid rgba(17, 33, 41, 0.08);
+        }}
+
+        .upgrade-box.hidden,
+        .premium-box.hidden {{
+            display: none;
+        }}
+
+        .upgrade-qr {{
+            margin-top: 14px;
+            border-radius: 18px;
+            padding: 10px;
+            background: white;
+            width: fit-content;
+        }}
+
+        .upgrade-qr img {{
+            width: 190px;
+            height: 190px;
+            object-fit: contain;
+        }}
+
+        .premium-box {{
+            margin-top: 18px;
+            padding: 20px;
+            border-radius: 24px;
+            background: rgba(15, 118, 110, 0.08);
+            border: 1px solid rgba(15, 118, 110, 0.16);
+        }}
+
+        .dashboard-actions {{
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }}
+
+        .feature {{
+            padding: 22px;
+        }}
+
+        .feature h3 {{
+            margin: 10px 0 8px;
+            font-size: 1.25rem;
+        }}
+
+        .feature p,
+        .endpoint p,
+        .timeline-step p {{
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }}
+
+        .feature-tag {{
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(194, 65, 12, 0.08);
+            color: var(--accent-2);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }}
+
+        .timeline {{
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }}
+
+        .timeline-step {{
+            padding: 20px;
+        }}
+
+        .timeline-step span {{
+            display: inline-flex;
+            width: 34px;
+            height: 34px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--accent-3);
+            font-weight: 700;
+        }}
+
+        .timeline-step h3 {{
+            margin: 14px 0 8px;
+            font-size: 1.12rem;
+        }}
+
+        .endpoints {{
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }}
+
+        .endpoint {{
+            padding: 20px;
+        }}
+
+        .endpoint code {{
+            display: inline-block;
+            margin-bottom: 8px;
+            padding: 7px 10px;
+            border-radius: 10px;
+            background: rgba(17, 33, 41, 0.06);
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.9rem;
+        }}
+
+        .deploy-card {{
+            margin-top: 18px;
+            padding: 24px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(194, 65, 12, 0.09));
+            border: 1px solid rgba(17, 33, 41, 0.08);
+            box-shadow: var(--shadow);
+        }}
+
+        .deploy-card h3 {{
+            margin: 0 0 10px;
+            font-size: 1.5rem;
+        }}
+
+        .deploy-list {{
+            margin: 0;
+            padding-left: 20px;
+            color: var(--muted);
+            line-height: 1.8;
+        }}
+
+        .footer {{
+            padding: 28px 0 46px;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }}
+
+        @media (max-width: 980px) {{
+            .hero,
+            .features,
+            .timeline,
+            .endpoints,
+            .metrics {{
+                grid-template-columns: 1fr;
+            }}
+
+            .section-header {{
+                align-items: start;
+                flex-direction: column;
+            }}
+
+            .nav {{
+                border-radius: 26px;
+                flex-direction: column;
+                align-items: start;
+            }}
+
+            .nav-links {{
+                flex-wrap: wrap;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header class="nav">
+            <div class="brand">Synthetic Media Shield</div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link-btn" style="color:var(--accent);border-color:rgba(15,118,110,0.22)">Home</a>
+                <a href="/detect/image" class="nav-link-btn">Detect Image</a>
+                <a href="/detect/video" class="nav-link-btn">Detect Video</a>
+                <a href="/detect/voice" class="nav-link-btn">Detect Voice</a>
+                <a href="/demo" class="nav-link-btn">Demo</a>
+                <a href="/about" class="nav-link-btn">About</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-copy">
+                <div class="eyebrow">Proof-of-reality platform deployed locally</div>
+                <h1>Investigate synthetic media before it shapes the narrative.</h1>
+                <p>Synthetic Media Shield is now deployed as a working local SaaS prototype with browser-side scanning, OTP login, premium activation, metadata forensics, sequence-based liveness checks, and full media sandbox uploads for image, audio, and video evidence.</p>
+                <div class="cta-row">
+                    <a class="button button-secondary" href="#access">Login / Create Account</a>
+                    <a class="button button-primary" href="/demo">Open Live Demo</a>
+                    <a class="button button-secondary" href="/api/status">View API Status</a>
+                </div>
+            </div>
+
+            <div class="grid">
+                <article class="hero-panel">
+                    <div class="panel-label">Engine</div>
+                    <div class="panel-value">{detector_mode}</div>
+                    <div class="panel-note">Mode: {html.escape(model_loaded)}. Risk threshold currently set to {threshold_text}.</div>
+                </article>
+                <article class="hero-panel">
+                    <div class="panel-label">Identity and Billing</div>
+                    <div class="panel-value">{html.escape(email_mode)}</div>
+                    <div class="panel-note">OTP and premium workflows are active through the extension popup and backed by local SQLite state.</div>
+                </article>
+                <article class="hero-panel">
+                    <div class="panel-label">Runtime Note</div>
+                    <div class="panel-note">{warning_text}</div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="grid metrics">
+                <article class="metric">
+                    <strong>5-frame</strong>
+                    Burst scan path for visible video analysis in the extension.
+                </article>
+                <article class="metric">
+                    <strong>3 media classes</strong>
+                    Image, audio, and video uploads supported inside the forensic sandbox.
+                </article>
+                <article class="metric">
+                    <strong>1 local stack</strong>
+                    FastAPI backend, Chrome/Edge extension, SQLite auth, and local demo route.
+                </article>
+            </div>
+        </section>
+
+        <section id="access" class="section">
+            <div class="section-header">
+                <div>
+                    <h2>Account Access</h2>
+                </div>
+                <p>Use the same Gmail OTP flow on the website. Sign in, create your account, verify the OTP, and manage premium without leaving the landing page.</p>
+            </div>
+
+            <div class="auth-surface">
+                <article class="auth-visual">
+                    <div class="auth-visual-tag">Website Login</div>
+                    <h3>Bring the account flow onto the website.</h3>
+                    <p>The site now supports Gmail OTP login, create-account entry, and premium activation. You do not need to rely on the extension popup for account access anymore.</p>
+                    <div class="auth-bullets">
+                        <div class="auth-bullet">Create a named account with Gmail verification.</div>
+                        <div class="auth-bullet">Enter the dashboard directly after OTP verification.</div>
+                        <div class="auth-bullet">Activate premium here, then continue with the demo or extension.</div>
+                    </div>
+                </article>
+
+                <article id="website-auth-panel" class="auth-panel">
+                    <h3>Welcome</h3>
+                    <p>Choose login or create account, then finish with Gmail OTP.</p>
+
+                    <div class="mode-tabs">
+                        <button id="web-mode-login" class="mode-tab active" type="button">Login</button>
+                        <button id="web-mode-signup" class="mode-tab" type="button">Create Account</button>
+                    </div>
+
+                    <div id="web-login-form" class="auth-form active">
+                        <div class="field">
+                            <label for="web-login-email">Gmail Address</label>
+                            <input id="web-login-email" type="email" placeholder="you@gmail.com">
+                        </div>
+                        <p class="form-note">Existing users get a one-time code in Gmail and go straight to the website dashboard.</p>
+                        <div class="auth-actions">
+                            <button id="web-send-login-otp" class="action-primary" type="button">Send Login OTP</button>
+                        </div>
+                    </div>
+
+                    <div id="web-signup-form" class="auth-form">
+                        <div class="field-grid">
+                            <div class="field">
+                                <label for="web-first-name">First Name</label>
+                                <input id="web-first-name" type="text" placeholder="Aarav">
+                            </div>
+                            <div class="field">
+                                <label for="web-last-name">Last Name</label>
+                                <input id="web-last-name" type="text" placeholder="Sharma">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="web-signup-email">Gmail Address</label>
+                            <input id="web-signup-email" type="email" placeholder="creator@gmail.com">
+                        </div>
+                        <p class="form-note">Create an account, verify the OTP, and the website will open your dashboard right away.</p>
+                        <div class="auth-actions">
+                            <button id="web-send-signup-otp" class="action-primary" type="button">Create Account</button>
+                        </div>
+                    </div>
+
+                    <div id="web-otp-card" class="otp-card">
+                        <h3 style="font-size: 1.4rem; margin-bottom: 6px;">Verify OTP</h3>
+                        <p>Enter the 6-digit code from Gmail to finish login.</p>
+                        <div id="web-otp-email-chip" class="account-chip"></div>
+                        <div class="field">
+                            <label for="web-otp-input">One-Time Code</label>
+                            <input id="web-otp-input" type="text" placeholder="Enter 6-digit OTP">
+                        </div>
+                        <div class="auth-actions">
+                            <button id="web-verify-otp" class="action-primary" type="button">Verify and Enter</button>
+                            <button id="web-change-account" class="action-secondary" type="button">Change Account</button>
+                        </div>
+                    </div>
+
+                    <div id="website-status" class="website-status"></div>
+                </article>
+
+                <article id="website-dashboard" class="web-dashboard">
+                    <div id="web-subscription-badge" class="dashboard-badge">Basic Access</div>
+                    <h3 id="web-dashboard-title" style="margin-top: 14px;">Website Dashboard</h3>
+                    <p id="web-dashboard-copy" style="margin-top: 8px;">You are signed in. Upgrade to premium here or move into the live demo.</p>
+                    <div id="web-dashboard-email-chip" class="account-chip"></div>
+
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card-small">
+                            <strong>Live Demo</strong>
+                            Open the media analysis demo directly after login.
+                        </div>
+                        <div class="dashboard-card-small">
+                            <strong>Extension Ready</strong>
+                            Use the same account state with the browser extension flow.
+                        </div>
+                    </div>
+
+                    <div id="web-upgrade-box" class="upgrade-box">
+                        <h3 style="font-size: 1.5rem;">Upgrade to Premium</h3>
+                        <p>Pay INR 1, enter the UTR number, and unlock premium uploads and deeper forensic workflows.</p>
+                        <div id="web-pay-email-chip" class="account-chip"></div>
+                        <div class="upgrade-qr">
+                            <img src="/extension/upi_qr.jpeg" alt="PhonePe QR for UDIT" onerror="this.onerror=null;this.src='/extension/upi_qr.svg';">
+                        </div>
+                        <div class="field">
+                            <label for="web-utr-input">UTR or Reference Number</label>
+                            <input id="web-utr-input" type="text" placeholder="Enter UTR or reference number">
+                        </div>
+                        <div class="dashboard-actions">
+                            <button id="web-activate-premium" class="action-primary" type="button">Activate Premium</button>
+                            <button id="web-demo-utr" class="action-secondary" type="button">Use Demo UTR</button>
+                        </div>
+                    </div>
+
+                    <div id="web-premium-box" class="premium-box hidden">
+                        <h3 style="font-size: 1.5rem;">Premium Active</h3>
+                        <p>Your premium access is live. Continue to the media analysis demo or use the extension for uploads and scans.</p>
+                    </div>
+
+                    <div class="dashboard-actions">
+                        <a class="button button-primary" href="/demo">Open Live Demo</a>
+                        <button id="web-switch-account" class="action-secondary" type="button">Switch Account</button>
+                        <button id="web-logout" class="action-secondary" type="button">Logout</button>
+                    </div>
+
+                    <div id="website-dashboard-status" class="website-status"></div>
+                </article>
+            </div>
+        </section>
+
+        <section id="platform" class="section">
+            <div class="section-header">
+                <div>
+                    <h2>Platform surface</h2>
+                </div>
+                <p>The product is structured for reporters, investigators, brand protection teams, and trust-and-safety operators who need explainable local evidence rather than a black-box confidence number.</p>
+            </div>
+            <div class="grid features">
+                <article class="feature">
+                    <div class="feature-tag">Browser Shield</div>
+                    <h3>On-page frame inspection</h3>
+                    <p>The extension mounts a scan control directly over supported video elements and can fall back to synthetic snapshot generation when the frame pipeline is blocked.</p>
+                </article>
+                <article class="feature">
+                    <div class="feature-tag">Forensic Uplink</div>
+                    <h3>Full media sandbox</h3>
+                    <p>Premium users can upload full-resolution images, raw audio, and full video files for deeper analysis, including sampled frames, audio-track extraction, liveness scoring, and proof hashing.</p>
+                </article>
+                <article class="feature">
+                    <div class="feature-tag">Chain of Evidence</div>
+                    <h3>Metadata and proof outputs</h3>
+                    <p>Each scan can surface EXIF integrity, software traces, AI provenance markers, liveness signals, and a deterministic proof hash for downstream reporting or audit logs.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="workflow" class="section">
+            <div class="section-header">
+                <div>
+                    <h2>Working deployment flow</h2>
+                </div>
+                <p>The local deployment is already wired. Use the steps below to operate the product from landing page to demo to premium forensic upload.</p>
+            </div>
+            <div class="grid timeline">
+                <article class="timeline-step">
+                    <span>1</span>
+                    <h3>Launch the extension</h3>
+                    <p>Open the browser session started by the launcher script. The unpacked extension loads into a dedicated profile.</p>
+                </article>
+                <article class="timeline-step">
+                    <span>2</span>
+                    <h3>Verify identity</h3>
+                    <p>Use the Gmail OTP flow in the popup. The backend sends a live code through Gmail SMTP with an app password.</p>
+                </article>
+                <article class="timeline-step">
+                    <span>3</span>
+                    <h3>Scan visible or uploaded media</h3>
+                    <p>Use the live demo route for local or direct-link playback, or move to the popup forensic sandbox for full file analysis.</p>
+                </article>
+                <article class="timeline-step">
+                    <span>4</span>
+                    <h3>Review evidence</h3>
+                    <p>Interpret threat score, liveness, metadata, audio clone risk, and proof hash inside the same locally deployed environment.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="api" class="section">
+            <div class="section-header">
+                <div>
+                    <h2>Operational endpoints</h2>
+                </div>
+                <p>The deployed backend remains accessible for direct verification and scripted integration, even though the public root is now a product homepage.</p>
+            </div>
+            <div class="grid endpoints">
+                <article class="endpoint">
+                    <code>GET /api/status</code>
+                    <p>Machine-readable runtime summary including detector mode, model path, threshold, and startup warning.</p>
+                </article>
+                <article class="endpoint">
+                    <code>GET /health</code>
+                    <p>Health probe used to confirm backend availability, model loading status, and OTP email configuration.</p>
+                </article>
+                <article class="endpoint">
+                    <code>POST /analyze</code>
+                    <p>Sequence-based frame analysis for the extension capture burst, including liveness and proof-of-reality output.</p>
+                </article>
+                <article class="endpoint">
+                    <code>POST /analyze-full-media</code>
+                    <p>Full forensic upload endpoint for complete image, audio, and video file inspection from the premium popup dashboard.</p>
+                </article>
+            </div>
+
+            <div class="deploy-card">
+                <h3>Local deployment status</h3>
+                <ol class="deploy-list">
+                    <li>Backend service reachable on <strong>127.0.0.1:8000</strong>.</li>
+                    <li>Browser extension launcher script available for Edge, Chrome, or Brave.</li>
+                    <li>Premium sandbox upload flow connected to the deployed backend.</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer class="footer">
+            Synthetic Media Shield runs fully on your machine for demos, iteration, and local deployment validation.
+        </footer>
+    </div>
+    <script>
+        const websiteStorageKey = 'shieldWebsiteSession';
+
+        function websiteGetSession() {{
+            try {{
+                return JSON.parse(localStorage.getItem(websiteStorageKey) || '{{}}');
+            }} catch {{
+                return {{}};
+            }}
+        }}
+
+        function websiteSetSession(payload) {{
+            localStorage.setItem(websiteStorageKey, JSON.stringify(payload));
+        }}
+
+        function websiteClearSession() {{
+            localStorage.removeItem(websiteStorageKey);
+        }}
+
+        function websiteSetStatus(message, targetId = 'website-status') {{
+            const element = document.getElementById(targetId);
+            if (element) {{
+                element.textContent = message || '';
+            }}
+        }}
+
+        function websiteSetAuthMode(mode) {{
+            document.getElementById('web-mode-login').classList.toggle('active', mode === 'login');
+            document.getElementById('web-mode-signup').classList.toggle('active', mode === 'signup');
+            document.getElementById('web-login-form').classList.toggle('active', mode === 'login');
+            document.getElementById('web-signup-form').classList.toggle('active', mode === 'signup');
+        }}
+
+        function websiteShowOtpCard(visible) {{
+            document.getElementById('web-otp-card').classList.toggle('active', visible);
+        }}
+
+        function websiteFormatAccountLabel(profileName, email) {{
+            if (!email) {{
+                return 'No account selected yet.';
+            }}
+            return profileName ? `${{profileName}} • ${{email}}` : `Account: ${{email}}`;
+        }}
+
+        function websiteUpdateAccountLabels(profileName, email) {{
+            const label = websiteFormatAccountLabel(profileName, email);
+            document.getElementById('web-otp-email-chip').textContent = label;
+            document.getElementById('web-dashboard-email-chip').textContent = label;
+            document.getElementById('web-pay-email-chip').textContent = label;
+        }}
+
+        function websiteSetBusy(buttonId, busy) {{
+            const button = document.getElementById(buttonId);
+            if (!button) {{
+                return;
+            }}
+            button.disabled = busy;
+            button.style.opacity = busy ? '0.7' : '1';
+        }}
+
+        function websiteIsGmailAddress(value) {{
+            return /^[^\\s@]+@gmail\\.com$/i.test(String(value || '').trim());
+        }}
+
+        function websiteBuildProfileName(mode) {{
+            if (mode !== 'signup') {{
+                return '';
+            }}
+
+            const firstName = document.getElementById('web-first-name').value.trim();
+            const lastName = document.getElementById('web-last-name').value.trim();
+            return [firstName, lastName].filter(Boolean).join(' ');
+        }}
+
+        function websiteGetAuthEmail(mode) {{
+            return document.getElementById(mode === 'signup' ? 'web-signup-email' : 'web-login-email').value.trim().toLowerCase();
+        }}
+
+        function websiteRedirectToMainPlace() {{
+            window.location.href = '/demo';
+        }}
+
+        function websiteRenderView(session) {{
+            const authPanel = document.getElementById('website-auth-panel');
+            const dashboard = document.getElementById('website-dashboard');
+            const hasVerifiedSession = Boolean(session.userEmail && session.authStage === 'verified');
+
+            websiteUpdateAccountLabels(session.profileName || '', session.userEmail || '');
+
+            authPanel.style.display = hasVerifiedSession ? 'none' : 'block';
+            dashboard.classList.toggle('active', hasVerifiedSession);
+
+            if (!hasVerifiedSession) {{
+                websiteSetAuthMode(session.authMode === 'signup' ? 'signup' : 'login');
+                websiteShowOtpCard(session.authStage === 'otp-sent');
+                return;
+            }}
+
+            if (session.hasSub) {{
+                websiteRedirectToMainPlace();
+                return;
+            }}
+
+            const badge = document.getElementById('web-subscription-badge');
+            const title = document.getElementById('web-dashboard-title');
+            const copy = document.getElementById('web-dashboard-copy');
+            const upgradeBox = document.getElementById('web-upgrade-box');
+            const premiumBox = document.getElementById('web-premium-box');
+
+            title.textContent = session.profileName ? `Welcome, ${{session.profileName}}` : 'Website Dashboard';
+            if (session.hasSub) {{
+                badge.textContent = 'Premium Active';
+                badge.classList.add('premium');
+                copy.textContent = 'Your premium shield is active. Continue into the live demo or extension workflow.';
+                upgradeBox.classList.add('hidden');
+                premiumBox.classList.remove('hidden');
+            }} else {{
+                badge.textContent = 'Basic Access';
+                badge.classList.remove('premium');
+                copy.textContent = 'You are signed in. Upgrade to premium here whenever you want the extended workflow.';
+                upgradeBox.classList.remove('hidden');
+                premiumBox.classList.add('hidden');
+            }}
+        }}
+
+        async function websiteRequestOtp(mode) {{
+            const email = websiteGetAuthEmail(mode);
+            const profileName = websiteBuildProfileName(mode);
+            if (!email) {{
+                websiteSetStatus('Enter your Gmail address first.');
+                return;
+            }}
+            if (!websiteIsGmailAddress(email)) {{
+                websiteSetStatus('Enter a valid Gmail address ending in @gmail.com.');
+                return;
+            }}
+            if (mode === 'signup' && !profileName) {{
+                websiteSetStatus('Enter at least your first name to create the account.');
+                return;
+            }}
+
+            const buttonId = mode === 'signup' ? 'web-send-signup-otp' : 'web-send-login-otp';
+            websiteSetBusy(buttonId, true);
+            websiteSetStatus('Sending OTP...');
+
+            try {{
+                const response = await fetch('/auth/request-otp', {{
+                    method: 'POST',
+                    headers: {{ 'Content-Type': 'application/json' }},
+                    body: JSON.stringify({{ email }})
+                }});
+                const payload = await response.json().catch(() => ({{}}));
+                if (!response.ok) {{
+                    websiteSetStatus(payload.detail || 'Failed to send OTP.');
+                    return;
+                }}
+
+                const session = {{
+                    userEmail: email,
+                    hasSub: false,
+                    authStage: 'otp-sent',
+                    authMode: mode,
+                    profileName
+                }};
+                websiteSetSession(session);
+                websiteRenderView(session);
+                const maskedEmail = payload.masked_email || email;
+                const expiryMinutes = Math.max(1, Math.round((payload.expires_in_seconds || 600) / 60));
+                if (payload.delivery_mode === 'local_preview' && payload.otp_preview) {{
+                    websiteSetStatus(`Local OTP mode: use code ${{payload.otp_preview}}. It expires in ${{expiryMinutes}} minute(s).`);
+                }} else {{
+                    websiteSetStatus(`OTP sent to ${{maskedEmail}}. Check Gmail. The code expires in ${{expiryMinutes}} minute(s).`);
+                }}
+            }} catch (error) {{
+                websiteSetStatus(error.message || 'Could not contact the backend.');
+            }} finally {{
+                websiteSetBusy(buttonId, false);
+            }}
+        }}
+
+        async function websiteVerifyOtp() {{
+            const session = websiteGetSession();
+            const otp = document.getElementById('web-otp-input').value.trim();
+            if (!session.userEmail || !otp) {{
+                websiteSetStatus('Enter the OTP sent to your email.');
+                return;
+            }}
+
+            websiteSetBusy('web-verify-otp', true);
+            websiteSetStatus('Verifying OTP...');
+
+            try {{
+                const response = await fetch('/auth/verify-otp', {{
+                    method: 'POST',
+                    headers: {{ 'Content-Type': 'application/json' }},
+                    body: JSON.stringify({{ email: session.userEmail, otp }})
+                }});
+                const payload = await response.json().catch(() => ({{}}));
+                if (!response.ok) {{
+                    websiteSetStatus(payload.detail || 'Invalid OTP.');
+                    return;
+                }}
+
+                const nextSession = {{
+                    ...session,
+                    userEmail: payload.email,
+                    hasSub: Boolean(payload.has_subscription),
+                    authStage: 'verified',
+                    authToken: payload.token || null
+                }};
+                websiteSetSession(nextSession);
+                if (nextSession.hasSub) {{
+                    websiteRedirectToMainPlace();
+                    return;
+                }}
+                websiteRenderView(nextSession);
+                websiteSetStatus('', 'website-status');
+                websiteSetStatus(
+                    payload.has_subscription
+                        ? 'Login successful. Premium is already active.'
+                        : 'Login successful. Your website dashboard is ready.',
+                    'website-dashboard-status'
+                );
+            }} catch (error) {{
+                websiteSetStatus(error.message || 'Could not verify OTP.');
+            }} finally {{
+                websiteSetBusy('web-verify-otp', false);
+            }}
+        }}
+
+        async function websiteActivatePremium() {{
+            const session = websiteGetSession();
+            const utr = document.getElementById('web-utr-input').value.trim();
+            if (!session.userEmail || !utr) {{
+                websiteSetStatus(session.userEmail ? 'Enter your UTR/reference number.' : 'Please log in first.', 'website-dashboard-status');
+                return;
+            }}
+
+            websiteSetBusy('web-activate-premium', true);
+            websiteSetStatus('Verifying payment...', 'website-dashboard-status');
+
+            try {{
+                const response = await fetch('/payment/verify-upi', {{
+                    method: 'POST',
+                    headers: {{ 'Content-Type': 'application/json' }},
+                    body: JSON.stringify({{ email: session.userEmail, utr_number: utr }})
+                }});
+                const payload = await response.json().catch(() => ({{}}));
+                if (!response.ok) {{
+                    websiteSetStatus(payload.detail || 'Invalid UTR number.', 'website-dashboard-status');
+                    return;
+                }}
+
+                const nextSession = {{
+                    ...session,
+                    hasSub: true,
+                    authToken: payload.token || session.authToken || null
+                }};
+                websiteSetSession(nextSession);
+                websiteRedirectToMainPlace();
+                return;
+            }} catch (error) {{
+                websiteSetStatus(error.message || 'Could not verify payment.', 'website-dashboard-status');
+            }} finally {{
+                websiteSetBusy('web-activate-premium', false);
+            }}
+        }}
+
+        function websiteReset() {{
+            websiteClearSession();
+            document.getElementById('web-login-email').value = '';
+            document.getElementById('web-first-name').value = '';
+            document.getElementById('web-last-name').value = '';
+            document.getElementById('web-signup-email').value = '';
+            document.getElementById('web-otp-input').value = '';
+            document.getElementById('web-utr-input').value = '';
+            websiteRenderView({{ authMode: 'login' }});
+            websiteSetStatus('');
+            websiteSetStatus('', 'website-dashboard-status');
+        }}
+
+        document.getElementById('web-mode-login').addEventListener('click', () => websiteSetAuthMode('login'));
+        document.getElementById('web-mode-signup').addEventListener('click', () => websiteSetAuthMode('signup'));
+        document.getElementById('web-send-login-otp').addEventListener('click', () => websiteRequestOtp('login'));
+        document.getElementById('web-send-signup-otp').addEventListener('click', () => websiteRequestOtp('signup'));
+        document.getElementById('web-verify-otp').addEventListener('click', websiteVerifyOtp);
+        document.getElementById('web-change-account').addEventListener('click', websiteReset);
+        document.getElementById('web-switch-account').addEventListener('click', websiteReset);
+        document.getElementById('web-logout').addEventListener('click', websiteReset);
+        document.getElementById('web-demo-utr').addEventListener('click', () => {{
+            document.getElementById('web-utr-input').value = '123456789012';
+            websiteSetStatus('Demo UTR inserted. Click Activate Premium.', 'website-dashboard-status');
+        }});
+        document.getElementById('web-activate-premium').addEventListener('click', websiteActivatePremium);
+
+        websiteRenderView(websiteGetSession());
+    </script>
+</body>
+</html>
+"""
+>>>>>>> 0b5028a91215614047ae1a30d997ca6a9116397e
 
 
 @app.get("/api/status")
@@ -1431,9 +2776,12 @@ def demo() -> str:
         <header class="page-nav">
             <div class="page-brand">Deepfake Detection</div>
             <nav class="page-nav-links">
-                <button id="demo-nav-home" class="page-nav-btn" type="button">Home</button>
-                <button id="demo-nav-subscription" class="page-nav-btn primary" type="button">Subscription</button>
-                <button id="demo-nav-logout" class="page-nav-btn" type="button">Logout</button>
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn primary">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
             </nav>
         </header>
 
@@ -1522,6 +2870,37 @@ def demo() -> str:
                         <strong>Source Clues</strong>
                         <span id="result-source-integrity">N/A</span>
                     </div>
+                </div>
+            </div>
+        </section>
+        <section class="card video-shell" style="margin-top:24px">
+            <div class="video-shell-header">
+                <div class="video-shell-title">
+                    <strong>Full Media Upload</strong>
+                    <span>Upload any image, video, or audio file for comprehensive forensic analysis.</span>
+                </div>
+            </div>
+            <div class="controls" style="margin-bottom:16px">
+                <label class="upload" style="cursor:pointer">
+                    <span>Choose file</span>
+                    <input id="full-media-input" type="file" accept="image/jpeg,image/png,video/mp4,video/quicktime,video/x-msvideo,audio/mpeg,audio/wav">
+                </label>
+                <div id="upload-file-name" style="color:var(--muted);font-size:0.9rem;margin-top:8px"></div>
+                <button id="upload-analyze-btn" class="action-btn primary" type="button" style="margin-top:10px" disabled>Analyze uploaded file</button>
+                <div class="note">Supported: JPG, PNG, MP4, MOV, AVI, MP3, WAV. Files are processed locally and not stored.</div>
+            </div>
+            <div id="upload-status" class="link-status" data-tone="idle">Select a file to begin analysis.</div>
+            <div id="upload-result" class="result-card" data-tone="idle">
+                <h3 id="upload-result-title">Upload Analysis Result</h3>
+                <div id="upload-result-summary" class="result-summary"></div>
+                <div id="upload-result-explanation" class="result-explanation"></div>
+                <div class="result-grid">
+                    <div class="result-pill"><strong>Threat Score</strong><span id="upload-threat-score">N/A</span></div>
+                    <div class="result-pill"><strong>Visual Score</strong><span id="upload-visual-score">N/A</span></div>
+                    <div class="result-pill"><strong>Audio Score</strong><span id="upload-audio-score">N/A</span></div>
+                    <div class="result-pill"><strong>Liveness</strong><span id="upload-liveness">N/A</span></div>
+                    <div class="result-pill"><strong>Frames</strong><span id="upload-frames">N/A</span></div>
+                    <div class="result-pill"><strong>Proof Code</strong><span id="upload-proof">N/A</span></div>
                 </div>
             </div>
         </section>
@@ -1889,13 +3268,1117 @@ def demo() -> str:
             setStatus('Sample webpage URL loaded. Click Analyze link to score its preview image through the backend.', 'success');
         });
 
-        document.getElementById('demo-nav-home').addEventListener('click', demoGoHome);
-        document.getElementById('demo-nav-subscription').addEventListener('click', demoGoSubscription);
-        document.getElementById('demo-nav-logout').addEventListener('click', demoLogout);
+        const fullMediaInput = document.getElementById('full-media-input');
+        const uploadAnalyzeBtn = document.getElementById('upload-analyze-btn');
+        const uploadFileName = document.getElementById('upload-file-name');
+        const uploadStatus = document.getElementById('upload-status');
+        const uploadResultCard = document.getElementById('upload-result');
+
+        fullMediaInput.addEventListener('change', () => {
+            if (fullMediaInput.files.length > 0) {
+                uploadFileName.textContent = fullMediaInput.files[0].name;
+                uploadAnalyzeBtn.disabled = false;
+                uploadStatus.textContent = `Ready to analyze ${fullMediaInput.files[0].name}`;
+                uploadStatus.dataset.tone = 'success';
+            }
+        });
+
+        uploadAnalyzeBtn.addEventListener('click', async () => {
+            if (!fullMediaInput.files.length) return;
+            const selectedFile = fullMediaInput.files[0];
+            uploadStatus.textContent = `Uploading and analyzing ${selectedFile.name}...`;
+            uploadStatus.dataset.tone = 'loading';
+            uploadAnalyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', selectedFile);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Upload analysis failed.');
+
+                uploadResultCard.dataset.tone = data.overall_threat_score > 65 ? 'alert' : 'safe';
+                uploadResultCard.classList.add('visible');
+                document.getElementById('upload-result-title').textContent = `${data.media_type || 'Media'} Analysis`;
+                document.getElementById('upload-result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('upload-result-explanation').textContent = data.explanation || '';
+                document.getElementById('upload-threat-score').textContent = formatPercent(data.overall_threat_score);
+                document.getElementById('upload-visual-score').textContent = formatPercent(data.visual_deepfake_score);
+                document.getElementById('upload-audio-score').textContent = formatPercent(data.audio_clone_score);
+                document.getElementById('upload-liveness').textContent = formatPercent(data.biological_liveness);
+                document.getElementById('upload-frames').textContent = data.frames_analyzed ?? 0;
+                document.getElementById('upload-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 24) + '...' : 'N/A';
+                uploadStatus.textContent = data.analysis_summary || 'Analysis complete.';
+                uploadStatus.dataset.tone = data.overall_threat_score > 65 ? 'error' : 'success';
+            } catch (err) {
+                uploadStatus.textContent = err.message || 'Analysis failed.';
+                uploadStatus.dataset.tone = 'error';
+            } finally {
+                uploadAnalyzeBtn.disabled = false;
+            }
+        });
+
     </script>
 </body>
 </html>
     """
+
+
+@app.get("/detect/image", response_class=HTMLResponse)
+def detect_image() -> str:
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image Detection – Synthetic Media Shield</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08101f;
+            --panel: rgba(11, 19, 38, 0.9);
+            --line: rgba(105, 229, 255, 0.28);
+            --text: #ecf7ff;
+            --muted: #9fb6c9;
+            --accent: #67f3da;
+            --accent-2: #ff9f43;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(103, 243, 218, 0.12), transparent 30%),
+                radial-gradient(circle at right, rgba(255, 159, 67, 0.14), transparent 28%),
+                linear-gradient(160deg, #050a14, var(--bg));
+            min-height: 100vh;
+        }
+        a { color: inherit; text-decoration: none; }
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 56px; }
+        .page-nav {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            margin-bottom: 24px; padding: 14px 18px;
+            border: 1px solid rgba(103, 243, 218, 0.18); border-radius: 999px;
+            background: rgba(9, 16, 31, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(14px);
+        }
+        .page-brand { font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--text); }
+        .page-nav-links { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .page-nav-btn {
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(103, 243, 218, 0.16); background: rgba(255, 255, 255, 0.04);
+            color: var(--text); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .page-nav-btn:hover { transform: translateY(-1px); border-color: rgba(103, 243, 218, 0.34); background: rgba(103, 243, 218, 0.08); }
+        .page-nav-btn.active { background: rgba(103, 243, 218, 0.12); color: var(--accent); }
+        .card {
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35); backdrop-filter: blur(14px);
+        }
+        .hero-section { text-align: center; padding: 48px 24px 32px; }
+        .hero-section h1 { margin: 0 0 12px; font-size: clamp(2rem, 3.5vw, 3.6rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; }
+        .hero-section p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1.05rem; max-width: 640px; margin-inline: auto; }
+        .upload-section { margin-top: 24px; padding: 32px; }
+        .drop-zone {
+            border: 2px dashed rgba(103, 243, 218, 0.3); border-radius: 16px; padding: 48px 24px;
+            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+        }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(103, 243, 218, 0.06); }
+        .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+        .drop-zone-text { font-size: 1.1rem; font-weight: 700; }
+        .drop-zone-hint { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+        .file-input-hidden { display: none; }
+        .analyze-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-top: 18px; padding: 12px 32px; border-radius: 999px;
+            background: rgba(103, 243, 218, 0.14); border: 1px solid rgba(103, 243, 218, 0.3);
+            color: var(--accent); font: inherit; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: background 0.18s, transform 0.18s;
+        }
+        .analyze-btn:hover { background: rgba(103, 243, 218, 0.22); transform: translateY(-1px); }
+        .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .status-bar { margin-top: 16px; padding: 10px 16px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; }
+        .status-bar[data-tone="idle"] { color: var(--muted); }
+        .status-bar[data-tone="loading"] { color: var(--accent-2); }
+        .status-bar[data-tone="success"] { color: var(--accent); }
+        .status-bar[data-tone="error"] { color: #ff6b6b; }
+        .results-section { margin-top: 24px; padding: 32px; display: none; }
+        .results-section.visible { display: block; }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .gauge-svg { width: 180px; height: 100px; }
+        .gauge-label { font-size: 2rem; font-weight: 800; margin-top: 8px; }
+        .gauge-verdict { font-size: 1.1rem; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .breakdown-bar { height: 10px; border-radius: 5px; background: #1a2540; margin: 16px 0; overflow: hidden; display: flex; }
+        .breakdown-bar .seg-safe { background: #67f3da; }
+        .breakdown-bar .seg-warn { background: #ff9f43; }
+        .breakdown-bar .seg-danger { background: #ff6b6b; }
+        .legend { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.12);
+            border-radius: 14px; padding: 16px; text-align: center;
+        }
+        .metric-card strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+        .metric-card span { font-size: 1.3rem; font-weight: 800; }
+        .how-section { margin-top: 32px; padding: 32px; }
+        .how-section h2 { margin: 0 0 20px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .how-step {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.1);
+            border-radius: 14px; padding: 20px;
+        }
+        .how-step strong { color: var(--accent); display: block; margin-bottom: 6px; }
+        .how-step p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+        .privacy-note { text-align: center; margin-top: 24px; color: var(--muted); font-size: 0.85rem; padding: 12px; border: 1px solid rgba(103, 243, 218, 0.1); border-radius: 12px; }
+        @media (max-width: 700px) {
+            .page-nav { border-radius: 24px; flex-direction: column; align-items: flex-start; }
+            .page-nav-links { width: 100%; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="page-nav">
+            <div class="page-brand">Synthetic Media Shield</div>
+            <nav class="page-nav-links">
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn active">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <h1>Image Deepfake Detection</h1>
+            <p>Upload a photograph for forensic analysis. Our engine inspects pixel-level artifacts, GAN fingerprints, metadata integrity, and compression anomalies to determine authenticity.</p>
+        </section>
+
+        <section class="card upload-section">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-icon">🖼️</div>
+                <div class="drop-zone-text">Drag & drop an image here, or click to browse</div>
+                <div class="drop-zone-hint">Accepts JPG, JPEG, PNG — max 20 MB</div>
+                <input id="file-input" class="file-input-hidden" type="file" accept=".jpg,.jpeg,.png">
+            </div>
+            <div style="text-align:center">
+                <button id="analyze-btn" class="analyze-btn" disabled>Analyze Image</button>
+            </div>
+            <div id="status-bar" class="status-bar" data-tone="idle">Select an image to begin.</div>
+        </section>
+
+        <section id="results-section" class="card results-section">
+            <div class="gauge-wrap">
+                <svg class="gauge-svg" viewBox="0 0 180 100">
+                    <path d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="#1a2540" stroke-width="12" stroke-linecap="round"/>
+                    <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
+                </svg>
+                <div id="gauge-label" class="gauge-label">0%</div>
+                <div id="gauge-verdict" class="gauge-verdict">—</div>
+            </div>
+            <div id="breakdown-bar" class="breakdown-bar"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#67f3da"></div>Safe</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff9f43"></div>Suspicious</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Dangerous</div>
+            </div>
+            <div id="result-summary" style="text-align:center;font-size:1.05rem;margin-bottom:16px;font-weight:600"></div>
+            <div id="result-explanation" style="text-align:center;color:var(--muted);font-size:0.95rem;margin-bottom:20px;line-height:1.6"></div>
+            <div class="metrics-grid">
+                <div class="metric-card"><strong>Threat Score</strong><span id="m-threat">N/A</span></div>
+                <div class="metric-card"><strong>Visual Score</strong><span id="m-visual">N/A</span></div>
+                <div class="metric-card"><strong>Media Type</strong><span id="m-type">N/A</span></div>
+                <div class="metric-card"><strong>Proof Hash</strong><span id="m-proof">N/A</span></div>
+            </div>
+        </section>
+
+        <section class="card how-section">
+            <h2>How Image Detection Works</h2>
+            <div class="how-steps">
+                <div class="how-step">
+                    <strong>1. Upload</strong>
+                    <p>Select or drag a photo into the analysis zone. The file stays in your browser until submission.</p>
+                </div>
+                <div class="how-step">
+                    <strong>2. Forensic Scan</strong>
+                    <p>Our engine checks for GAN artifacts, EXIF metadata anomalies, compression patterns, and pixel-level inconsistencies.</p>
+                </div>
+                <div class="how-step">
+                    <strong>3. Verdict</strong>
+                    <p>You receive a threat score, detailed breakdown, and a cryptographic proof hash for the analysis record.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const statusBar = document.getElementById('status-bar');
+        const resultsSection = document.getElementById('results-section');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                statusBar.textContent = `Selected: ${fileInput.files[0].name}`;
+                statusBar.dataset.tone = 'success';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function formatPct(v) { return typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) + '%' : 'N/A'; }
+
+        function renderGauge(score) {
+            const maxLen = 251.33;
+            const pct = Math.min(Math.max(score, 0), 100) / 100;
+            const arc = document.getElementById('gauge-arc');
+            arc.setAttribute('stroke-dasharray', `${pct * maxLen} ${maxLen}`);
+            arc.setAttribute('stroke', score > 65 ? '#ff6b6b' : score > 35 ? '#ff9f43' : '#67f3da');
+            document.getElementById('gauge-label').textContent = score.toFixed(1) + '%';
+            const verdictEl = document.getElementById('gauge-verdict');
+            if (score > 65) { verdictEl.textContent = 'LIKELY FAKE'; verdictEl.style.color = '#ff6b6b'; }
+            else if (score > 35) { verdictEl.textContent = 'SUSPICIOUS'; verdictEl.style.color = '#ff9f43'; }
+            else { verdictEl.textContent = 'LIKELY AUTHENTIC'; verdictEl.style.color = '#67f3da'; }
+        }
+
+        function renderBreakdown(score) {
+            const bar = document.getElementById('breakdown-bar');
+            const safe = Math.max(100 - score, 0);
+            const warn = score > 35 && score <= 65 ? score : 0;
+            const danger = score > 65 ? score : 0;
+            const safeWidth = score <= 35 ? 100 : safe;
+            bar.innerHTML = `<div class="seg-safe" style="width:${safeWidth}%"></div>` +
+                (warn ? `<div class="seg-warn" style="width:${warn}%"></div>` : '') +
+                (danger ? `<div class="seg-danger" style="width:${danger}%"></div>` : '');
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            statusBar.textContent = `Uploading and analyzing ${file.name}...`;
+            statusBar.dataset.tone = 'loading';
+            analyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Analysis failed.');
+
+                const score = data.overall_threat_score || 0;
+                renderGauge(score);
+                renderBreakdown(score);
+                document.getElementById('result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('result-explanation').textContent = data.explanation || '';
+                document.getElementById('m-threat').textContent = formatPct(data.overall_threat_score);
+                document.getElementById('m-visual').textContent = formatPct(data.visual_deepfake_score);
+                document.getElementById('m-type').textContent = data.media_type || 'image';
+                document.getElementById('m-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 16) + '...' : 'N/A';
+                resultsSection.classList.add('visible');
+                statusBar.textContent = data.analysis_summary || 'Analysis complete.';
+                statusBar.dataset.tone = score > 65 ? 'error' : 'success';
+            } catch (err) {
+                statusBar.textContent = err.message || 'Analysis failed.';
+                statusBar.dataset.tone = 'error';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+    """
+
+
+@app.get("/detect/video", response_class=HTMLResponse)
+def detect_video() -> str:
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Video Detection – Synthetic Media Shield</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08101f;
+            --panel: rgba(11, 19, 38, 0.9);
+            --line: rgba(105, 229, 255, 0.28);
+            --text: #ecf7ff;
+            --muted: #9fb6c9;
+            --accent: #67f3da;
+            --accent-2: #ff9f43;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(103, 243, 218, 0.12), transparent 30%),
+                radial-gradient(circle at right, rgba(255, 159, 67, 0.14), transparent 28%),
+                linear-gradient(160deg, #050a14, var(--bg));
+            min-height: 100vh;
+        }
+        a { color: inherit; text-decoration: none; }
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 56px; }
+        .page-nav {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            margin-bottom: 24px; padding: 14px 18px;
+            border: 1px solid rgba(103, 243, 218, 0.18); border-radius: 999px;
+            background: rgba(9, 16, 31, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(14px);
+        }
+        .page-brand { font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--text); }
+        .page-nav-links { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .page-nav-btn {
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(103, 243, 218, 0.16); background: rgba(255, 255, 255, 0.04);
+            color: var(--text); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .page-nav-btn:hover { transform: translateY(-1px); border-color: rgba(103, 243, 218, 0.34); background: rgba(103, 243, 218, 0.08); }
+        .page-nav-btn.active { background: rgba(103, 243, 218, 0.12); color: var(--accent); }
+        .card {
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35); backdrop-filter: blur(14px);
+        }
+        .hero-section { text-align: center; padding: 48px 24px 32px; }
+        .hero-section h1 { margin: 0 0 12px; font-size: clamp(2rem, 3.5vw, 3.6rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; }
+        .hero-section p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1.05rem; max-width: 640px; margin-inline: auto; }
+        .upload-section { margin-top: 24px; padding: 32px; }
+        .drop-zone {
+            border: 2px dashed rgba(103, 243, 218, 0.3); border-radius: 16px; padding: 48px 24px;
+            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+        }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(103, 243, 218, 0.06); }
+        .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+        .drop-zone-text { font-size: 1.1rem; font-weight: 700; }
+        .drop-zone-hint { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+        .file-input-hidden { display: none; }
+        .analyze-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-top: 18px; padding: 12px 32px; border-radius: 999px;
+            background: rgba(103, 243, 218, 0.14); border: 1px solid rgba(103, 243, 218, 0.3);
+            color: var(--accent); font: inherit; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: background 0.18s, transform 0.18s;
+        }
+        .analyze-btn:hover { background: rgba(103, 243, 218, 0.22); transform: translateY(-1px); }
+        .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .status-bar { margin-top: 16px; padding: 10px 16px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; }
+        .status-bar[data-tone="idle"] { color: var(--muted); }
+        .status-bar[data-tone="loading"] { color: var(--accent-2); }
+        .status-bar[data-tone="success"] { color: var(--accent); }
+        .status-bar[data-tone="error"] { color: #ff6b6b; }
+        .results-section { margin-top: 24px; padding: 32px; display: none; }
+        .results-section.visible { display: block; }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .gauge-svg { width: 180px; height: 100px; }
+        .gauge-label { font-size: 2rem; font-weight: 800; margin-top: 8px; }
+        .gauge-verdict { font-size: 1.1rem; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .breakdown-bar { height: 10px; border-radius: 5px; background: #1a2540; margin: 16px 0; overflow: hidden; display: flex; }
+        .breakdown-bar .seg-safe { background: #67f3da; }
+        .breakdown-bar .seg-warn { background: #ff9f43; }
+        .breakdown-bar .seg-danger { background: #ff6b6b; }
+        .legend { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.12);
+            border-radius: 14px; padding: 16px; text-align: center;
+        }
+        .metric-card strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+        .metric-card span { font-size: 1.3rem; font-weight: 800; }
+        .how-section { margin-top: 32px; padding: 32px; }
+        .how-section h2 { margin: 0 0 20px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .how-step {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.1);
+            border-radius: 14px; padding: 20px;
+        }
+        .how-step strong { color: var(--accent); display: block; margin-bottom: 6px; }
+        .how-step p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+        .privacy-note { text-align: center; margin-top: 24px; color: var(--muted); font-size: 0.85rem; padding: 12px; border: 1px solid rgba(103, 243, 218, 0.1); border-radius: 12px; }
+        @media (max-width: 700px) {
+            .page-nav { border-radius: 24px; flex-direction: column; align-items: flex-start; }
+            .page-nav-links { width: 100%; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="page-nav">
+            <div class="page-brand">Synthetic Media Shield</div>
+            <nav class="page-nav-links">
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn active">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <h1>Video Deepfake Detection</h1>
+            <p>Upload a video file for multi-layer forensic analysis. The engine extracts frames, analyzes visual consistency, checks audio tracks for voice cloning, and evaluates biological liveness signals.</p>
+        </section>
+
+        <section class="card upload-section">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-icon">🎬</div>
+                <div class="drop-zone-text">Drag & drop a video here, or click to browse</div>
+                <div class="drop-zone-hint">Accepts MP4, MOV, AVI — max 100 MB</div>
+                <input id="file-input" class="file-input-hidden" type="file" accept=".mp4,.mov,.avi">
+            </div>
+            <div style="text-align:center">
+                <button id="analyze-btn" class="analyze-btn" disabled>Analyze Video</button>
+            </div>
+            <div id="status-bar" class="status-bar" data-tone="idle">Select a video to begin.</div>
+        </section>
+
+        <section id="results-section" class="card results-section">
+            <div class="gauge-wrap">
+                <svg class="gauge-svg" viewBox="0 0 180 100">
+                    <path d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="#1a2540" stroke-width="12" stroke-linecap="round"/>
+                    <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
+                </svg>
+                <div id="gauge-label" class="gauge-label">0%</div>
+                <div id="gauge-verdict" class="gauge-verdict">—</div>
+            </div>
+            <div id="breakdown-bar" class="breakdown-bar"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#67f3da"></div>Safe</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff9f43"></div>Suspicious</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Dangerous</div>
+            </div>
+            <div id="result-summary" style="text-align:center;font-size:1.05rem;margin-bottom:16px;font-weight:600"></div>
+            <div id="result-explanation" style="text-align:center;color:var(--muted);font-size:0.95rem;margin-bottom:20px;line-height:1.6"></div>
+            <div class="metrics-grid">
+                <div class="metric-card"><strong>Threat Score</strong><span id="m-threat">N/A</span></div>
+                <div class="metric-card"><strong>Visual Score</strong><span id="m-visual">N/A</span></div>
+                <div class="metric-card"><strong>Audio Score</strong><span id="m-audio">N/A</span></div>
+                <div class="metric-card"><strong>Liveness</strong><span id="m-liveness">N/A</span></div>
+                <div class="metric-card"><strong>Frames Analyzed</strong><span id="m-frames">N/A</span></div>
+                <div class="metric-card"><strong>Proof Hash</strong><span id="m-proof">N/A</span></div>
+            </div>
+        </section>
+
+        <section class="card how-section">
+            <h2>How Video Detection Works</h2>
+            <div class="how-steps">
+                <div class="how-step">
+                    <strong>1. Upload</strong>
+                    <p>Select or drag a video file. Supported formats include MP4, MOV, and AVI.</p>
+                </div>
+                <div class="how-step">
+                    <strong>2. Frame Extraction</strong>
+                    <p>The engine samples up to 90 frames from the video and analyzes each for deepfake artifacts and temporal inconsistencies.</p>
+                </div>
+                <div class="how-step">
+                    <strong>3. Audio Analysis</strong>
+                    <p>If the video contains an audio track, it is extracted and checked for voice cloning signatures and synthesis artifacts.</p>
+                </div>
+                <div class="how-step">
+                    <strong>4. Verdict</strong>
+                    <p>Results combine visual, audio, and liveness scores into an overall threat assessment with a cryptographic proof hash.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const statusBar = document.getElementById('status-bar');
+        const resultsSection = document.getElementById('results-section');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                statusBar.textContent = `Selected: ${fileInput.files[0].name}`;
+                statusBar.dataset.tone = 'success';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function formatPct(v) { return typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) + '%' : 'N/A'; }
+
+        function renderGauge(score) {
+            const maxLen = 251.33;
+            const pct = Math.min(Math.max(score, 0), 100) / 100;
+            const arc = document.getElementById('gauge-arc');
+            arc.setAttribute('stroke-dasharray', `${pct * maxLen} ${maxLen}`);
+            arc.setAttribute('stroke', score > 65 ? '#ff6b6b' : score > 35 ? '#ff9f43' : '#67f3da');
+            document.getElementById('gauge-label').textContent = score.toFixed(1) + '%';
+            const verdictEl = document.getElementById('gauge-verdict');
+            if (score > 65) { verdictEl.textContent = 'LIKELY FAKE'; verdictEl.style.color = '#ff6b6b'; }
+            else if (score > 35) { verdictEl.textContent = 'SUSPICIOUS'; verdictEl.style.color = '#ff9f43'; }
+            else { verdictEl.textContent = 'LIKELY AUTHENTIC'; verdictEl.style.color = '#67f3da'; }
+        }
+
+        function renderBreakdown(score) {
+            const bar = document.getElementById('breakdown-bar');
+            const safe = Math.max(100 - score, 0);
+            const warn = score > 35 && score <= 65 ? score : 0;
+            const danger = score > 65 ? score : 0;
+            const safeWidth = score <= 35 ? 100 : safe;
+            bar.innerHTML = `<div class="seg-safe" style="width:${safeWidth}%"></div>` +
+                (warn ? `<div class="seg-warn" style="width:${warn}%"></div>` : '') +
+                (danger ? `<div class="seg-danger" style="width:${danger}%"></div>` : '');
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            statusBar.textContent = `Uploading and analyzing ${file.name}... This may take a moment for video files.`;
+            statusBar.dataset.tone = 'loading';
+            analyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Analysis failed.');
+
+                const score = data.overall_threat_score || 0;
+                renderGauge(score);
+                renderBreakdown(score);
+                document.getElementById('result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('result-explanation').textContent = data.explanation || '';
+                document.getElementById('m-threat').textContent = formatPct(data.overall_threat_score);
+                document.getElementById('m-visual').textContent = formatPct(data.visual_deepfake_score);
+                document.getElementById('m-audio').textContent = formatPct(data.audio_clone_score);
+                document.getElementById('m-liveness').textContent = formatPct(data.biological_liveness);
+                document.getElementById('m-frames').textContent = data.frames_analyzed ?? 0;
+                document.getElementById('m-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 16) + '...' : 'N/A';
+                resultsSection.classList.add('visible');
+                statusBar.textContent = data.analysis_summary || 'Analysis complete.';
+                statusBar.dataset.tone = score > 65 ? 'error' : 'success';
+            } catch (err) {
+                statusBar.textContent = err.message || 'Analysis failed.';
+                statusBar.dataset.tone = 'error';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+    """
+
+
+@app.get("/detect/voice", response_class=HTMLResponse)
+def detect_voice() -> str:
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voice Detection – Synthetic Media Shield</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08101f;
+            --panel: rgba(11, 19, 38, 0.9);
+            --line: rgba(105, 229, 255, 0.28);
+            --text: #ecf7ff;
+            --muted: #9fb6c9;
+            --accent: #67f3da;
+            --accent-2: #ff9f43;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(103, 243, 218, 0.12), transparent 30%),
+                radial-gradient(circle at right, rgba(255, 159, 67, 0.14), transparent 28%),
+                linear-gradient(160deg, #050a14, var(--bg));
+            min-height: 100vh;
+        }
+        a { color: inherit; text-decoration: none; }
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 56px; }
+        .page-nav {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            margin-bottom: 24px; padding: 14px 18px;
+            border: 1px solid rgba(103, 243, 218, 0.18); border-radius: 999px;
+            background: rgba(9, 16, 31, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(14px);
+        }
+        .page-brand { font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--text); }
+        .page-nav-links { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .page-nav-btn {
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(103, 243, 218, 0.16); background: rgba(255, 255, 255, 0.04);
+            color: var(--text); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .page-nav-btn:hover { transform: translateY(-1px); border-color: rgba(103, 243, 218, 0.34); background: rgba(103, 243, 218, 0.08); }
+        .page-nav-btn.active { background: rgba(103, 243, 218, 0.12); color: var(--accent); }
+        .card {
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35); backdrop-filter: blur(14px);
+        }
+        .hero-section { text-align: center; padding: 48px 24px 32px; }
+        .hero-section h1 { margin: 0 0 12px; font-size: clamp(2rem, 3.5vw, 3.6rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; }
+        .hero-section p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1.05rem; max-width: 640px; margin-inline: auto; }
+        .upload-section { margin-top: 24px; padding: 32px; }
+        .drop-zone {
+            border: 2px dashed rgba(103, 243, 218, 0.3); border-radius: 16px; padding: 48px 24px;
+            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+        }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(103, 243, 218, 0.06); }
+        .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+        .drop-zone-text { font-size: 1.1rem; font-weight: 700; }
+        .drop-zone-hint { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+        .file-input-hidden { display: none; }
+        .analyze-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-top: 18px; padding: 12px 32px; border-radius: 999px;
+            background: rgba(103, 243, 218, 0.14); border: 1px solid rgba(103, 243, 218, 0.3);
+            color: var(--accent); font: inherit; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: background 0.18s, transform 0.18s;
+        }
+        .analyze-btn:hover { background: rgba(103, 243, 218, 0.22); transform: translateY(-1px); }
+        .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .status-bar { margin-top: 16px; padding: 10px 16px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; }
+        .status-bar[data-tone="idle"] { color: var(--muted); }
+        .status-bar[data-tone="loading"] { color: var(--accent-2); }
+        .status-bar[data-tone="success"] { color: var(--accent); }
+        .status-bar[data-tone="error"] { color: #ff6b6b; }
+        .results-section { margin-top: 24px; padding: 32px; display: none; }
+        .results-section.visible { display: block; }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .gauge-svg { width: 180px; height: 100px; }
+        .gauge-label { font-size: 2rem; font-weight: 800; margin-top: 8px; }
+        .gauge-verdict { font-size: 1.1rem; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .breakdown-bar { height: 10px; border-radius: 5px; background: #1a2540; margin: 16px 0; overflow: hidden; display: flex; }
+        .breakdown-bar .seg-safe { background: #67f3da; }
+        .breakdown-bar .seg-warn { background: #ff9f43; }
+        .breakdown-bar .seg-danger { background: #ff6b6b; }
+        .legend { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.12);
+            border-radius: 14px; padding: 16px; text-align: center;
+        }
+        .metric-card strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+        .metric-card span { font-size: 1.3rem; font-weight: 800; }
+        .how-section { margin-top: 32px; padding: 32px; }
+        .how-section h2 { margin: 0 0 20px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .how-step {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(103, 243, 218, 0.1);
+            border-radius: 14px; padding: 20px;
+        }
+        .how-step strong { color: var(--accent); display: block; margin-bottom: 6px; }
+        .how-step p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+        .privacy-note { text-align: center; margin-top: 24px; color: var(--muted); font-size: 0.85rem; padding: 12px; border: 1px solid rgba(103, 243, 218, 0.1); border-radius: 12px; }
+        @media (max-width: 700px) {
+            .page-nav { border-radius: 24px; flex-direction: column; align-items: flex-start; }
+            .page-nav-links { width: 100%; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="page-nav">
+            <div class="page-brand">Synthetic Media Shield</div>
+            <nav class="page-nav-links">
+                <a href="/" class="page-nav-btn">Home</a>
+                <a href="/detect/image" class="page-nav-btn">Detect Image</a>
+                <a href="/detect/video" class="page-nav-btn">Detect Video</a>
+                <a href="/detect/voice" class="page-nav-btn active">Detect Voice</a>
+                <a href="/demo" class="page-nav-btn">Demo</a>
+                <a href="/about" class="page-nav-btn">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <h1>Voice Clone Detection</h1>
+            <p>Upload an audio recording to check for AI-generated voice cloning, text-to-speech synthesis artifacts, and other audio manipulation signatures.</p>
+        </section>
+
+        <section class="card upload-section">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-icon">🎙️</div>
+                <div class="drop-zone-text">Drag & drop an audio file here, or click to browse</div>
+                <div class="drop-zone-hint">Accepts MP3, WAV — max 50 MB</div>
+                <input id="file-input" class="file-input-hidden" type="file" accept=".mp3,.wav">
+            </div>
+            <div style="text-align:center">
+                <button id="analyze-btn" class="analyze-btn" disabled>Analyze Audio</button>
+            </div>
+            <div id="status-bar" class="status-bar" data-tone="idle">Select an audio file to begin.</div>
+        </section>
+
+        <section id="results-section" class="card results-section">
+            <div class="gauge-wrap">
+                <svg class="gauge-svg" viewBox="0 0 180 100">
+                    <path d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="#1a2540" stroke-width="12" stroke-linecap="round"/>
+                    <path id="gauge-arc" d="M10 90 A 80 80 0 0 1 170 90" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 251.33"/>
+                </svg>
+                <div id="gauge-label" class="gauge-label">0%</div>
+                <div id="gauge-verdict" class="gauge-verdict">—</div>
+            </div>
+            <div id="breakdown-bar" class="breakdown-bar"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#67f3da"></div>Safe</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff9f43"></div>Suspicious</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Dangerous</div>
+            </div>
+            <div id="result-summary" style="text-align:center;font-size:1.05rem;margin-bottom:16px;font-weight:600"></div>
+            <div id="result-explanation" style="text-align:center;color:var(--muted);font-size:0.95rem;margin-bottom:20px;line-height:1.6"></div>
+            <div class="metrics-grid">
+                <div class="metric-card"><strong>Audio Clone Risk</strong><span id="m-audio">N/A</span></div>
+                <div class="metric-card"><strong>Threat Score</strong><span id="m-threat">N/A</span></div>
+                <div class="metric-card"><strong>Media Type</strong><span id="m-type">N/A</span></div>
+                <div class="metric-card"><strong>Proof Hash</strong><span id="m-proof">N/A</span></div>
+            </div>
+        </section>
+
+        <section class="card how-section">
+            <h2>How Voice Detection Works</h2>
+            <div class="how-steps">
+                <div class="how-step">
+                    <strong>1. Upload</strong>
+                    <p>Select or drag an audio file. We accept MP3 and WAV recordings.</p>
+                </div>
+                <div class="how-step">
+                    <strong>2. Audio Analysis</strong>
+                    <p>The engine examines spectral patterns, pitch consistency, breathing artifacts, and synthesis markers that distinguish real human speech from AI-generated audio.</p>
+                </div>
+                <div class="how-step">
+                    <strong>3. Verdict</strong>
+                    <p>You receive a clone risk score indicating the likelihood that the voice was synthetically generated or cloned from a real person.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="privacy-note">🔒 Files are processed locally by the backend and are not stored or transmitted to third parties.</div>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const statusBar = document.getElementById('status-bar');
+        const resultsSection = document.getElementById('results-section');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                statusBar.textContent = `Selected: ${fileInput.files[0].name}`;
+                statusBar.dataset.tone = 'success';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function formatPct(v) { return typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) + '%' : 'N/A'; }
+
+        function renderGauge(score) {
+            const maxLen = 251.33;
+            const pct = Math.min(Math.max(score, 0), 100) / 100;
+            const arc = document.getElementById('gauge-arc');
+            arc.setAttribute('stroke-dasharray', `${pct * maxLen} ${maxLen}`);
+            arc.setAttribute('stroke', score > 65 ? '#ff6b6b' : score > 35 ? '#ff9f43' : '#67f3da');
+            document.getElementById('gauge-label').textContent = score.toFixed(1) + '%';
+            const verdictEl = document.getElementById('gauge-verdict');
+            if (score > 65) { verdictEl.textContent = 'LIKELY CLONED'; verdictEl.style.color = '#ff6b6b'; }
+            else if (score > 35) { verdictEl.textContent = 'SUSPICIOUS'; verdictEl.style.color = '#ff9f43'; }
+            else { verdictEl.textContent = 'LIKELY AUTHENTIC'; verdictEl.style.color = '#67f3da'; }
+        }
+
+        function renderBreakdown(score) {
+            const bar = document.getElementById('breakdown-bar');
+            const safe = Math.max(100 - score, 0);
+            const warn = score > 35 && score <= 65 ? score : 0;
+            const danger = score > 65 ? score : 0;
+            const safeWidth = score <= 35 ? 100 : safe;
+            bar.innerHTML = `<div class="seg-safe" style="width:${safeWidth}%"></div>` +
+                (warn ? `<div class="seg-warn" style="width:${warn}%"></div>` : '') +
+                (danger ? `<div class="seg-danger" style="width:${danger}%"></div>` : '');
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            statusBar.textContent = `Uploading and analyzing ${file.name}...`;
+            statusBar.dataset.tone = 'loading';
+            analyzeBtn.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const resp = await fetch('/analyze-full-media', { method: 'POST', body: fd });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.detail || 'Analysis failed.');
+
+                const score = data.overall_threat_score || 0;
+                renderGauge(score);
+                renderBreakdown(score);
+                document.getElementById('result-summary').textContent = data.analysis_summary || '';
+                document.getElementById('result-explanation').textContent = data.explanation || '';
+                document.getElementById('m-audio').textContent = formatPct(data.audio_clone_score);
+                document.getElementById('m-threat').textContent = formatPct(data.overall_threat_score);
+                document.getElementById('m-type').textContent = data.media_type || 'audio';
+                document.getElementById('m-proof').textContent = data.proof_hash ? data.proof_hash.slice(0, 16) + '...' : 'N/A';
+                resultsSection.classList.add('visible');
+                statusBar.textContent = data.analysis_summary || 'Analysis complete.';
+                statusBar.dataset.tone = score > 65 ? 'error' : 'success';
+            } catch (err) {
+                statusBar.textContent = err.message || 'Analysis failed.';
+                statusBar.dataset.tone = 'error';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+    """
+
+
+@app.get("/about", response_class=HTMLResponse)
+def about() -> str:
+    return f"""
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About – Synthetic Media Shield</title>
+    <style>
+        :root {{
+            --bg: #f5efe4;
+            --ink: #112129;
+            --muted: #556872;
+            --panel: rgba(255, 252, 247, 0.78);
+            --line: rgba(17, 33, 41, 0.12);
+            --accent: #0f766e;
+            --accent-2: #c2410c;
+            --shadow: 0 24px 60px rgba(31, 41, 55, 0.12);
+        }}
+        * {{ box-sizing: border-box; }}
+        html {{ scroll-behavior: smooth; }}
+        body {{
+            margin: 0; color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 24%),
+                radial-gradient(circle at right 20%, rgba(194, 65, 12, 0.14), transparent 22%),
+                linear-gradient(180deg, #fbf5ea 0%, var(--bg) 100%);
+            font-family: Georgia, "Times New Roman", serif;
+        }}
+        a {{ color: inherit; text-decoration: none; }}
+        .shell {{ max-width: 1180px; margin: 0 auto; padding: 24px; }}
+        .nav {{
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            padding: 14px 18px; border: 1px solid var(--line); border-radius: 999px;
+            background: rgba(255, 250, 242, 0.76); backdrop-filter: blur(14px);
+            position: sticky; top: 16px; z-index: 10; box-shadow: var(--shadow);
+        }}
+        .brand {{ font-size: 0.92rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; }}
+        .nav-links {{ display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }}
+        .nav-link-btn {{
+            display: inline-flex; align-items: center; justify-content: center;
+            min-height: 42px; padding: 0 18px; border-radius: 999px;
+            border: 1px solid rgba(17, 33, 41, 0.1); background: rgba(255, 255, 255, 0.72);
+            color: var(--muted); font: inherit; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }}
+        .nav-link-btn:hover {{ transform: translateY(-1px); border-color: rgba(15, 118, 110, 0.22); color: var(--ink); }}
+        .nav-link-btn.active {{ color: var(--accent); border-color: rgba(15, 118, 110, 0.22); }}
+        .section-card {{
+            background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+            box-shadow: var(--shadow); padding: 40px; margin-top: 32px;
+        }}
+        .hero-area {{ text-align: center; padding: 52px 24px 28px; }}
+        .hero-area h1 {{ margin: 0 0 12px; font-size: clamp(2.2rem, 3.5vw, 3.6rem); line-height: 1.05; }}
+        .hero-area p {{ margin: 8px auto 0; color: var(--muted); line-height: 1.7; font-size: 1.05rem; max-width: 680px; }}
+        .section-card h2 {{ margin: 0 0 16px; font-size: 1.4rem; color: var(--accent); }}
+        .section-card p {{ margin: 0 0 12px; color: var(--muted); line-height: 1.7; font-size: 1rem; }}
+        .section-card p:last-child {{ margin-bottom: 0; }}
+        .tech-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }}
+        .tech-item {{
+            background: rgba(15, 118, 110, 0.05); border: 1px solid rgba(15, 118, 110, 0.12);
+            border-radius: 14px; padding: 20px;
+        }}
+        .tech-item strong {{ display: block; margin-bottom: 6px; color: var(--ink); }}
+        .tech-item p {{ margin: 0; font-size: 0.95rem; }}
+        .team-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }}
+        .team-member {{
+            background: rgba(15, 118, 110, 0.04); border: 1px solid rgba(15, 118, 110, 0.1);
+            border-radius: 14px; padding: 20px; text-align: center;
+        }}
+        .team-avatar {{ font-size: 2.4rem; margin-bottom: 8px; }}
+        .team-member strong {{ display: block; font-size: 1.05rem; margin-bottom: 4px; }}
+        .team-member span {{ color: var(--muted); font-size: 0.9rem; }}
+        .policy-list {{ padding-left: 20px; color: var(--muted); line-height: 1.8; }}
+        .policy-list li {{ margin-bottom: 6px; }}
+        @media (max-width: 700px) {{
+            .nav {{ border-radius: 26px; flex-direction: column; align-items: start; }}
+            .nav-links {{ flex-wrap: wrap; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header class="nav">
+            <div class="brand">Synthetic Media Shield</div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link-btn">Home</a>
+                <a href="/detect/image" class="nav-link-btn">Detect Image</a>
+                <a href="/detect/video" class="nav-link-btn">Detect Video</a>
+                <a href="/detect/voice" class="nav-link-btn">Detect Voice</a>
+                <a href="/demo" class="nav-link-btn">Demo</a>
+                <a href="/about" class="nav-link-btn active">About</a>
+            </nav>
+        </header>
+
+        <section class="hero-area">
+            <h1>About Synthetic Media Shield</h1>
+            <p>An open proof-of-reality platform built to help journalists, researchers, and everyday users verify the authenticity of digital media in the age of generative AI.</p>
+        </section>
+
+        <section class="section-card">
+            <h2>Our Mission</h2>
+            <p>Synthetic Media Shield was created to combat the growing threat of AI-generated deepfakes, voice clones, and manipulated imagery. As generative models become more powerful and accessible, the line between real and synthetic content blurs further every day.</p>
+            <p>Our goal is to provide accessible, transparent, and privacy-respecting forensic tools that empower anyone to verify digital media before trusting or sharing it.</p>
+        </section>
+
+        <section class="section-card">
+            <h2>Technology Overview</h2>
+            <p>The platform combines multiple detection approaches for comprehensive analysis:</p>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <strong>Visual Forensics</strong>
+                    <p>Deep learning models trained to detect GAN artifacts, facial inconsistencies, compression anomalies, and pixel-level manipulation signatures in images and video frames.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Audio Analysis</strong>
+                    <p>Spectral analysis and neural classifiers that identify voice cloning artifacts, text-to-speech synthesis markers, and unnatural pitch or breathing patterns.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Biological Liveness</strong>
+                    <p>Multi-frame liveness detection that evaluates natural micro-movements, blinking patterns, and temporal consistency across video sequences.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Metadata Forensics</strong>
+                    <p>EXIF data analysis, C2PA provenance checking, and compression artifact examination to trace the origin and editing history of media files.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Proof of Reality</strong>
+                    <p>Cryptographic hashing of analysis results to create tamper-proof records that can be used as evidence of verification.</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Multi-Engine Support</strong>
+                    <p>Flexible architecture supporting local PyTorch models, cloud-based Reality Defender API, and demo mode for development and testing.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>Privacy Policy</h2>
+            <p>We take your privacy seriously. Here is how we handle your data:</p>
+            <ul class="policy-list">
+                <li>Uploaded files are processed in memory and immediately deleted after analysis — nothing is stored on disk permanently.</li>
+                <li>No media files are transmitted to third-party services unless you explicitly configure an external detection API.</li>
+                <li>Authentication uses one-time passwords sent to your email — no passwords are ever stored.</li>
+                <li>Analysis results and proof hashes are generated client-side or in your local backend instance.</li>
+                <li>No tracking cookies, analytics scripts, or advertising are used anywhere in the platform.</li>
+            </ul>
+        </section>
+
+        <section class="section-card">
+            <h2>Team</h2>
+            <p>Synthetic Media Shield is developed by a multidisciplinary team of AI researchers and cybersecurity experts dedicated to building trust in digital media.</p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-avatar">🧑‍🔬</div>
+                    <strong>AI Research Lead</strong>
+                    <span>Deep learning and computer vision specialist focused on GAN detection and adversarial robustness.</span>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">🔐</div>
+                    <strong>Cybersecurity Architect</strong>
+                    <span>Security engineer specializing in digital forensics, cryptographic verification, and threat analysis.</span>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">🎛️</div>
+                    <strong>Audio ML Engineer</strong>
+                    <span>Researcher in speech synthesis detection, spectral analysis, and voice biometrics.</span>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">🌐</div>
+                    <strong>Platform Engineer</strong>
+                    <span>Full-stack developer building the web platform, browser extension, and API infrastructure.</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+"""
 
 
 @app.post("/analyze-url")
