@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deepfake Voice Detection - Deepfake Detection</title>
+  <link rel="icon" type="image/png" href="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --panel: #ffffff;
+      --ink: #13203a;
+      --muted: #70819b;
+      --line: #e6ecf5;
+      --accent: #2f66f3;
+      --accent-soft: #eaf1ff;
+      --violet: #4f46e5;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --success: #22c55e;
+      --shadow: 0 8px 28px rgba(17, 24, 39, 0.06);
+      --shadow-lg: 0 18px 48px rgba(17, 24, 39, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, audio { display: block; max-width: 100%; }
+    button, input { font: inherit; }
+
+    .nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid #f0f0f0; padding: 0 32px; }
+    .nav-inner { max-width: 2589px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.5rem; color: #1a1a2e; }
+    .nav-brand img { width: 36px; height: 36px; }
+    .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .nav-link { display: flex; align-items: center; padding: 8px 16px; font-size: 1.125rem; font-weight: 600; color: #374151; border-radius: 8px; transition: color 0.15s; }
+    .nav-link:hover, .nav-link.active { color: #1d4ed8; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-btn { display: flex; align-items: center; gap: 5px; padding: 8px 16px; font-size: 1.125rem; font-weight: 600; color: #374151; border: none; background: none; cursor: pointer; border-radius: 8px; font-family: inherit; transition: color 0.15s; }
+    .nav-dropdown-btn:hover, .nav-dropdown-btn.active { color: #1d4ed8; }
+    .nav-dropdown-btn i { font-size: 0.65rem; transition: transform 0.2s; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 100%; right: 0; min-width: 220px; background: #fff; border: 1px solid #e8e8e8; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); padding: 8px; margin-top: 4px; z-index: 200; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown:hover .nav-dropdown-btn i { transform: rotate(180deg); }
+    .nav-dropdown.open .nav-dropdown-menu { display: block; }
+    .nav-dropdown.open .nav-dropdown-btn i { transform: rotate(180deg); }
+    .nav-dropdown-menu a { display: block; padding: 10px 16px; font-size: 0.9rem; color: #333; border-radius: 8px; font-weight: 500; }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: #f5f7ff; color: #2563eb; }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+
+    .hero { padding: 52px 0 18px; text-align: center; }
+    .hero h1 { font-size: clamp(2.7rem, 4vw, 4rem); line-height: 1.06; letter-spacing: -0.04em; font-weight: 800; margin-bottom: 10px; }
+    .hero p { max-width: 760px; margin: 0 auto; color: var(--muted); font-size: 1.03rem; }
+    .mode-tabs { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+    .mode-tab { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; padding: 8px 16px; border-radius: 10px; background: #eef2f8; color: var(--muted); font-size: 0.84rem; font-weight: 600; transition: all 0.18s ease; }
+    .mode-tab.active { background: var(--accent); color: #fff; }
+
+    .workbench { padding: 14px 0 36px; }
+    .workbench-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: center; max-width: 980px; margin: 0 auto; }
+    .upload-column { padding-right: 10px; }
+    .upload-zone {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 196px;
+      border: 1.8px dashed #d7deeb;
+      border-radius: 18px;
+      background: #fff;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: #fbfdff; transform: translateY(-1px); }
+    .upload-placeholder { text-align: center; padding: 24px; }
+    .upload-placeholder i { font-size: 2.7rem; color: #7d8ca5; margin-bottom: 14px; }
+    .upload-placeholder h3 { font-size: 1.08rem; font-weight: 700; margin-bottom: 6px; }
+    .upload-placeholder p { color: var(--muted); font-size: 0.82rem; }
+    .upload-preview { display: none; width: 100%; padding: 18px; }
+    .upload-zone.filled .upload-placeholder { display: none; }
+    .upload-zone.filled .upload-preview { display: block; }
+    .preview-shell { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .preview-icon { width: 54px; height: 54px; border-radius: 16px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 1.3rem; flex-shrink: 0; }
+    .preview-copy { min-width: 0; }
+    .preview-name { font-size: 0.98rem; font-weight: 700; color: var(--ink); word-break: break-word; }
+    .preview-meta { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+    .audio-preview { width: 100%; }
+    .audio-preview audio { width: 100%; }
+    .audio-preview-shell { padding: 10px 12px; background: #f8fbff; border: 1px solid var(--line); border-radius: 14px; }
+    #file-input { display: none; }
+
+    .proof-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 12px 0 14px; flex-wrap: wrap; }
+    .avatar-stack { display: flex; align-items: center; }
+    .avatar-stack img { width: 26px; height: 26px; border-radius: 999px; border: 2px solid #fff; margin-left: -8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); }
+    .avatar-stack img:first-child { margin-left: 0; }
+    .rating { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .stars { display: flex; gap: 2px; color: #fbbf24; font-size: 0.8rem; }
+    .rating span { font-size: 0.78rem; color: var(--muted); }
+
+    .cta-row { text-align: center; }
+    .analyze-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 122px; padding: 12px 26px; border: none; border-radius: 8px; background: #9aa4b5; color: #fff; font-size: 0.88rem; font-weight: 600; box-shadow: 0 8px 20px rgba(148, 163, 184, 0.25); cursor: pointer; transition: all 0.18s ease; }
+    .analyze-btn.ready { background: var(--violet); box-shadow: 0 10px 22px rgba(79, 70, 229, 0.28); }
+    .analyze-btn:hover { transform: translateY(-1px); }
+    .analyze-btn:disabled { cursor: not-allowed; transform: none; }
+
+    .examples { text-align: center; margin-top: 18px; }
+    .examples p { color: var(--muted); font-size: 0.74rem; margin-bottom: 10px; }
+    .example-grid { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .example-btn {
+      min-width: 86px;
+      padding: 14px 12px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #f7f8ff 0%, #f1f5ff 100%);
+      color: #3559d8;
+      cursor: pointer;
+      box-shadow: 0 0 0 2px transparent;
+      transition: all 0.18s ease;
+    }
+    .example-btn:hover, .example-btn.active { box-shadow: 0 0 0 2px var(--accent); border-color: #d6dff6; transform: translateY(-1px); }
+    .example-btn i { display: block; font-size: 1.18rem; margin-bottom: 8px; }
+    .example-btn span { display: block; font-size: 0.72rem; font-weight: 600; }
+
+    .hero-visual-frame { width: 100%; max-width: 420px; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: var(--shadow-lg); margin: 0 auto; }
+    .hero-visual-frame img { width: 100%; aspect-ratio: 1.15 / 1; object-fit: cover; }
+
+    .results-section { display: none; max-width: 1140px; margin: 0 auto 58px; }
+    .results-section.visible { display: block; }
+    .result-card { background: #fff; border-radius: 26px; border: 1px solid var(--line); box-shadow: var(--shadow-lg); padding: 26px 30px 30px; }
+    .result-heading { text-align: center; margin-bottom: 26px; }
+    .result-heading h2 { font-size: clamp(2.15rem, 3.1vw, 3rem); font-weight: 400; letter-spacing: -0.04em; }
+    .report-summary-card {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 28px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 30px;
+      margin-bottom: 22px;
+    }
+    .auth-score-panel { text-align: center; align-self: center; }
+    .auth-score-label { color: #64748b; font-size: 0.96rem; margin-bottom: 10px; }
+    .auth-score-value { font-size: 5.4rem; line-height: 0.95; font-weight: 300; color: var(--success); letter-spacing: -0.05em; }
+    .auth-score-value span { font-size: 3.1rem; color: #94a3b8; }
+    .auth-score-status { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; font-size: 1rem; color: #0f172a; }
+    .auth-score-status i { font-size: 0.95rem; }
+    .summary-panel h3 { font-size: 1.95rem; font-weight: 400; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .result-explanation { color: #4b5563; line-height: 1.78; font-size: 1rem; }
+    .report-detail-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+    .report-panel { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 22px 20px; }
+    .report-panel h3 { font-size: 1.9rem; font-weight: 400; letter-spacing: -0.03em; margin-bottom: 22px; }
+    .breakdown-list { display: grid; gap: 34px; padding-top: 12px; }
+    .breakdown-item { display: grid; grid-template-columns: 96px 1fr 58px; gap: 14px; align-items: center; }
+    .breakdown-label { color: #6b7280; font-size: 0.92rem; }
+    .breakdown-track { position: relative; height: 24px; border-radius: 7px; background: #edf2f8; overflow: hidden; }
+    .breakdown-fill { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 7px; }
+    .breakdown-fill.authenticity { background: #1fb981; }
+    .breakdown-fill.fake { background: #ef5350; }
+    .breakdown-value { text-align: right; font-size: 0.92rem; font-weight: 700; color: #334155; }
+    .analysis-sections { display: grid; gap: 18px; }
+    .analysis-block h4 { font-size: 1.55rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .analysis-block p { color: #4b5563; line-height: 1.78; font-size: 0.98rem; }
+    .result-actions { padding-top: 22px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-outline { padding: 10px 20px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.15s; }
+    .btn-outline:hover { border-color: var(--violet); color: var(--violet); }
+
+    .howto { padding: 56px 0 72px; }
+    .section-heading { text-align: center; max-width: 860px; margin: 0 auto 28px; }
+    .section-heading h2 { font-size: clamp(2rem, 3vw, 2.45rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; }
+    .section-heading p { color: var(--muted); font-size: 1rem; }
+    .howto-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(460px, 560px); gap: 28px; align-items: start; max-width: 1260px; margin: 0 auto; }
+    .steps-list { display: grid; gap: 14px; }
+    .step-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 18px 18px 18px 20px; }
+    .step-title { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .step-title i { color: var(--accent); font-size: 0.95rem; }
+    .step-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.75; }
+    .howto-visual { background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow-lg); padding: 14px; width: 100%; }
+    .howto-visual img { width: 100%; border-radius: 16px; }
+    .howto-cta { display: flex; justify-content: center; margin-top: 28px; }
+    .howto-cta-link { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 0.98rem; font-weight: 700; box-shadow: 0 14px 28px rgba(47, 102, 243, 0.18); }
+    .howto-cta-link i { font-size: 0.95rem; }
+
+    .benefits { padding: 0 0 72px; }
+    .benefits-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; max-width: 1040px; margin: 0 auto; }
+    .benefit-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 22px 18px; }
+    .benefit-card i { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-size: 1.05rem; margin-bottom: 14px; }
+    .benefit-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .benefit-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.75; }
+
+    .faq { padding: 0 0 72px; }
+    .faq-list { max-width: 860px; margin: 0 auto; }
+    .faq-item { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 12px; }
+    .faq-q { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px 20px; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+    .faq-q i { color: var(--muted); transition: transform 0.2s ease; }
+    .faq-a { display: none; padding: 0 20px 18px; color: var(--muted); font-size: 0.92rem; line-height: 1.75; }
+    .faq-item.open .faq-a { display: block; }
+    .faq-item.open .faq-q i { transform: rotate(180deg); }
+
+    .cta-section { padding: 0 0 76px; }
+    .cta-card { max-width: 960px; margin: 0 auto; border-radius: 28px; padding: 34px 26px; background: linear-gradient(135deg, #eef4ff 0%, #f7f9ff 55%, #ffffff 100%); border: 1px solid #d9e5ff; box-shadow: var(--shadow-lg); text-align: center; }
+    .cta-card h2 { font-size: clamp(2rem, 3vw, 2.55rem); line-height: 1.08; letter-spacing: -0.03em; margin-bottom: 10px; }
+    .cta-card p { color: var(--muted); max-width: 620px; margin: 0 auto 22px; }
+    .cta-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .cta-link { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 700; }
+    .cta-link.secondary { background: var(--violet); }
+
+    .footer { border-top: 1px solid var(--line); background: #fff; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; padding: 40px 28px 28px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 28px; }
+    .footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #1a1a2e; font-size: 1.02rem; margin-bottom: 12px; }
+    .footer-brand img { width: 34px; height: 34px; }
+    .footer-copy { color: var(--muted); font-size: 0.9rem; max-width: 360px; line-height: 1.8; }
+    .footer-col h4 { font-size: 0.92rem; margin-bottom: 12px; }
+    .footer-col a, .footer-col p { display: block; color: var(--muted); font-size: 0.88rem; line-height: 1.8; }
+    .footer-bottom { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.84rem; }
+
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.35); border-top-color: #fff; border-radius: 999px; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 1024px) {
+      .workbench-grid, .howto-layout { grid-template-columns: 1fr; max-width: 700px; }
+      .upload-column { padding-right: 0; }
+      .benefits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .report-summary-card, .report-detail-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .nav { padding: 0 18px; }
+      .nav-links { display: none; }
+      .container { padding: 0 18px; }
+      .hero { padding-top: 38px; }
+      .hero h1 { font-size: 2.3rem; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .result-card { padding: 22px 18px 24px; }
+      .auth-score-value { font-size: 4.4rem; }
+      .summary-panel h3, .report-panel h3, .analysis-block h4 { font-size: 1.5rem; }
+      .breakdown-item { grid-template-columns: 1fr; gap: 10px; }
+      .breakdown-value { text-align: left; }
+      .howto-cta-link { width: 100%; justify-content: center; text-align: center; border-radius: 16px; }
+      .cta-card { padding: 28px 18px; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <div class="nav-dropdown" id="toolsDropdown">
+          <button class="nav-dropdown-btn active" onclick="document.getElementById('toolsDropdown').classList.toggle('open')">
+            Deepfake Detection Tools <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+            <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+            <a href="/deepfake-voice-detection" class="active">Deepfake Voice Detection</a>
+          </div>
+        </div>
+        <a href="/about" class="nav-link">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Deepfake Voice Detection Online</h1>
+      <p>Wondering if that voice clip is fake? Upload it now. Our AI Deepfake Voice Detection will check it in real-time and show you which parts are real, which might be fake, and how sure we are.</p>
+      <div class="mode-tabs">
+        <a href="/deepfake-image-detection" class="mode-tab">Image</a>
+        <a href="/deepfake-video-detection" class="mode-tab">Video</a>
+        <span class="mode-tab active">Voice</span>
+      </div>
+    </section>
+
+    <section class="workbench">
+      <div class="workbench-grid">
+        <div class="upload-column">
+          <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload audio file">
+            <div class="upload-placeholder">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <h3>Drag &amp; drop an audio file or click</h3>
+              <p>WAV, MP3, AAC, OGG, FLAC up to 20MB</p>
+            </div>
+            <div class="upload-preview" id="upload-preview-shell">
+              <div class="preview-shell">
+                <div class="preview-icon"><i class="fa-solid fa-waveform-lines"></i></div>
+                <div class="preview-copy">
+                  <div class="preview-name" id="preview-name">Ready to analyze</div>
+                  <div class="preview-meta" id="preview-meta">Your selected clip will appear here before analysis.</div>
+                </div>
+              </div>
+              <div class="audio-preview-shell" id="audio-control-shell">
+                <audio class="audio-preview" id="preview-audio" controls preload="metadata"></audio>
+              </div>
+            </div>
+            <input type="file" id="file-input" accept="audio/mpeg,audio/wav,audio/mp3,audio/aac,audio/ogg,audio/flac,audio/x-wav,audio/mp4,.m4a,.mp3,.wav,.aac,.ogg,.flac">
+          </div>
+
+          <div class="proof-row">
+            <div class="avatar-stack" aria-hidden="true">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-4.webp" alt="">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-1.webp" alt="">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-3.webp" alt="">
+              <img src="https://deepfakedetection.io/images/reviews/User-review-2.webp" alt="">
+            </div>
+            <div class="rating">
+              <div class="stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <span>18,000+ audio files verified successfully</span>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <button class="analyze-btn" id="analyze-btn" type="button" disabled>Analyze Audio</button>
+          </div>
+
+          <div class="examples">
+            <p>No audio? Try with example voices:</p>
+            <div class="example-grid" id="example-grid">
+              <button class="example-btn" type="button" data-example-label="Voice 1" data-example-url="https://raw.githubusercontent.com/Jakobovski/free-spoken-digit-dataset/master/recordings/0_george_0.wav">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Voice 1</span>
+              </button>
+              <button class="example-btn" type="button" data-example-label="Voice 2" data-example-url="https://raw.githubusercontent.com/Jakobovski/free-spoken-digit-dataset/master/recordings/1_jackson_0.wav">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Voice 2</span>
+              </button>
+              <button class="example-btn" type="button" data-example-label="Voice 3" data-example-url="https://raw.githubusercontent.com/Jakobovski/free-spoken-digit-dataset/master/recordings/2_nicolas_0.wav">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Voice 3</span>
+              </button>
+              <button class="example-btn" type="button" data-example-label="Voice 4" data-example-url="https://raw.githubusercontent.com/Jakobovski/free-spoken-digit-dataset/master/recordings/3_theo_0.wav">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Voice 4</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual-frame">
+          <img src="https://deepfakedetection.io/images/page/fakevoice-hero.webp" alt="Deepfake voice detection tool interface">
+        </div>
+      </div>
+    </section>
+
+    <section class="results-section" id="results-section">
+      <div class="result-card">
+        <div class="result-heading">
+          <h2>Analysis Report</h2>
+        </div>
+        <div class="report-summary-card">
+          <div class="auth-score-panel">
+            <div class="auth-score-label">Authenticity Score</div>
+            <div class="auth-score-value" id="score-value">0<span>%</span></div>
+            <div class="auth-score-status" id="verdict-title"><i class="fa-regular fa-circle"></i><span>Analyzing...</span></div>
+          </div>
+
+          <div class="summary-panel">
+            <h3>Summary Report</h3>
+            <div class="result-explanation" id="result-explanation"></div>
+          </div>
+        </div>
+
+        <div class="report-detail-grid">
+          <div class="report-panel">
+            <h3>Authenticity Breakdown</h3>
+            <div class="breakdown-list">
+              <div class="breakdown-item">
+                <div class="breakdown-label">Authenticity</div>
+                <div class="breakdown-track"><div class="breakdown-fill authenticity" id="authenticity-bar"></div></div>
+                <div class="breakdown-value" id="authenticity-value">0%</div>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-label">Fake Probability</div>
+                <div class="breakdown-track"><div class="breakdown-fill fake" id="fake-bar"></div></div>
+                <div class="breakdown-value" id="fake-value">0%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-panel">
+            <div class="analysis-sections">
+              <div class="analysis-block">
+                <h4>Vocal Consistency</h4>
+                <p id="detail-vocal">The voice profile is being analyzed for timing, phrasing, and tonal stability.</p>
+              </div>
+              <div class="analysis-block">
+                <h4>Background Noise Analysis</h4>
+                <p id="detail-background">Environmental audio is being checked for synthetic smoothness, looping artifacts, and irregular transitions.</p>
+              </div>
+              <div class="analysis-block">
+                <h4>Spectrogram Analysis</h4>
+                <p id="detail-spectrogram">Frequency distribution is being reviewed for the sharp edges and texture anomalies common in generated speech.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-outline" id="btn-new-scan" type="button"><i class="fa-solid fa-rotate-right"></i> New Scan</button>
+          <button class="btn-outline" id="btn-copy-result" type="button"><i class="fa-solid fa-copy"></i> Copy Result</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="howto">
+      <div class="section-heading">
+        <h2>How to Use Deepfake Voice Detection</h2>
+        <p>It's fast and super simple. Just follow a few easy steps to check if your audio is real or fake. No tech skills needed, our AI handles the hard stuff. You'll get clear results you can download and share.</p>
+      </div>
+      <div class="howto-layout">
+        <div class="steps-list">
+          <div class="step-card">
+            <div class="step-title"><i class="fa-solid fa-upload"></i><span>Step 1: Upload Your Audio File</span></div>
+            <p>Click the upload button to select a voice recording from your device. We support most formats like MP3, WAV, and M4A. Make sure the audio is clear and at least a few seconds long so the AI can analyze it properly.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-title"><i class="fa-solid fa-robot"></i><span>Step 2: Detect Voice</span></div>
+            <p>Once your file is uploaded, our AI instantly starts analyzing the audio. It checks pitch, pauses, background noise, and more. In about 10 to 30 seconds, we tell you how likely the voice is real or generated by AI.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-title"><i class="fa-solid fa-chart-column"></i><span>Step 3: Review the Detection Report</span></div>
+            <p>You'll see a simple result: a score showing how real or fake the voice sounds. We also highlight suspicious time points so you know exactly where problems might be. You get both a quick summary and a full detailed report.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-title"><i class="fa-solid fa-download"></i><span>Step 4: Download or Share Your Results</span></div>
+            <p>Need to keep a record or show someone else? Just click to download the report as a file. You can also copy a shareable link if you want to send it to a friend, coworker, or client. All reports are saved securely.</p>
+          </div>
+        </div>
+
+        <div class="howto-visual">
+          <img src="https://deepfakedetection.io/_next/image?url=%2Fimages%2Fpage%2Ffakevoice-how-to.webp&w=1920&q=75" alt="How to use deepfake voice detection tool step by step guide">
+        </div>
+      </div>
+      <div class="howto-cta">
+        <a href="/deepfake-voice-detection" class="howto-cta-link">Try Deepfake Voice Detection Now <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </section>
+
+    <section class="benefits">
+      <div class="section-heading">
+        <h2>Why Choose Our Deepfake Voice Detection Tool</h2>
+        <p>Built for fast checks, clear explanations, and private audio analysis when you need to verify suspicious recordings quickly.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <i class="fa-solid fa-bolt"></i>
+          <h3>Fast and Easy to Use</h3>
+          <p>Upload your clip and get a result in seconds. No account, no complex settings, and no extra steps.</p>
+        </div>
+        <div class="benefit-card">
+          <i class="fa-solid fa-brain"></i>
+          <h3>Accurate Results That Make Sense</h3>
+          <p>We analyze tone, pacing, and speech artifacts to produce a simple report you can understand without technical expertise.</p>
+        </div>
+        <div class="benefit-card">
+          <i class="fa-solid fa-shield"></i>
+          <h3>Private by Default</h3>
+          <p>Your uploaded audio is processed for analysis and not kept around as part of the normal scanning flow.</p>
+        </div>
+        <div class="benefit-card">
+          <i class="fa-solid fa-gift"></i>
+          <h3>Free for Everyday Checks</h3>
+          <p>Use it to verify suspicious calls, social clips, and voice notes before you react or forward them to others.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq">
+      <div class="section-heading">
+        <h2>Frequently Asked Questions</h2>
+        <p>Common questions about deepfake voice detection, supported audio, and what the report means.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q"><span>What is deepfake voice detection?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">Deepfake voice detection analyzes audio to determine whether a voice was artificially generated or cloned with AI. It looks for unnatural pauses, pitch inconsistencies, robotic tone shifts, and other synthesis artifacts that are difficult to catch by ear.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>Is the result 100% accurate?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">No AI detector is perfect. This tool gives you a practical risk score and explanation so you can review suspicious clips with better evidence, especially when the audio quality is poor or heavily compressed.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>What audio formats are supported?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">You can upload common audio formats such as MP3, WAV, AAC, OGG, FLAC, and M4A. Clearer recordings usually lead to more reliable results.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>Can this help with scam calls or fake family voices?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">Yes. The page is designed for exactly that use case. If you receive a suspicious voicemail, emergency request, or business call recording, you can upload it here and get a quick authenticity signal before responding.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span>Do you store my audio?</span><i class="fa-solid fa-chevron-down"></i></div>
+          <div class="faq-a">The normal scan flow is intended for immediate analysis rather than permanent storage. Use the copied result text if you want to keep a record of what the detector reported.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="cta-card">
+        <h2>Try Our Free Deepfake Voice Detection Tool</h2>
+        <p>Upload any voice clip and get an instant AI-powered report on its authenticity, no sign-up, no cost, just results.</p>
+        <div class="cta-links">
+          <a href="/deepfake-image-detection" class="cta-link"><i class="fa-solid fa-image"></i> Check Images</a>
+          <a href="/deepfake-video-detection" class="cta-link secondary"><i class="fa-solid fa-video"></i> Check Videos</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</div>
+          <p class="footer-copy">Deepfake Detection is a free AI-powered tool that helps identify manipulated images, videos, and audio files to reduce fraud, misinformation, and impersonation risk.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Deepfake Detection Tools</h4>
+          <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+          <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+          <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <a href="/about">About Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p>hello@deepfakedetection.io</p>
+          <p>support@deepfakedetection.io</p>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2026 Deepfake Detection. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    const uploadZone = document.getElementById('upload-zone');
+    const fileInput = document.getElementById('file-input');
+    const previewAudio = document.getElementById('preview-audio');
+    const previewName = document.getElementById('preview-name');
+    const previewMeta = document.getElementById('preview-meta');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const resultsSection = document.getElementById('results-section');
+    const exampleButtons = Array.from(document.querySelectorAll('.example-btn'));
+
+    let selectedFile = null;
+    let objectUrl = null;
+
+    function isAudioFile(file) {
+      return !!file && (String(file.type || '').startsWith('audio/') || /\.(mp3|wav|aac|ogg|flac|m4a)$/i.test(file.name || ''));
+    }
+
+    function formatFileSize(size) {
+      if (!Number.isFinite(size)) return 'Unknown size';
+      if (size >= 1024 * 1024) return (size / (1024 * 1024)).toFixed(2) + ' MB';
+      return Math.max(size / 1024, 0.1).toFixed(1) + ' KB';
+    }
+
+    function enableAnalyze() {
+      analyzeBtn.disabled = false;
+      analyzeBtn.classList.add('ready');
+    }
+
+    function setPreview(url, name, meta) {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+      objectUrl = url;
+      previewAudio.src = objectUrl;
+      previewName.textContent = name;
+      previewMeta.textContent = meta;
+      uploadZone.classList.add('filled');
+      enableAnalyze();
+    }
+
+    function clamp(value) {
+      return Math.min(100, Math.max(0, Math.round(value)));
+    }
+
+    function buildVoiceReportCopy(authenticityScore, fakeScore, explanation) {
+      if (authenticityScore >= 75) {
+        return {
+          summary: explanation || 'The audio file exhibits highly natural and consistent vocal characteristics, strongly suggesting it is genuine human speech. There are no discernible signs of digital manipulation, robotic tones, or unnatural speech patterns commonly associated with deepfakes or AI-generated voices. The overall quality and delivery are indicative of an authentic recording.',
+          vocal: 'The speaker demonstrates excellent vocal consistency, with natural pitch variation, appropriate intonation, and smooth pacing. There are no abrupt robotic tones, clipped syllables, or unstable transitions that would usually suggest synthetic generation. The voice flow remains fluid and characteristic of a human speaker.',
+          background: 'The background noise profile appears stable and believable, with no obvious looping ambiance, artificial dead-air patches, or abrupt environmental changes. That kind of continuity is more typical of a genuine recording captured in a real acoustic space.',
+          spectrogram: 'The spectral pattern reads as dense and naturally varied, without the rigid banding, over-smoothed harmonics, or repeated frequency signatures often seen in generated speech. The energy distribution suggests organic vocal production rather than synthesized output.'
+        };
+      }
+
+      if (authenticityScore >= 45) {
+        return {
+          summary: explanation || 'The audio shows a mix of natural speech qualities and suspicious artifacts. Some sections sound human, but there are enough irregularities in timing, texture, or delivery to justify a closer manual review before trusting the clip.',
+          vocal: 'Vocal delivery is partly natural, but certain phrases may carry slight timing inconsistencies, overly even tone shaping, or transitions that feel less organic than normal human speech. These mixed signals reduce confidence in full authenticity.',
+          background: 'The background environment is mostly coherent, though portions of the clip may feel cleaner or more controlled than expected. Subtle changes in noise texture can happen with edits, enhancement tools, or partially synthetic generation.',
+          spectrogram: 'Frequency structure appears plausible in many segments, but some regions may show smoothing or harmonic regularity that deserves closer review. This does not confirm a fake on its own, but it raises enough concern to treat the clip cautiously.'
+        };
+      }
+
+      return {
+        summary: explanation || 'The recording contains multiple indicators associated with cloned or AI-generated speech. The tonal profile, timing, and acoustic texture suggest the voice may not be a naturally captured human performance. This result should be treated as high risk.',
+        vocal: 'Speech patterns appear unusually controlled and less human than expected, with signs such as flattened emotional range, overly uniform pacing, or transitions that feel engineered rather than naturally spoken. These are common markers in synthetic voice output.',
+        background: 'The background layer does not behave like a stable real-world environment. It may sound overly clean, unnaturally static, or inconsistent between phrases, which can happen when generated voice is composited or rendered without authentic room characteristics.',
+        spectrogram: 'The frequency profile is more consistent with generated audio, showing signs of over-smoothed harmonics, repetitive structure, or abrupt spectral boundaries. Those patterns often appear when speech is synthesized or heavily manipulated.'
+      };
+    }
+
+    function resetReportDisplay() {
+      document.getElementById('score-value').innerHTML = '0<span>%</span>';
+      document.getElementById('score-value').style.color = '#94a3b8';
+      document.getElementById('verdict-title').innerHTML = '<i class="fa-regular fa-circle"></i><span>Analyzing...</span>';
+      document.getElementById('verdict-title').style.color = '#64748b';
+      document.getElementById('result-explanation').textContent = 'Scanning voice patterns and synthesis artifacts to determine whether the recording appears natural or generated.';
+      document.getElementById('detail-vocal').textContent = 'The voice profile is being analyzed for timing, phrasing, and tonal stability.';
+      document.getElementById('detail-background').textContent = 'Environmental audio is being checked for synthetic smoothness, looping artifacts, and irregular transitions.';
+      document.getElementById('detail-spectrogram').textContent = 'Frequency distribution is being reviewed for the sharp edges and texture anomalies common in generated speech.';
+      document.getElementById('authenticity-bar').style.width = '0%';
+      document.getElementById('fake-bar').style.width = '0%';
+      document.getElementById('authenticity-value').textContent = '0%';
+      document.getElementById('fake-value').textContent = '0%';
+    }
+
+    function resetExampleState(activeButton) {
+      exampleButtons.forEach((button) => {
+        button.classList.toggle('active', button === activeButton);
+      });
+    }
+
+    function handleFile(file, label) {
+      selectedFile = file;
+      resetExampleState(null);
+      setPreview(URL.createObjectURL(file), label || file.name, formatFileSize(file.size));
+      resultsSection.classList.remove('visible');
+    }
+
+    async function loadExampleAudio(button) {
+      const exampleUrl = button.dataset.exampleUrl;
+      const exampleLabel = button.dataset.exampleLabel;
+      const previousText = analyzeBtn.innerHTML;
+      analyzeBtn.disabled = true;
+      analyzeBtn.classList.remove('ready');
+      analyzeBtn.innerHTML = '<span class="spinner"></span> Loading sample...';
+
+      try {
+        const response = await fetch(exampleUrl);
+        if (!response.ok) {
+          throw new Error('Could not load example audio.');
+        }
+        const blob = await response.blob();
+        const extension = exampleUrl.split('.').pop() || 'wav';
+        const exampleFile = new File([blob], exampleLabel.toLowerCase().replace(/\s+/g, '-') + '.' + extension, {
+          type: blob.type || 'audio/wav'
+        });
+        selectedFile = exampleFile;
+        resetExampleState(button);
+        setPreview(URL.createObjectURL(exampleFile), exampleLabel, 'Example clip loaded');
+        resultsSection.classList.remove('visible');
+      } catch (error) {
+        window.alert(error.message || 'Failed to load the sample audio.');
+      } finally {
+        analyzeBtn.innerHTML = previousText;
+        if (selectedFile) {
+          enableAnalyze();
+        } else {
+          analyzeBtn.disabled = true;
+        }
+      }
+    }
+
+    uploadZone.addEventListener('click', (event) => {
+      const interactive = event.target.closest('audio');
+      if (interactive) {
+        return;
+      }
+      fileInput.click();
+    });
+
+    uploadZone.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    uploadZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const file = event.dataTransfer.files[0];
+      if (isAudioFile(file)) {
+        handleFile(file);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0] && isAudioFile(fileInput.files[0])) {
+        handleFile(fileInput.files[0]);
+      }
+    });
+
+    exampleButtons.forEach((button) => {
+      button.addEventListener('click', () => loadExampleAudio(button));
+    });
+
+    analyzeBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      analyzeBtn.disabled = true;
+      analyzeBtn.classList.add('ready');
+      analyzeBtn.innerHTML = '<span class="spinner"></span> Analyzing audio...';
+      resultsSection.classList.add('visible');
+      resetReportDisplay();
+
+      try {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        const response = await fetch('/analyze-full-media', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.detail || 'Analysis failed.');
+        }
+        renderResult(data);
+      } catch (error) {
+        document.getElementById('verdict-title').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i><span>Analysis Error</span>';
+        document.getElementById('verdict-title').style.color = 'var(--danger)';
+        document.getElementById('score-value').style.color = 'var(--danger)';
+        document.getElementById('result-explanation').textContent = 'The audio could not be analyzed. Try a different file or upload the clip again.';
+      } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.classList.add('ready');
+        analyzeBtn.innerHTML = 'Analyze Audio';
+      }
+    });
+
+    function renderResult(data) {
+      const fakeScore = clamp(data.overall_threat_score || data.audio_clone_score || 0);
+      const authenticityScore = clamp(100 - fakeScore);
+      const reportCopy = buildVoiceReportCopy(authenticityScore, fakeScore, data.explanation);
+      const scoreEl = document.getElementById('score-value');
+      const verdictEl = document.getElementById('verdict-title');
+      scoreEl.innerHTML = authenticityScore + '<span>%</span>';
+
+      let verdictIcon = 'fa-circle-exclamation';
+      let verdictColor = 'var(--warn)';
+      let verdictText = 'Needs Review';
+
+      if (authenticityScore >= 75) {
+        verdictIcon = 'fa-circle-check';
+        verdictColor = 'var(--success)';
+        verdictText = 'Likely Authentic';
+      } else if (authenticityScore < 45) {
+        verdictIcon = 'fa-triangle-exclamation';
+        verdictColor = 'var(--danger)';
+        verdictText = 'Likely AI Generated';
+      }
+
+      scoreEl.style.color = verdictColor;
+      verdictEl.style.color = verdictColor;
+      verdictEl.innerHTML = '<i class="fa-solid ' + verdictIcon + '"></i><span>' + verdictText + '</span>';
+
+      document.getElementById('result-explanation').textContent = reportCopy.summary;
+      document.getElementById('detail-vocal').textContent = reportCopy.vocal;
+      document.getElementById('detail-background').textContent = reportCopy.background;
+      document.getElementById('detail-spectrogram').textContent = reportCopy.spectrogram;
+      document.getElementById('authenticity-bar').style.width = authenticityScore + '%';
+      document.getElementById('fake-bar').style.width = fakeScore + '%';
+      document.getElementById('authenticity-value').textContent = authenticityScore + '%';
+      document.getElementById('fake-value').textContent = fakeScore + '%';
+
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('btn-new-scan').addEventListener('click', () => {
+      selectedFile = null;
+      fileInput.value = '';
+      resetExampleState(null);
+      uploadZone.classList.remove('filled');
+      resultsSection.classList.remove('visible');
+      analyzeBtn.disabled = true;
+      analyzeBtn.classList.remove('ready');
+      analyzeBtn.textContent = 'Analyze Audio';
+      resetReportDisplay();
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        objectUrl = null;
+      }
+      previewAudio.removeAttribute('src');
+      previewName.textContent = 'Ready to analyze';
+      previewMeta.textContent = 'Your selected clip will appear here before analysis.';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-copy-result').addEventListener('click', () => {
+      const text = [
+        'Deepfake Voice Analysis',
+        'Verdict: ' + document.getElementById('verdict-title').textContent.replace(/\s+/g, ' ').trim(),
+        'Score: ' + document.getElementById('score-value').textContent.replace(/\s+/g, ''),
+        'Authenticity: ' + document.getElementById('authenticity-value').textContent,
+        'Fake Probability: ' + document.getElementById('fake-value').textContent,
+        '',
+        document.getElementById('result-explanation').textContent
+      ].join('\n');
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('btn-copy-result');
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Result';
+        }, 2000);
+      });
+    });
+
+    document.querySelectorAll('.faq-q').forEach((question) => {
+      question.addEventListener('click', () => {
+        question.parentElement.classList.toggle('open');
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      const dropdown = document.getElementById('toolsDropdown');
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>

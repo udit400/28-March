@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us - Deepfake Detection</title>
+  <link rel="icon" type="image/png" href="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#f7f9fc;--panel:#fff;--ink:#13203a;--muted:#70819b;--line:#e6ecf5;--accent:#2f66f3;--accent-soft:#eaf1ff;--shadow:0 8px 28px rgba(17,24,39,.06);--shadow-lg:0 18px 48px rgba(17,24,39,.08)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    .nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #f0f0f0;padding:0 32px}
+    .nav-inner{max-width:2589px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+    .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.5rem;color:#1a1a2e}
+    .nav-brand img{width:36px;height:36px}
+    .nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+    .nav-link{display:flex;align-items:center;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border-radius:8px;transition:color .15s}
+    .nav-link:hover,.nav-link.active{color:#1d4ed8}
+    .nav-dropdown{position:relative}
+    .nav-dropdown-btn{display:flex;align-items:center;gap:5px;padding:8px 16px;font-size:1.125rem;font-weight:600;color:#374151;border:none;background:none;cursor:pointer;border-radius:8px;font-family:inherit;transition:color .15s}
+    .nav-dropdown-btn:hover{color:#1d4ed8}
+    .nav-dropdown-btn i{font-size:.65rem;transition:transform .2s}
+    .nav-dropdown-menu{display:none;position:absolute;top:100%;right:0;min-width:220px;background:#fff;border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.1);padding:8px;margin-top:4px;z-index:200}
+    .nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown.open .nav-dropdown-menu{display:block}
+    .nav-dropdown:hover .nav-dropdown-btn i,.nav-dropdown.open .nav-dropdown-btn i{transform:rotate(180deg)}
+    .nav-dropdown-menu a{display:block;padding:10px 16px;font-size:.9rem;color:#333;border-radius:8px;font-weight:500}
+    .nav-dropdown-menu a:hover,.nav-dropdown-menu a.active{background:#f5f7ff;color:#2563eb}
+    .container{max-width:1260px;margin:0 auto;padding:0 28px}
+    .hero{padding:60px 0 28px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.8rem;font-weight:700;margin-bottom:18px}
+    .hero h1{font-size:clamp(2.6rem,4vw,4.1rem);line-height:1.05;letter-spacing:-.04em;margin-bottom:10px}
+    .hero p{max-width:760px;margin:0 auto;color:var(--muted);font-size:1.04rem}
+    .section{padding:22px 0 70px}
+    .section-heading{text-align:center;max-width:860px;margin:0 auto 32px}
+    .section-heading h2{font-size:clamp(2rem,3vw,2.6rem);letter-spacing:-.03em;margin-bottom:10px}
+    .section-heading p{color:var(--muted);font-size:1rem}
+    .story-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:28px;align-items:start}
+    .story-copy{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px 30px;box-shadow:var(--shadow)}
+    .story-copy h3{font-size:1.5rem;margin-bottom:14px}
+    .story-copy p{color:#4e607a;margin-bottom:14px}
+    .story-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .story-gallery img{width:100%;aspect-ratio:1/1;border-radius:18px;object-fit:cover;box-shadow:var(--shadow)}
+    .difference-grid,.mission-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+    .difference-card,.mission-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 18px;box-shadow:var(--shadow)}
+    .difference-card i,.mission-card i{width:42px;height:42px;border-radius:14px;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent);font-size:1.05rem;margin-bottom:14px}
+    .difference-card h4,.mission-card h4{font-size:1rem;margin-bottom:8px}
+    .difference-card p,.mission-card p{color:var(--muted);font-size:.9rem}
+    .privacy-panel{max-width:920px;margin:0 auto;background:linear-gradient(145deg,#f4f8ff,#fff);border:1px solid #dbe6ff;border-radius:24px;padding:28px 30px;box-shadow:var(--shadow-lg);text-align:center}
+    .privacy-panel .shield{width:54px;height:54px;border-radius:18px;margin:0 auto 16px;background:#eef4ff;color:var(--accent);display:grid;place-items:center;font-size:1.35rem}
+    .privacy-panel h3{font-size:1.7rem;margin-bottom:10px}
+    .privacy-panel p{color:var(--muted);max-width:720px;margin:0 auto}
+    .truth-section{max-width:920px;margin:0 auto;text-align:center}
+    .truth-section h2{font-size:clamp(2rem,3vw,2.6rem);margin-bottom:12px;letter-spacing:-.03em}
+    .truth-section p{color:var(--muted);max-width:720px;margin:0 auto 20px}
+    .cta-link{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:999px;background:var(--accent);color:#fff;font-weight:700;box-shadow:0 18px 34px rgba(47,102,243,.18)}
+    .footer{border-top:1px solid var(--line);background:#fff;margin-top:24px}
+    .footer-inner{max-width:1280px;margin:0 auto;padding:40px 28px 28px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:28px}
+    .footer-brand{display:flex;align-items:center;gap:10px;font-weight:700;color:#1a1a2e;font-size:1.02rem;margin-bottom:12px}
+    .footer-brand img{width:34px;height:34px}
+    .footer-copy{color:var(--muted);font-size:.9rem;max-width:360px}
+    .footer-col h4{font-size:.92rem;margin-bottom:12px}
+    .footer-col a,.footer-col p{display:block;color:var(--muted);font-size:.88rem;line-height:1.8}
+    .footer-bottom{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.84rem}
+    @media (max-width:1024px){.story-grid,.difference-grid,.mission-grid,.footer-grid{grid-template-columns:1fr 1fr}.story-copy{order:2}.story-gallery{order:1}}
+    @media (max-width:760px){.nav{padding:0 18px}.nav-links{display:none}.container{padding:0 18px}.story-grid,.difference-grid,.mission-grid,.footer-grid{grid-template-columns:1fr}.hero{padding-top:40px}}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <div class="nav-dropdown" id="toolsDropdown">
+          <button class="nav-dropdown-btn" onclick="document.getElementById('toolsDropdown').classList.toggle('open')">
+            Deepfake Detection Tools <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+            <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+            <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+          </div>
+        </div>
+        <a href="/about" class="nav-link active">About</a>
+      </div>
+    </div>
+  </nav>
+  <main class="container">
+    <section class="hero">
+      <div class="hero-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Meet The Team Behind Deepfake Detection</div>
+      <h1>About Us</h1>
+      <p>We built Deepfake Detection to help ordinary people, researchers, educators, journalists, and security teams decide what is real and what is synthetic without needing specialist tools.</p>
+    </section>
+    <section class="section">
+      <div class="section-heading">
+        <h2>Hi! We're a team of AI researchers and cybersecurity experts</h2>
+        <p>We kept asking the same question: how do we help people identify fake content in a world flooded with AI-generated media?</p>
+      </div>
+      <div class="story-grid">
+        <div class="story-copy">
+          <h3>Our Story</h3>
+          <p>Deepfakes became easier to make long before most people had a reliable way to check them. We wanted a tool that felt fast, understandable, and useful in real situations instead of something built only for labs or enterprise demos.</p>
+          <p>So we focused on three things: clear uploads, readable reports, and privacy-conscious analysis. That turned into a public-facing detector for images, videos, and voice clips that anyone can use without a long setup process.</p>
+          <p>Our goal is simple: make authenticity checking part of everyday digital hygiene.</p>
+        </div>
+        <div class="story-gallery">
+          <img src="https://deepfakedetection.io/images/page/fake-social-girl.webp" alt="Example social media deepfake detection">
+          <img src="https://deepfakedetection.io/images/page/news.webp" alt="Example news media verification">
+          <img src="https://deepfakedetection.io/images/page/fake-finance-info.webp" alt="Example financial fraud detection">
+          <img src="https://deepfakedetection.io/images/page/cheat.webp" alt="Example scam prevention through deepfake detection">
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-heading">
+        <h2>What Makes Us Different</h2>
+        <p>We do not just output a single score. The system is designed to surface context so users can understand why something was flagged.</p>
+      </div>
+      <div class="difference-grid">
+        <article class="difference-card"><i class="fa-solid fa-bolt"></i><h4>Lightning Fast Analysis</h4><p>Most scans return quickly enough to fit into live reviews, newsroom checks, or scam-response workflows.</p></article>
+        <article class="difference-card"><i class="fa-solid fa-chart-column"></i><h4>Detailed Reports</h4><p>Scores are paired with plain-language summaries and supporting detail instead of opaque technical output alone.</p></article>
+        <article class="difference-card"><i class="fa-solid fa-brain"></i><h4>Advanced AI Models</h4><p>We combine multiple signals across visual, acoustic, and metadata patterns to improve trust in the result.</p></article>
+        <article class="difference-card"><i class="fa-solid fa-users"></i><h4>For Everyone</h4><p>The interface is meant to work for classrooms, households, editorial teams, investigators, and general users.</p></article>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-heading">
+        <h2>Our Mission</h2>
+        <p>Truth matters. In an era of digital manipulation, we want more people to have access to tools that reduce uncertainty before a fake spreads.</p>
+      </div>
+      <div class="mission-grid">
+        <article class="mission-card"><i class="fa-solid fa-shield"></i><h4>Protect</h4><p>Help people avoid scams, impersonation attempts, and manipulated media designed to trigger bad decisions.</p></article>
+        <article class="mission-card"><i class="fa-solid fa-graduation-cap"></i><h4>Educate</h4><p>Make deepfake detection easier to understand so users learn how synthetic media is created and caught.</p></article>
+        <article class="mission-card"><i class="fa-solid fa-handshake-angle"></i><h4>Empower</h4><p>Keep core detection flows accessible so more people can verify suspicious content before trusting it.</p></article>
+        <article class="mission-card"><i class="fa-solid fa-globe"></i><h4>Reach Further</h4><p>Support individuals and teams across journalism, education, public safety, and personal verification use cases.</p></article>
+      </div>
+    </section>
+    <section class="section">
+      <div class="privacy-panel">
+        <div class="shield"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Privacy First</h3>
+        <p>Your privacy is central to the product direction. We want users to feel safe checking sensitive audio, photos, and video clips, so the experience is designed around limited retention, secure processing, and readable privacy expectations.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="truth-section">
+        <h2>For Truth Seekers Everywhere</h2>
+        <p>Whether you are verifying news, protecting your identity, checking suspicious media for your family, or teaching digital literacy, this platform is meant to be a practical first stop.</p>
+        <a href="/deepfake-image-detection" class="cta-link">Try Deepfake Detection Now <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><img src="https://deepfakedetection.io/_next/image?url=%2Flogo-96x96.png&w=64&q=75" alt="Deepfake Detection Logo"> Deepfake Detection</div>
+          <p class="footer-copy">Deepfake Detection is a free AI-powered tool that helps identify manipulated images, videos, and audio files to reduce fraud, misinformation, and impersonation risk.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Deepfake Detection Tools</h4>
+          <a href="/deepfake-image-detection">Deepfake Image Detection</a>
+          <a href="/deepfake-video-detection">Deepfake Video Detection</a>
+          <a href="/deepfake-voice-detection">Deepfake Voice Detection</a>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <a href="/about">About Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p>hello@deepfakedetection.io</p>
+          <p>support@deepfakedetection.io</p>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2026 Deepfake Detection. All rights reserved.</div>
+    </div>
+  </footer>
+</body>
+</html>
